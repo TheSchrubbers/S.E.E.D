@@ -7,8 +7,8 @@
  * \author Jérémy RIFFET
  * \version 0.1
  */
-#include <glm\glm.hpp>
-#include <GL/glew.h>
+#include "..\..\..\lib\glm\glm\glm.hpp"
+#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
 
 /*! \class Texture
  * \brief Loads and generate an IDTexture in GPU

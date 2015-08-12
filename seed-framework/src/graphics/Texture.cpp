@@ -2,7 +2,7 @@
 #include "LoaderImage.hpp"
 #include <stdlib.h>
 #include <stdio.h>
-#include <glm\glm.hpp>
+#include "..\..\..\lib\glm\glm\glm.hpp"
 
 Texture::Texture(char *path)
 {

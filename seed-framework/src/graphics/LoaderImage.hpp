@@ -1,7 +1,7 @@
 #ifndef LOADER_IMAGE_HPP
 #define LOADER_IMAGE_HPP
 #include "Texture.hpp"
-#include <corona.h>
+#include "..\..\..\lib\corona\include\corona.h"
 
 class LoaderImage
 {

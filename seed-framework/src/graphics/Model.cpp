@@ -1,7 +1,7 @@
 #include "Model.hpp"
 #include <fstream>
-#include <glm\glm.hpp>
-#include <GL\glew.h>
+#include "..\..\..\lib\glm\glm\glm.hpp"
+#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
 
 Model::Model(char *path)
 {

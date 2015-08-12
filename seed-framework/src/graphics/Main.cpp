@@ -1,17 +1,15 @@
-// Include standard headers
-#include "Shader.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 
-// Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
-#include <GL/glew.h>
+// Include GLEW. Always include it before gl.h and glfw.h
+#include "../../../lib/glew-1.12.0/include/GL/glew.h"
 
 // Include GLFW
-#include <GLFW/glfw3.h>
+#include "../../../lib/glfw-3.1.1/include/GLFW/glfw3.h"
 
 // Include GLM
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include "../../../lib/glm/glm/glm.hpp"
+#include "../../../lib/glm/glm/gtx/transform.hpp"
 
 #include "Camera.hpp"
 #include "Outils.hpp"
@@ -21,6 +19,8 @@
 #include "Model.hpp"
 #include "Control.hpp"
 #include "Constant.hpp"
+// Include standard headers
+#include "Shader.hpp"
 // Open a window and create its OpenGL context 
 GLFWwindow* window; // (In the accompanying source code, this variable is global) 
 

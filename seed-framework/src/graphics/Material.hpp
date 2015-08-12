@@ -1,6 +1,6 @@
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
-#include <GL/glew.h>
+#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
 
 /*!
 * \file Material.hpp

@@ -1,9 +1,9 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
+#include "..\..\..\lib\glfw-3.1.1\include\GLFW\glfw3.h"
+#include "..\..\..\lib\glm\glm\glm.hpp"
 #include <string>
 
 using namespace glm;
