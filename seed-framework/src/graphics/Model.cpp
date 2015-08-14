@@ -1,76 +1,48 @@
+/*!
+* \file model.cpp
+* \author Jérémy RIFFET
+* \version 0.1
+*/
+
 #include "Model.hpp"
 #include <fstream>
 #include "..\..\..\lib\glm\glm\glm.hpp"
 #include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
+#include "..\..\..\lib\assimp\include\assimp\ai_assert.h"
+#include "..\..\..\lib\assimp\include\assimp\postprocess.h"
+#include "..\..\..\lib\assimp\include\assimp\scene.h"
 
-Model::Model(char *path)
+Model::Model(const aiMesh *mesh)
 {
-	Assimp::Importer importer;
-	bool exist = false;
-	//file exists?
-	std::ifstream fichier(path);
-	if (!fichier.fail())
+	int i = 0;
+	this->m_numVertices = mesh->mNumVertices;
+	for (i = 0; i < this->m_numVertices; i++)
 	{
-		exist = true;
-		fichier.close();
+		//copy vertices
+		this->m_vertices[i].x = mesh->mVertices[i].x;
+		this->m_vertices[i].y = mesh->mVertices[i].y;
+		this->m_vertices[i].z = mesh->mVertices[i].z;
+		//copy tangents
+		this->m_tangents[i].x = mesh->mTangents[i].x;
+		this->m_tangents[i].y = mesh->mTangents[i].y;
+		this->m_tangents[i].z = mesh->mTangents[i].z;
+		//copy texture coordinates
+		this->m_textCoords[i].x = mesh->mTextureCoords[i]->x;
+		this->m_textCoords[i].y = mesh->mTextureCoords[i]->y;
+		//copy normals
+		this->m_normals[i].x = mesh->mNormals[i].x;
+		this->m_normals[i].y = mesh->mNormals[i].y;
+		this->m_normals[i].z = mesh->mNormals[i].z;
 	}
-	else
+
+	for (i = 0; i < mesh->mNumFaces; i++)
 	{
-		std::printf("ERROR LOADING MODEL : Couldn't open file: \n%s\n", path);
+		//copy faces
+		//this->m_faces[i].x = mesh->mFaces[i].mIndices
 	}
-	//if file exists
-	if (exist)
-	{
-		const aiScene *pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
-		pScene->mRootNode->
-		if (pScene)
-		{
-			if (!InitFromScene(pScene, path))
-			{
-				printf("ERROR LOADING MODEL : error parsing %s\n %s\n", path, importer.GetErrorString());
-			}
-		}
-	}
+
+	this->m_indexMaterial = mesh->mMaterialIndex;
+
 }
 
-//Initialisation from aiscene
-bool Model::InitFromScene(const aiScene* pScene, const char *path)
-{
-	pScene->mRootNode->mMeshes
-	//resize vectors with the number of meshes and textures
-	m_Entries.resize(pScene->mNumMeshes);
-	//m_Textures.resize(pScene->mNumTextures);
 
-	//Initialize each model
-	for (int i = 0; i < m_Entries.size(); i++)
-	{
-		const aiMesh* paiMesh = pScene->mMeshes[i];
-		InitMesh(i, paiMesh);
-	}
-	return true;
-	//return initMaterials(pScene, path);
-}
-
-bool Model::InitMesh(unsigned int Index, const aiMesh* paiMesh)
-{
-	//affect a material to the index entry of vector of materials
-	m_Material = paiMesh->mMaterialIndex;
-
-	//get each pos, normal, uv for the current i vertex
-	for (int i = 0; i < paiMesh->mNumVertices; i++)
-	{
-		const aiVector3D* pos = &(paiMesh->mVertices[i]);
-		const aiVector3D* normal = &(paiMesh->mNormals[i]);
-		const aiVector3D* uv = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &(aiVector3D(0.0f, 0.0f, 0.0f));
-		Vertex v(glm::vec3(pos->x, pos->y, pos->z), glm::vec3(normal->x, normal->y, normal->z), glm::vec2(uv->x, uv->y));
-		m_Vertices.push_back(v);
-	}
-	for (int i = 0; i < paiMesh->mNumFaces; i++)
-	{
-		const aiFace& Face = paiMesh->mFaces[i];
-		assert(Face.mNumIndices == 3);
-		m_Indices.push_back(Face.mIndices[0]);
-		m_Indices.push_back(Face.mIndices[1]);
-		m_Indices.push_back(Face.mIndices[2]);
-	}
-}

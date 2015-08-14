@@ -1,3 +1,11 @@
+/*!
+* \file Model.hpp
+* \brief Load and store Model from format OBJ, ...
+* \author Jérémy RIFFET
+* \version 0.1
+*/
+
+
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
@@ -7,12 +15,9 @@
 #include "Texture.hpp"
 #include "Material.hpp"
 
-/*!
-* \file Model.hpp
-* \brief Load and store Model from format OBJ, ...
-* \author Jérémy RIFFET
-* \version 0.1
-*/
+#include "..\..\..\lib\assimp\include\assimp\postprocess.h"
+#include "..\..\..\lib\assimp\include\assimp\scene.h"
+#include "..\..\..\lib\assimp\include\assimp\Importer.hpp"
 
 /*! \class Model
 * \brief Loads and generate an Model in GPU
@@ -24,7 +29,7 @@ public:
 	* \brief Constructor of class Model
 	* \param path : path to the model file
 	*/
-	Model(char *path);
+	Model(const aiMesh *mesh);
 	/*!
 	* \brief Destructor of class Model
 	*/
@@ -33,20 +38,14 @@ public:
 	
 
 private:
-	/*!
-	* \brief Method who initialize mesh to the scene
-	* \param pScene: scene
-	* \param path: path to the model file
-	*/
-	bool InitFromScene(const aiScene* pScene, const char *path);
-	bool InitMesh(unsigned int Index, const aiMesh* paiMesh);
-
-	int m_Material;
-	std::vector<glm::vec3> m_positions;
+	std::vector<glm::vec3> m_vertices;
 	std::vector<glm::vec2> m_textCoords;
 	std::vector<glm::vec3> m_normals;
-	std::vector<glm::vec3> m_tangentes;
+	std::vector<glm::vec3> m_tangents;
+	std::vector<glm::ivec3> m_faces;
 	std::vector<int> m_indicesMaterial;
+	int m_indexMaterial;
+	int m_numVertices;
 };
 
 #endif

@@ -1,13 +1,15 @@
-#ifndef MATERIAL_HPP
-#define MATERIAL_HPP
-#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
-
 /*!
 * \file Material.hpp
 * \brief Material of a node
 * \author Jérémy RIFFET
 * \version 0.1
 */
+
+#ifndef MATERIAL_HPP
+#define MATERIAL_HPP
+#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
+#include "..\..\..\lib\assimp\include\assimp\Importer.hpp"
+#include "..\..\..\lib\assimp\include\assimp\scene.h"
 
 /*! \class Material
 * \brief Material of a node
@@ -18,7 +20,7 @@ public:
 	/*!
 	* \brief Constructor of class Material
 	*/
-	Material();
+	Material(const aiMaterial *material);
 	~Material(){};
 	/*!
 	* \brief Load shaders from the directory "Shaders" in directory of this material
