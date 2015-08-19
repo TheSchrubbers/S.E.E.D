@@ -5,12 +5,6 @@
 */
 
 #include "Model.hpp"
-#include <fstream>
-#include "..\..\..\lib\glm\glm\glm.hpp"
-#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
-#include "..\..\..\lib\assimp\include\assimp\ai_assert.h"
-#include "..\..\..\lib\assimp\include\assimp\postprocess.h"
-#include "..\..\..\lib\assimp\include\assimp\scene.h"
 
 Model::Model(const aiMesh *mesh)
 {

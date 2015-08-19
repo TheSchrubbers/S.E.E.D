@@ -7,8 +7,11 @@
  * \author Jérémy RIFFET
  * \version 0.1
  */
-#include "..\..\..\lib\glm\glm\glm.hpp"
-#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
+#include <glm\glm.hpp>
+#include <GL\glew.h>
+#include "LoaderImage.hpp"
+#include <stdlib.h>
+#include <stdio.h>
 
 /*! \class Texture
  * \brief Loads and generate an IDTexture in GPU
@@ -20,7 +23,7 @@ public:
 	 * \brief Constructor of class Texture
 	 * \param path : path to the image file
 	 */
-	Texture(char *path);
+	Texture(const char *path);
 	/*!
 	* \brief Destructor of class Texture
 	*/

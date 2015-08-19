@@ -1,14 +1,10 @@
 #include "Scene.hpp"
-#include "..\..\..\lib\assimp\include\assimp\postprocess.h"
-#include "..\..\..\lib\assimp\include\assimp\scene.h"
-#include "..\..\..\lib\assimp\include\assimp\Importer.hpp"
-#include <string.h>
 
 Scene::Scene()
 {
-	this->rootNode = new RootNode();
+	/*this->rootNode = new RootNode();
 	m_numModels = 0;
-	m_numMaterials = 0;
+	m_numMaterials = 0;*/
 }
 
 Scene::~Scene()
@@ -16,7 +12,7 @@ Scene::~Scene()
 
 bool Scene::importModelFromFile(char* path)
 {
-	Assimp::Importer importer;
+	/*Assimp::Importer importer;
 	bool exist = false;
 	//file exists?
 	std::ifstream fichier(path);
@@ -51,12 +47,12 @@ bool Scene::importModelFromFile(char* path)
 			printf("ERROR ASSIMP LOADING MODEL : Couln't import Mesh");
 			return false;
 		}
-	}
+	}*/
 }
 
 bool Scene::initMeshInScene(const aiScene *pScene, const char *path)
 {
-	int i = 0;
+	/*int i = 0;
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
 	int index = this->rootNode->createNode(pScene->mRootNode->mName.C_Str());
 	this->m_numModels += pScene->mNumMeshes;
@@ -75,14 +71,14 @@ bool Scene::initMeshInScene(const aiScene *pScene, const char *path)
 	}
 	//insert nodes
 	this->insertRecurNode(pScene->mRootNode, this->rootNode->getNode(index));
-
+	*/
 	return true;
 }
 
 //build the child's tree of nodes of the scene 
 void Scene::insertRecurNode(const aiNode *nodeFather, Node *father)
 {
-	int i = 0;
+	/*int i = 0;
 	//attribute index's meshes to the node
 	for (i = 0; i < nodeFather->mNumMeshes; i++)
 	{
@@ -94,7 +90,7 @@ void Scene::insertRecurNode(const aiNode *nodeFather, Node *father)
 		Node *n = new Node();
 		father->addChild(n);
 		this->insertRecurNode(nodeFather->mChildren[i], n);
-	}
+	}*/
 }
 
 void Scene::bindMeshesToNode(const aiNode *ainode, Node *node)

@@ -5,8 +5,7 @@
 */
 
 #include "Node.hpp"
-#include <exception>
-#include <iostream>
+
 
 Node::Node()
 {}

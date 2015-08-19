@@ -1,12 +1,14 @@
 #ifndef LOADER_IMAGE_HPP
 #define LOADER_IMAGE_HPP
-#include "Texture.hpp"
-#include "..\..\..\lib\corona\include\corona.h"
 
+#include <corona.h>
+#include <iostream>
+
+class Texture;
 class LoaderImage
 {
 public:
-	bool loadImage(char *path, Texture *text);
+	bool loadImage(const char* path, Texture *text);
 	corona::Image *img;
 };
 

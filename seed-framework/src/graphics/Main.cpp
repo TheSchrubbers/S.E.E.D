@@ -2,14 +2,14 @@
 #include <stdlib.h>
 
 // Include GLEW. Always include it before gl.h and glfw.h
-#include "../../../lib/glew-1.12.0/include/GL/glew.h"
+#include <GL\glew.h>
 
 // Include GLFW
-#include "../../../lib/glfw-3.1.1/include/GLFW/glfw3.h"
+#include <GLFW\glfw3.h>
 
 // Include GLM
-#include "../../../lib/glm/glm/glm.hpp"
-#include "../../../lib/glm/glm/gtx/transform.hpp"
+#include <glm\glm.hpp>
+#include <glm\gtx\transform.hpp>
 
 #include "Camera.hpp"
 #include "Outils.hpp"
@@ -46,14 +46,15 @@ int main()
 	if (Initialisation() != 0)
 		return -1;
 
-	//capture des touches du clavier
+	//captur keys
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	//création caméra
+	//crate camera
 	Camera camera(position, glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0), initFoV, WIDTH, HEIGHT, near, far);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders("Shaders/VertexShader.hlsl", "Shaders/FragmentShader.hlsl");
+	GLuint programID = 0;// loadShaders("VertexShader.hlsl", "PixelShader.hlsl");//(pathToShaders + "\FragmentShader.hlsl").c_str());
+	GLuint program = loadShaders("tes2", "tes3");
 
 	//enable texturing
 	glEnable(GL_TEXTURE_2D);
@@ -173,7 +174,7 @@ int main()
 		color_buffer_data[i * 3 + 2] = (float)(rand() % 100) / 100.0;
 	}
 
-	//id du vertex VertexArrayID
+	//id vertex VertexArrayID
 	GLuint VertexBuffer;
 	//on génère une adresse pointant vers un emplacement dans la mémoire du GPU
 	//on génère 1 emplacement
@@ -206,7 +207,7 @@ int main()
 	GLuint TextureID = glGetUniformLocation(programID, "samplerTexture");
 	
 	//chargement texture
-	Texture t("Textures/texture4.png");
+	Texture t("\texture4.png");
 
 
 	//Model model("Models/axe.obj");

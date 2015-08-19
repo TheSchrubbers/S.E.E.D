@@ -5,6 +5,8 @@
 #include "Model.hpp"
 #include <vector>
 #include <stdlib.h>
+#include <iostream>
+#include <exception>
 
 class Node
 {

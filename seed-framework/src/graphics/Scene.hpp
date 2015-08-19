@@ -11,6 +11,10 @@
 #include "rootnode.hpp"
 #include "Node.hpp"
 #include <fstream>
+#include <string>
+#include <assimp\postprocess.h>
+#include <assimp\scene.h>
+#include <assimp\ai_assert.h>
 
 class Scene
 {

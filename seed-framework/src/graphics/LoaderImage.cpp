@@ -1,8 +1,6 @@
 #include "LoaderImage.hpp"
-#include "Texture.hpp"
-#include <stdio.h>
 
-bool LoaderImage::loadImage(char *path, Texture *text)
+bool LoaderImage::loadImage(const char *path, Texture *text)
 {
 	img = corona::OpenImage(path, corona::PF_R8G8B8A8);
 	if (!img)

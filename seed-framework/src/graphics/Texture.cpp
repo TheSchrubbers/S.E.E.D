@@ -1,10 +1,6 @@
 #include "Texture.hpp"
-#include "LoaderImage.hpp"
-#include <stdlib.h>
-#include <stdio.h>
-#include "..\..\..\lib\glm\glm\glm.hpp"
 
-Texture::Texture(char *path)
+Texture::Texture(const char *path)
 {
 	LoaderImage loader;
 	//init class

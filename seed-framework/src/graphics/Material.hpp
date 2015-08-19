@@ -7,9 +7,9 @@
 
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
-#include "..\..\..\lib\glew-1.12.0\include\GL\glew.h"
-#include "..\..\..\lib\assimp\include\assimp\Importer.hpp"
-#include "..\..\..\lib\assimp\include\assimp\scene.h"
+#include <GL\glew.h>
+#include <assimp\Importer.hpp>
+#include <assimp\scene.h>
 
 /*! \class Material
 * \brief Material of a node
