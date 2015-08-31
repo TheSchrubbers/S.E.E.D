@@ -2,6 +2,8 @@
 
 bool LoaderImage::loadImage(const char *path, Texture *text)
 {
+	img->ReadFromFile(path->c_str());
+	img->SetBitDepth(32);
 	return true;
 }
 /*
