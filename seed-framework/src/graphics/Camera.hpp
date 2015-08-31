@@ -1,8 +1,13 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include <glm\glm.hpp>
-#include <glm\gtx\transform.hpp>
+#ifdef _WIN32
+	#include <glm\glm.hpp>
+	#include <glm\gtx\transform.hpp>
+#else
+	#include <glm/glm.hpp>
+	#include <glm/gtx/transform.hpp>
+#endif
 
 class Camera
 {

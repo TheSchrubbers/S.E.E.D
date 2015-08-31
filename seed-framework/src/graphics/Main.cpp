@@ -2,14 +2,27 @@
 #include <stdlib.h>
 
 // Include GLEW. Always include it before gl.h and glfw.h
-#include <GL\glew.h>
+#ifdef _WIN32
+	#include <GL\glew.h>
+#else
+	#include <GL/glew.h>
+#endif
 
 // Include GLFW
-#include <GLFW\glfw3.h>
+#ifdef _WIN32
+	#include <GLFW\glfw3.h>
+#else
+	#include <GLFW/glfw3.h>
+#endif
 
 // Include GLM
-#include <glm\glm.hpp>
-#include <glm\gtx\transform.hpp>
+#ifdef _WIN32
+	#include <glm\glm.hpp>
+	#include <glm\gtx\transform.hpp>
+#else
+	#include <glm/glm.hpp>
+	#include <glm/gtx/transform.hpp>
+#endif
 
 #include "Camera.hpp"
 #include "Outils.hpp"

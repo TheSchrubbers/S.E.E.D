@@ -12,9 +12,15 @@
 #include "Node.hpp"
 #include <fstream>
 #include <string>
-#include <assimp\postprocess.h>
-#include <assimp\scene.h>
-#include <assimp\ai_assert.h>
+#ifdef _WIN32
+	#include <assimp\postprocess.h>
+	#include <assimp\scene.h>
+	#include <assimp\ai_assert.h>
+#else
+	#include <assimp/postprocess.h>
+	#include <assimp/scene.h>
+	#include <assimp/ai_assert.h>
+#endif
 
 class Scene
 {
@@ -24,7 +30,7 @@ public:
 	bool importModelFromFile(char* path);
 	bool initMeshInScene(const aiScene *pScene, const char *path);
 	void insertRecurNode(const aiNode *nodeFather, Node *father);
-	void Scene::bindMeshesToNode(const aiNode *ainode, Node *node);
+	void bindMeshesToNode(const aiNode *ainode, Node *node);
 	//getters
 	RootNode* getRootNode();
 private:

@@ -8,7 +8,7 @@ GLuint loadShaders(const std::string *vertex_file_path, const std::string *fragm
 
 	// Read the Vertex Shader code from the file
 	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(*vertex_file_path, std::ios::in);
+	std::ifstream VertexShaderStream(vertex_file_path->c_str(), std::ios::in);
 
 	if (VertexShaderStream.is_open())
 	{
@@ -20,7 +20,7 @@ GLuint loadShaders(const std::string *vertex_file_path, const std::string *fragm
 
 	// Read the Fragment Shader code from the file
 	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(*fragment_file_path, std::ios::in);
+	std::ifstream FragmentShaderStream(fragment_file_path->c_str(), std::ios::in);
 
 	if (FragmentShaderStream.is_open()){
 		std::string Line = "";
@@ -33,7 +33,7 @@ GLuint loadShaders(const std::string *vertex_file_path, const std::string *fragm
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
+	printf("Compiling shader : %s\n", vertex_file_path->c_str());
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(VertexShaderID);
@@ -46,7 +46,7 @@ GLuint loadShaders(const std::string *vertex_file_path, const std::string *fragm
 	fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
 
 	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
+	printf("Compiling shader : %s\n", fragment_file_path->c_str());
 	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
 	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
 	glCompileShader(FragmentShaderID);
@@ -68,7 +68,7 @@ GLuint loadShaders(const std::string *vertex_file_path, const std::string *fragm
 	// Check the program
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	std::vector<char> ProgramErrorMessage(max(InfoLogLength, int(1)));
+	std::vector<char> ProgramErrorMessage(glm::max(InfoLogLength, int(1)));
 	glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
 	fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 

@@ -14,12 +14,21 @@
 #include <vector>
 #include <fstream>
 
-#include <glm\glm.hpp>
-#include <GL\glew.h>
-#include <assimp\ai_assert.h>
-#include <assimp\postprocess.h>
-#include <assimp\scene.h>
-#include <assimp\Importer.hpp>
+#ifdef _WIN32
+	#include <glm\glm.hpp>
+	#include <GL\glew.h>
+	#include <assimp\ai_assert.h>
+	#include <assimp\postprocess.h>
+	#include <assimp\scene.h>
+	#include <assimp\Importer.hpp>
+#else
+	#include <glm/glm.hpp>
+	#include <GL/glew.h>
+	#include <assimp/ai_assert.h>
+	#include <assimp/postprocess.h>
+	#include <assimp/scene.h>
+	#include <assimp/Importer.hpp>
+#endif
 
 #include "Texture.hpp"
 #include "Material.hpp"

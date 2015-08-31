@@ -7,8 +7,14 @@
  * \author Jérémy RIFFET
  * \version 0.1
  */
-#include <glm\glm.hpp>
-#include <GL\glew.h>
+
+#ifdef _WIN32
+	#include <glm\glm.hpp>
+	#include <GL\glew.h>
+#else
+	#include <glm/glm.hpp>
+	#include <GL/glew.h>
+#endif
 #include "LoaderImage.hpp"
 #include <stdlib.h>
 #include <stdio.h>
@@ -55,8 +61,8 @@ public:
 
 
 private:
-	int width = 0;
-	int height = 0;
+	int width;
+	int height;
 	GLuint textureID;
 };
 
