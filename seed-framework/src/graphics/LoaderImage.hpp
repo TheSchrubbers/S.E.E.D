@@ -1,7 +1,6 @@
 #ifndef LOADER_IMAGE_HPP
 #define LOADER_IMAGE_HPP
 
-#include "EasyBMP.h"
 #include <iostream>
 
 class Texture;

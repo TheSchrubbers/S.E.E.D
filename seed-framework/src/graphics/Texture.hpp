@@ -15,7 +15,7 @@
 	#include <glm/glm.hpp>
 	#include <GL/glew.h>
 #endif
-#include "LoaderImage.hpp"
+#include "parserImage.hpp"
 #include <stdlib.h>
 #include <stdio.h>
 
