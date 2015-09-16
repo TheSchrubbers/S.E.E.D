@@ -11,7 +11,7 @@ Node::Node()
 Node::Node(const std::string n)
 {
 	this->father = NULL;
-	this->name = "node";
+	this->name = n;
 	this->model = NULL;
 }
 
@@ -44,11 +44,11 @@ void Node::setMaterial(Material* mat)
 	this->material = mat;
 }
 
-void Node::render(Camera *camera)
+void Node::render()
 {
 	for (int i = 0; i < this->m_children.size(); i++)
 	{
-		this->m_children[i]->render(camera);
+		this->m_children[i]->render();
 	}
 	if (this->model)
 	{
@@ -63,6 +63,11 @@ void Node::afficher()
 	std::cout << "Nb de fils : " << this->m_children.size() << std::endl;
 	if (this->model)
 		this->model->afficher();
+}
+
+std::string Node::getName()
+{
+	return this->name;
 }
 
 

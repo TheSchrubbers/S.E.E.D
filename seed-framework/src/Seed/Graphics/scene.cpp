@@ -35,7 +35,7 @@ bool Scene::importModelFromFile(const std::string path)
 	{
 		//imports model in pScene, the model is triangulate, with tangents informations and merges same vertices
 		//A REDEFINIR!!
-		const aiScene *pScene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);//aiProcessPreset_TargetRealtime_Fast);
+		const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
 		
 		//if pScene exists, the mesh is assigning with node
 		if (pScene)
@@ -95,7 +95,7 @@ void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Nod
 	//recursive method for exploring children's nodes and do the same thing
 	for (int i = 0; i < nodeFather->mNumChildren; i++)
 	{
-		Node *n = new Node();
+		Node *n = new Node(father->getName() + "_" + std::to_string(i));
 		father->addChild(n);
 		n->setFather(father);
 		this->insertRecurNode(pScene, nodeFather->mChildren[i], n);
@@ -120,19 +120,19 @@ void Scene::loadMaterials(const aiScene *pScene)
 	for (int i = 0; i < pScene->mNumMaterials; i++)
 	{
 		//create a new material
-		Material *m = new Material(pScene->mMaterials[i]);
+		Material *m = new Material(pScene->mMaterials[i], this->getCamera());
 		aiString pathTexture;
 		std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
 		{
 			std::cout << pathTexture.data << std::endl;
-			Texture *t = new Texture(pathToTextures + pathTexture.data, "diffuse");
+			Texture *t = new Texture(pathTexture.data, "diffuse");
 			this->m_textures.push_back(t);
 			m->pushTexture(t);
 		}
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &pathTexture) == AI_SUCCESS)
 		{
-			Texture *t = new Texture(pathToTextures + pathTexture.data, "specular");
+			Texture *t = new Texture(pathTexture.data, "specular");
 			this->m_textures.push_back(t);
 			m->pushTexture(t);
 		}
@@ -141,8 +141,18 @@ void Scene::loadMaterials(const aiScene *pScene)
 	}
 }
 
+void Scene::setCamera(Camera *cam)
+{
+	this->camera = cam;
+}
+
 //getters
 Node* Scene::getRootNode()
 {
 	return this->rootNode;
+}
+
+Camera* Scene::getCamera()
+{
+	return this->camera;
 }

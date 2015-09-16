@@ -82,9 +82,16 @@ class Node
 
 		void afficher();
 
-		void render(Camera *camera);
+		/*!
+		* \brief render the node
+		*/
+		void render();
 
-		//int getIndex()
+		/*!
+		* \brief get the name of the node
+		* \return the name of the node
+		*/
+		std::string getName();
 
 		std::vector<Node*> m_children;
 

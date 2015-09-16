@@ -1,13 +1,17 @@
 #include <Seed/Graphics/material.hpp>
 
-Material::Material(const aiMaterial *material)
+Material::Material(const aiMaterial *material, Camera *cam)
 {
-	
+	this->camera = cam;
+}
+Material::Material(Camera *cam)
+{
+	this->camera = cam;
 }
 
-void Material::loadShaders()
+void Material::addShaders(const std::string pathDir)
 {
-
+	this->programID = loadShaders(pathToShaders + pathDir + "/VertexShader.hlsl", pathToShaders + pathDir + "/FragmentShader.hlsl");
 }
 
 void Material::render(Model *model)

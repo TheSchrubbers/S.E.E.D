@@ -53,10 +53,12 @@ int main()
 	//create scene
 	Scene scene;
 	//import model
-	scene.importModelFromFile(pathToModels + "cube.3ds");
+	scene.importModelFromFile(pathToModels + "cube.obj");
 
 	//create camera
 	Camera camera(position, glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0), initFoV, WIDTH, HEIGHT, near, far);
+
+	scene.setCamera(&camera);
 	
 	//enable texturing
 	//glEnable(GL_TEXTURE_2D);
@@ -86,7 +88,7 @@ int main()
 	//M = glm::translate(glm::mat4(1.0), glm::vec3(1.0, 0.0, 0.0));
 	// Send our transformation to the currently bound shader,
 	// in the "MVP" uniform
-	glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * M;
+	glm::mat4 MVP = scene.getCamera()->getProjectionMatrix() * camera.getViewMatrix() * M;
 
 	//main loop to render
 	do
@@ -96,9 +98,9 @@ int main()
 		//update mouse control and keyboard control
 		updateControl(window, WAngle, HAngle, mouseSpeed, deltaTime, speed, position ,  direction, up, initFoV, FoV);
 		//update ViewMatrix
-		camera.setViewMatrix(position, direction, up);
+		scene.getCamera()->setViewMatrix(position, direction, up);
 		//update Projection Matrix
-		camera.setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
+		scene.getCamera()->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
 
 		// Get a handle for our "MVP" uniform.
 		// Only at initialisation time.
@@ -124,7 +126,7 @@ int main()
 		// Accept fragment if it closer to the camera than the former one
 		//glDepthFunc(GL_LESS);
 
-		scene.getRootNode()->render(&camera);
+		scene.getRootNode()->render();
 
 		//on nettoie les buffers
 		glfwSwapBuffers(window);

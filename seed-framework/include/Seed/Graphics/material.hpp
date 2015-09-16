@@ -40,6 +40,7 @@
 #include <Seed/Graphics/texture.hpp>
 #include <Seed/Graphics/model.hpp>
 
+class Camera;
 class Model;
 /*! \class Material
 * \brief Material of a node
@@ -50,15 +51,23 @@ class Material
 
 		/*!
 		* \brief Constructor of class Material
+		* \param material: address of the aimaterial
+		* \param camera: address of the camera in the scene
 		*/
-		Material(const aiMaterial *material);
+		Material(const aiMaterial *material, Camera *camera);
+		/*!
+		* \brief Constructor of class Material
+		* \param camera: address of the camera in the scene
+		*/
+		Material(Camera *camera);
 
 		~Material(){};
 
 		/*!
 		* \brief Load shaders from the directory "Shaders" in directory of this material
+		* \param pathDir: path to the directory of the shaders
 		*/
-		void loadShaders();
+		void addShaders(const std::string pathDir);
 
 		void render(Model *model);
 		/*!
@@ -71,6 +80,7 @@ class Material
 
 		GLuint programID;
 		std::vector<Texture*> textures;
+		Camera *camera;
 };
 
 #endif

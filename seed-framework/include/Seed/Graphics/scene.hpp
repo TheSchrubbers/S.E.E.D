@@ -66,6 +66,22 @@ class Scene
 		* \brief Get the rootnode of the scene
 		*/
 		Node* getRootNode();
+		/*!
+		* \brief Get camera of the scene
+		* \return camera of the scene
+		*/
+		Camera* getCamera();
+		/*!
+		* \brief Set camera in the scene
+		* \param camera: camera adding in the scene
+		*/
+		void setCamera(Camera *camera);
+		/*!
+		* \brief Get the node in the tree of nodes of the scene
+		* \param: name of the node
+		* \return the node searched
+		*/
+		
 
 	private:
 		
@@ -73,6 +89,7 @@ class Scene
 		std::vector<Model*> m_models;
 		std::vector<Material*> m_materials;
 		std::vector<Texture*> m_textures;
+		Camera *camera;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

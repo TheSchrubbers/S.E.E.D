@@ -94,16 +94,19 @@ Model::Model(const aiMesh *mesh)
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 		glEnableVertexAttribArray(0);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_normals);
 	if (this->geometry->hasNormals())
 	{
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 		glEnableVertexAttribArray(1);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_tangents);
 	if (this->geometry->hasTangents())
 	{
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 		glEnableVertexAttribArray(2);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_coordText);
 	if (this->geometry->hasTexCoords())
 	{
 		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
