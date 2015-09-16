@@ -59,11 +59,7 @@ int main()
 
 	Material *material = new Material(scene.getCamera(), "node_material");
 	material->addTexture("image1.bmp", &scene, TEXTURE_DIFFUSE);
-
-	if (node)
-	{
-		std::cout << "trouve" << std::endl;
-	}
+	node->setMaterial(material);
 
 	//create camera
 	Camera camera(position, glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0), initFoV, WIDTH, HEIGHT, near, far);

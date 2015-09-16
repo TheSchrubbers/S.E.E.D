@@ -70,7 +70,7 @@ bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path, con
 	this->loadMeshes(pScene);
 
 	//load Materials
-	this->loadMaterials(pScene, name);
+	//this->loadMaterials(pScene, name);
 
 	//insert nodes
 	this->insertRecurNode(pScene, pScene->mRootNode, node);
