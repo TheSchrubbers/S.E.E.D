@@ -1,6 +1,6 @@
 #include <Seed/Graphics/texture.hpp>
 
-Texture::Texture(const std::string path, const std::string typeTexture)
+Texture::Texture(const std::string pathT, const unsigned int typeTexture)
 {
 	parserImage image;
 	//init class
@@ -8,8 +8,9 @@ Texture::Texture(const std::string path, const std::string typeTexture)
 	this->height = 0; 
 
 	//load image
-	if (image.readImage(path.c_str()))
+	if (image.readImage(pathT.c_str()))
 	{
+		this->path = pathT;
 		this->type = typeTexture;
 		//format of image
 		//int format = image->getType();
@@ -34,7 +35,7 @@ Texture::Texture(const std::string path, const std::string typeTexture)
 	}
 	else
 	{
-		std::cout << "ERROR: Image \"" << path.c_str() << "\" is not found." << std::endl;
+		std::cout << "ERROR: Image \"" << pathT.c_str() << "\" is not found." << std::endl;
 	}
 }
 
@@ -61,4 +62,8 @@ void Texture::release()
 {
 	//bind texture to modify this -> typetexture2D
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+std::string Texture::getPath()
+{
+	return this->path;
 }

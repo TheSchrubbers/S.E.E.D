@@ -53,7 +53,14 @@ int main()
 	//create scene
 	Scene scene;
 	//import model
-	scene.importModelFromFile(pathToModels + "cube.obj");
+	scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
+
+	Node *node = scene.getNode("cube1");
+
+	if (node)
+	{
+		std::cout << "trouve" << std::endl;
+	}
 
 	//create camera
 	Camera camera(position, glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0), initFoV, WIDTH, HEIGHT, near, far);

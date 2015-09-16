@@ -14,7 +14,7 @@ Scene::~Scene()
 	}
 }
 
-bool Scene::importModelFromFile(const std::string path)
+bool Scene::importModelFromFile(const std::string path, const std::string name)
 {
 	Assimp::Importer importer;
 	bool exist = false;
@@ -40,7 +40,7 @@ bool Scene::importModelFromFile(const std::string path)
 		//if pScene exists, the mesh is assigning with node
 		if (pScene)
 		{
-			if (!loadObjectInScene(pScene, path))
+			if (!loadObjectInScene(pScene, path, name))
 			{
 				std::cout << "ERROR LOADING MODEL : error parsing " << path << std::endl << importer.GetErrorString() << std::endl;
 				return false;
@@ -55,12 +55,12 @@ bool Scene::importModelFromFile(const std::string path)
 	return true;
 }
 
-bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path)
+bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name)
 {
 	int i = 0;
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
 	//adding child's node to the root node
-	Node *node = new Node(path);
+	Node *node = new Node(name);
 	//set the root node like father node
 	node->setFather(this->rootNode);
 	//set this node like son's node to the root node
@@ -126,13 +126,13 @@ void Scene::loadMaterials(const aiScene *pScene)
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
 		{
 			std::cout << pathTexture.data << std::endl;
-			Texture *t = new Texture(pathTexture.data, "diffuse");
+			Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE);
 			this->m_textures.push_back(t);
 			m->pushTexture(t);
 		}
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &pathTexture) == AI_SUCCESS)
 		{
-			Texture *t = new Texture(pathTexture.data, "specular");
+			Texture *t = new Texture(pathTexture.data, TEXTURE_SPECULAR);
 			this->m_textures.push_back(t);
 			m->pushTexture(t);
 		}
@@ -155,4 +155,35 @@ Node* Scene::getRootNode()
 Camera* Scene::getCamera()
 {
 	return this->camera;
+}
+
+Node* Scene::getNode(const std::string name)
+{
+	//we use an queue to scan the tree of nodes
+	std::queue<Node*> nodes;
+	//push the root node
+	nodes.push(this->rootNode);
+	//we scan all the nodes
+	while (!nodes.empty())
+	{
+		Node *n = nodes.front();
+		nodes.pop();
+		if (n->getName() == name)
+		{
+			return n;
+		}
+		else
+		{
+			for (int i = 0; i < n->m_children.size(); i++)
+			{
+				nodes.push(n->m_children[i]);
+			}
+		}
+	}
+	return NULL;
+}
+
+std::vector<Texture*> Scene::getTextures()
+{
+	return this->m_textures;
 }

@@ -38,3 +38,22 @@ void Material::pushTexture(Texture *t)
 {
 	this->textures.push_back(t);
 }
+void Material::addTexture(const std::string path, Scene *scene, unsigned int type)
+{
+	bool find;
+	for (int i = 0; i < scene->getTextures().size(); i++)
+	{
+		if (scene->getTextures()[i]->getPath() == path)
+		{
+			find = true;
+			this->pushTexture(scene->getTextures()[i]);
+			break;
+		}
+	}
+	if (!find)
+	{
+		Texture *t = new Texture(path, type);
+		scene->getTextures().push_back(t);
+		this->pushTexture(t);
+	}
+}

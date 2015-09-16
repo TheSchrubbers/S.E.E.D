@@ -48,7 +48,7 @@ public:
 	 * \brief Constructor of class Texture
 	 * \param path : path to the image file
 	 */
-	Texture(const std::string path, const std::string typeTexture);
+	Texture(const std::string path, const unsigned int typeTexture);
 	/*!
 	* \brief Destructor of class Texture
 	*/
@@ -77,13 +77,19 @@ public:
 	 * \brief Release texture from GPU
 	 */
 	void release();
+	/*!
+	* \brief get the path of the texture;
+	* \return path of the texture
+	*/
+	std::string getPath();
 
 
 private:
 	int width;
 	int height;
 	GLuint textureID;
-	std::string type;
+	unsigned int type;
+	std::string path;
 };
 
 #endif

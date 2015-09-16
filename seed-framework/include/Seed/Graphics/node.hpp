@@ -40,6 +40,8 @@
 #include <Seed/Graphics/model.hpp>
 #include <Seed/Graphics/scene.hpp>
 
+class Model;
+class Material;
 /*! \class Node
 * \brief Nodes who contains differents things of the scene like meshes, lights, cameras...
 */

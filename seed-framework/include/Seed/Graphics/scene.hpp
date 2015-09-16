@@ -34,6 +34,7 @@
 
 #include <fstream>
 #include <string>
+#include <queue>
 
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -41,11 +42,15 @@
 
 #include <Seed/Graphics/node.hpp>
 
+class Texture;
+class Model;
+class Material;
+class Node;
+class Camera;
+
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
 */
-
-class Node;
 class Scene
 {
 	public:
@@ -60,8 +65,9 @@ class Scene
 		/*!
 		* \brief Importing a model like obj, 3dmax...
 		* \param path: path to the file imported
+		* \param name: name of the node
 		*/
-		bool importModelFromFile(const std::string path);
+		bool importModelFromFile(const std::string path, const std::string name);
 		/*!
 		* \brief Get the rootnode of the scene
 		*/
@@ -81,6 +87,12 @@ class Scene
 		* \param: name of the node
 		* \return the node searched
 		*/
+		Node* getNode(const std::string name);
+		/*!
+		* \brief get the textures
+		* \return textures
+		*/
+		std::vector<Texture*> getTextures();
 		
 
 	private:
@@ -96,7 +108,7 @@ class Scene
 		* \param pScene: The assimp scene object
 		* \param path : The path to the model file
 		*/
-		bool loadObjectInScene(const aiScene *pScene, const std::string path);
+		bool loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name);
 		/*!
 		* \brief Build tree of nodes of the model added
 		* \param nodeFather: an ainode object of the tree of nodes

@@ -16,5 +16,8 @@ const int HEIGHT = 768;
 	const std::string pathToModels = "ressources/models/";
 #endif
 
+#define TEXTURE_AMBIANT 0
+#define TEXTURE_DIFFUSE 1
+#define TEXTURE_SPECULAR 2
 
 #endif

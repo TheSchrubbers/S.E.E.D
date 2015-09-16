@@ -39,9 +39,11 @@
 #include <assimp/scene.h>
 #include <Seed/Graphics/texture.hpp>
 #include <Seed/Graphics/model.hpp>
+#include <Seed/Graphics/scene.hpp>
 
 class Camera;
 class Model;
+class Scene;
 /*! \class Material
 * \brief Material of a node
 */
@@ -75,6 +77,12 @@ class Material
 		* \param t: Address of texture to push
 		*/
 		void pushTexture(Texture *texture);
+		/*!
+		* \brief adding texture to the material
+		* \param path to the texture
+		* \param scene: address of the current scene
+		*/
+		void addTexture(const std::string pathTexture, Scene *scene, unsigned int type);
 
 	private:
 
