@@ -118,13 +118,15 @@ class Scene
 		/*!
 		* \brief Load meshes in an array and push its in the GPU memory
 		* \param pScene: Address of scene of Assimp structure
+		* \param name: name of the meshes
 		*/
 		void loadMeshes(const aiScene *pScene);
 		/*!
 		* \brief Load materials in an array and push its in the GPU memory
 		* \param pScene: Address of scene of Assimp structure
+		* \param name: name of the material
 		*/
-		void loadMaterials(const aiScene *pScene);
+		void loadMaterials(const aiScene *pScene, const std::string name);
 };
 
 #endif

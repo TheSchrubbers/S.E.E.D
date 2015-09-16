@@ -57,6 +57,9 @@ int main()
 
 	Node *node = scene.getNode("cube1");
 
+	Material *material = new Material(scene.getCamera(), "node_material");
+	material->addTexture("image1.bmp", &scene, TEXTURE_DIFFUSE);
+
 	if (node)
 	{
 		std::cout << "trouve" << std::endl;

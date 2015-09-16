@@ -17,9 +17,9 @@ Model::~Model()
 Model::Model(const aiMesh *mesh)
 {
 	this->geometry = new Geometry(mesh);
-
 	int nbVertices = this->geometry->getNumVertices();
 	int nbFaces = this->geometry->getNumFaces();
+	this->name = mesh->mName.C_Str();
 
 	if (geometry->hasFaces())
 	{

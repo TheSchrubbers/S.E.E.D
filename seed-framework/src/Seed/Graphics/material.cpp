@@ -1,12 +1,14 @@
 #include <Seed/Graphics/material.hpp>
 
-Material::Material(const aiMaterial *material, Camera *cam)
+Material::Material(const aiMaterial *material, Camera *cam, const std::string n)
 {
 	this->camera = cam;
+	this->name = n;
 }
-Material::Material(Camera *cam)
+Material::Material(Camera *cam, const std::string n)
 {
 	this->camera = cam;
+	this->name = n;
 }
 
 void Material::addShaders(const std::string pathDir)

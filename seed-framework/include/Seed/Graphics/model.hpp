@@ -77,16 +77,13 @@ public:
 	
 
 private:
-	/*std::vector<glm::vec3> m_vertices;
-	std::vector<glm::vec2> m_textCoords;
-	std::vector<glm::vec3> m_normals;
-	std::vector<glm::vec3> m_tangents;
-	std::vector<GLuint> m_faces;*/
+
 	Geometry *geometry;
-	//int m_numVertices;
 
 	GLuint VBO_vertices, VBO_normals, VBO_tangents, VBO_coordText, VBO_faces;
 	GLuint VAO;
+
+	std::string name;
 };
 
 #endif

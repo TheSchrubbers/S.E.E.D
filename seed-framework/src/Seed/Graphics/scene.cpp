@@ -70,7 +70,7 @@ bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path, con
 	this->loadMeshes(pScene);
 
 	//load Materials
-	this->loadMaterials(pScene);
+	this->loadMaterials(pScene, name);
 
 	//insert nodes
 	this->insertRecurNode(pScene, pScene->mRootNode, node);
@@ -113,14 +113,14 @@ void Scene::loadMeshes(const aiScene *pScene)
 	}
 }
 
-void Scene::loadMaterials(const aiScene *pScene)
+void Scene::loadMaterials(const aiScene *pScene, const std::string name)
 {
 	aiString pathTexture;
 	//insert materials
 	for (int i = 0; i < pScene->mNumMaterials; i++)
 	{
 		//create a new material
-		Material *m = new Material(pScene->mMaterials[i], this->getCamera());
+		Material *m = new Material(pScene->mMaterials[i], this->getCamera(), name);
 		aiString pathTexture;
 		std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)

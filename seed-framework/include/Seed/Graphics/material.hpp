@@ -56,12 +56,12 @@ class Material
 		* \param material: address of the aimaterial
 		* \param camera: address of the camera in the scene
 		*/
-		Material(const aiMaterial *material, Camera *camera);
+		Material(const aiMaterial *material, Camera *camera, const std::string name);
 		/*!
 		* \brief Constructor of class Material
 		* \param camera: address of the camera in the scene
 		*/
-		Material(Camera *camera);
+		Material(Camera *camera, const std::string name);
 
 		~Material(){};
 
@@ -89,6 +89,7 @@ class Material
 		GLuint programID;
 		std::vector<Texture*> textures;
 		Camera *camera;
+		std::string name;
 };
 
 #endif
