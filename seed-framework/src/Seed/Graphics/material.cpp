@@ -40,12 +40,13 @@ void Material::pushTexture(Texture *t)
 {
 	this->textures.push_back(t);
 }
-void Material::addTexture(const std::string path, Scene *scene, unsigned int type)
+void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
 {
+	std::string p = pathToTextures + path;
 	bool find;
 	for (int i = 0; i < scene->getTextures().size(); i++)
 	{
-		if (scene->getTextures()[i]->getPath() == path)
+		if (scene->getTextures()[i]->getPath() == p)
 		{
 			find = true;
 			this->pushTexture(scene->getTextures()[i]);
@@ -54,8 +55,16 @@ void Material::addTexture(const std::string path, Scene *scene, unsigned int typ
 	}
 	if (!find)
 	{
-		Texture *t = new Texture(path, type);
-		scene->getTextures().push_back(t);
-		this->pushTexture(t);
+		Texture *t = new Texture(p, type, flag);
+		//verify if the texture is correct
+		if (*flag == SEED_SUCCESS)
+		{
+			scene->getTextures().push_back(t);
+			this->pushTexture(t);
+		}
+		else
+		{
+			delete t;
+		}
 	}
 }

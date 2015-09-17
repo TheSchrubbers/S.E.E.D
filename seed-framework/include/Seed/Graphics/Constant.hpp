@@ -20,4 +20,7 @@ const int HEIGHT = 768;
 #define TEXTURE_DIFFUSE 1
 #define TEXTURE_SPECULAR 2
 
+#define SEED_ERROR_FILE_LOCATION 50;
+#define SEED_SUCCESS 1
+
 #endif

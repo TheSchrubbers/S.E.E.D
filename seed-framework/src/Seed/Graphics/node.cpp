@@ -6,6 +6,7 @@ Node::Node()
 	this->father = NULL;
 	this->model = NULL;
 	this->name = "node";
+	this->material = NULL;
 }
 
 Node::Node(const std::string n)
@@ -13,6 +14,7 @@ Node::Node(const std::string n)
 	this->father = NULL;
 	this->name = n;
 	this->model = NULL;
+	this->material = NULL;
 }
 
 Node::~Node()
@@ -44,13 +46,30 @@ void Node::setMaterial(Material* mat)
 	this->material = mat;
 }
 
+void Node::setMaterialRecur(Material* mat)
+{
+	std::queue <Node*> nodes;
+	nodes.push(this);
+	while (!nodes.empty())
+	{
+		Node *n = nodes.front();
+		nodes.pop();
+		n->setMaterial(mat);
+		for (int i = 0; i < n->m_children.size(); i++)
+		{
+			nodes.push(n->m_children[i]);
+		}
+	}
+}
+
 void Node::render()
 {
 	for (int i = 0; i < this->m_children.size(); i++)
 	{
 		this->m_children[i]->render();
 	}
-	if (this->model)
+
+	if (this->material && this->model)
 	{
 		material->render(this->model);
 	}
@@ -58,9 +77,6 @@ void Node::render()
 
 void Node::afficher()
 {
-	std::cout << "Nom du node : " << this->name << std::endl;
-	std::cout << "Pere? : " << (this->father ? 1 : 0) << std::endl;
-	std::cout << "Nb de fils : " << this->m_children.size() << std::endl;
 	if (this->model)
 		this->model->afficher();
 }

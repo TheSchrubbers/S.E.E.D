@@ -35,8 +35,9 @@
 
 #include <glm/glm.hpp>
 #include <GL/glew.h>
-#include "parserImage.hpp"
+#include <Seed/Graphics/parserImage.hpp>
 #include <iostream>
+#include <Seed/Graphics/Constant.hpp>
 
 /*! \class Texture
  * \brief Loads and generate an IDTexture in GPU
@@ -47,8 +48,10 @@ public:
 	/*!
 	 * \brief Constructor of class Texture
 	 * \param path : path to the image file
+	 * \param typeTexture: type of the texture (TEXTURE_AMBIANT, TEXTURE_DIFFUSE, TEXTURE_SPECULAR)
+	 * \param flag: if the constructor is a success
 	 */
-	Texture(const std::string path, const unsigned int typeTexture);
+	Texture(const std::string path, const unsigned int typeTexture, unsigned int *flag);
 	/*!
 	* \brief Destructor of class Texture
 	*/

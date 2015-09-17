@@ -52,14 +52,22 @@ int main()
 
 	//create scene
 	Scene scene;
+
 	//import model
 	scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
 
 	Node *node = scene.getNode("cube1");
 
 	Material *material = new Material(scene.getCamera(), "node_material");
-	material->addTexture("image1.bmp", &scene, TEXTURE_DIFFUSE);
-	node->setMaterial(material);
+	unsigned int error;
+	material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
+
+	if (error != SEED_SUCCESS)
+	{
+		std::cout << "texture pas chargée" << std::endl;
+	}
+	
+	node->setMaterialRecur(material);
 
 	//create camera
 	Camera camera(position, glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0), initFoV, WIDTH, HEIGHT, near, far);

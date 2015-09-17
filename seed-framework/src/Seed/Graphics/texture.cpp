@@ -1,6 +1,6 @@
 #include <Seed/Graphics/texture.hpp>
 
-Texture::Texture(const std::string pathT, const unsigned int typeTexture)
+Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsigned int *flag)
 {
 	parserImage image;
 	//init class
@@ -10,6 +10,7 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture)
 	//load image
 	if (image.readImage(pathT.c_str()))
 	{
+		std::cout << "Loading texture " << pathT.c_str() << std::endl;
 		this->path = pathT;
 		this->type = typeTexture;
 		//format of image
@@ -32,10 +33,11 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		*flag = true;
 	}
 	else
 	{
-		std::cout << "ERROR: Image \"" << pathT.c_str() << "\" is not found." << std::endl;
+		*flag = SEED_ERROR_FILE_LOCATION;
 	}
 }
 

@@ -82,6 +82,12 @@ class Node
 		*/
 		void setMaterial(Material* material);
 
+		/*!
+		* \brief Setting a material to the node and its children
+		* \param material: Address of the material
+		*/
+		void setMaterialRecur(Material* material);
+
 		void afficher();
 
 		/*!

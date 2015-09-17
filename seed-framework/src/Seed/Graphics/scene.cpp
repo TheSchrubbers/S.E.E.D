@@ -86,11 +86,11 @@ void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Nod
 	if (nodeFather->mNumMeshes == 1)
 	{
 		father->setModel(this->m_models[nodeFather->mMeshes[0]]);
-		unsigned int indexMaterial = pScene->mMeshes[nodeFather->mMeshes[0]]->mMaterialIndex;
+		/*unsigned int indexMaterial = pScene->mMeshes[nodeFather->mMeshes[0]]->mMaterialIndex;
 		if (indexMaterial >= 0)
 		{
 			father->setMaterial(this->m_materials[pScene->mMeshes[nodeFather->mMeshes[0]]->mMaterialIndex]);
-		}
+		}*/
 	}
 	//recursive method for exploring children's nodes and do the same thing
 	for (int i = 0; i < nodeFather->mNumChildren; i++)
@@ -116,25 +116,32 @@ void Scene::loadMeshes(const aiScene *pScene)
 void Scene::loadMaterials(const aiScene *pScene, const std::string name)
 {
 	aiString pathTexture;
+	unsigned int flag;
 	//insert materials
 	for (int i = 0; i < pScene->mNumMaterials; i++)
 	{
 		//create a new material
 		Material *m = new Material(pScene->mMaterials[i], this->getCamera(), name);
 		aiString pathTexture;
-		std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+		//std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
 		{
 			std::cout << pathTexture.data << std::endl;
-			Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE);
-			this->m_textures.push_back(t);
-			m->pushTexture(t);
+			Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE, &flag);
+			if (flag == SEED_SUCCESS)
+			{
+				this->m_textures.push_back(t);
+				m->pushTexture(t);
+			}
 		}
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &pathTexture) == AI_SUCCESS)
 		{
-			Texture *t = new Texture(pathTexture.data, TEXTURE_SPECULAR);
-			this->m_textures.push_back(t);
-			m->pushTexture(t);
+			Texture *t = new Texture(pathTexture.data, TEXTURE_SPECULAR, &flag);
+			if (flag == SEED_SUCCESS)
+			{
+				this->m_textures.push_back(t);
+				m->pushTexture(t);
+			}
 		}
 
 		this->m_materials.push_back(m);

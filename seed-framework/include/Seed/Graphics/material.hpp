@@ -78,11 +78,12 @@ class Material
 		*/
 		void pushTexture(Texture *texture);
 		/*!
-		* \brief adding texture to the material
+		* \brief adding texture to the material since the textures' folder
 		* \param path to the texture
 		* \param scene: address of the current scene
+		* \return true if the texture is adding
 		*/
-		void addTexture(const std::string pathTexture, Scene *scene, unsigned int type);
+		void addTexture(const std::string pathTexture, Scene *scene, unsigned int type, unsigned int *flag = NULL);
 
 	private:
 
