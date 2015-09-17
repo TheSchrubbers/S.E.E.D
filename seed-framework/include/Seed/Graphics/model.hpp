@@ -71,7 +71,11 @@ public:
 	* \brief Render the model
 	*/
 	void render();
-
+	/*!
+	* \brief get transformation matrix
+	* \return transformation matrix
+	*/
+	glm::mat4 getTransformationMatrix();
 	void afficher();
 
 	
@@ -79,6 +83,8 @@ public:
 private:
 
 	Geometry *geometry;
+
+	glm::mat4 transformationMatrix;
 
 	GLuint VBO_vertices, VBO_normals, VBO_tangents, VBO_coordText, VBO_faces;
 	GLuint VAO;

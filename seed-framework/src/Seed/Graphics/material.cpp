@@ -1,24 +1,83 @@
 #include <Seed/Graphics/material.hpp>
 
-Material::Material(const aiMaterial *material, Camera *cam, const std::string n)
+Material::Material(const aiMaterial *material, Camera *cam, const std::string n, unsigned int *flag)
 {
 	this->camera = cam;
 	this->name = n;
+	if (!this->addShaders(pathToDefaultShadersDir))
+	{
+		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
+	}
+	else
+	{
+		*flag = SEED_SUCCESS;
+	}
 }
-Material::Material(Camera *cam, const std::string n)
+Material::Material(Camera *cam, const std::string n, const std::string pathShaders, unsigned int *flag)
 {
 	this->camera = cam;
 	this->name = n;
+	//if user doesn't give path to the shaders, we take the default shaders
+	if (pathShaders == "")
+	{
+		// if default shaders not found, error in the flag else success
+		if (!this->addShaders(pathToDefaultShadersDir))
+		{
+			*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
+		}
+		else
+		{
+			*flag = SEED_SUCCESS;
+		}
+	}
+	else
+	{
+		this->addShaders(pathShaders);
+	}
 }
 
-void Material::addShaders(const std::string pathDir)
+Material::~Material()
 {
+	glDeleteProgram(programID);
+	delete this->camera;
+	for (int i = 0; i < textures.size(); i++)
+	{
+		delete textures[i];
+	}
+}
+
+bool Material::addShaders(const std::string pathDir)
+{
+	//load shaders
 	this->programID = loadShaders(pathToShaders + pathDir + "/VertexShader.hlsl", pathToShaders + pathDir + "/FragmentShader.hlsl");
+	//if shaders not loading we try with default shaders
+	if (!this->programID)
+	{
+		this->programID = loadShaders(pathToShaders + "default/VertexShader.hlsl", pathToShaders + "default/FragmentShader.hlsl");
+		//if default shaders not found return false
+		if (!this->programID)
+			return false;
+	}
+	//load shaders in memory
+	glUseProgram(programID);
+	return true;
 }
 
 void Material::render(Model *model)
 {
+	// Send our transformation to the currently bound shader,
+	// in the "MVP" uniform
+	this->MVP = this->camera->getProjectionMatrix() * camera->getViewMatrix() * model->getTransformationMatrix();
+
+	// Get a handle for our "MVP" uniform.
+	// Only at initialisation time.
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+	//set the uniform variable MVP
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
 	int i = 0;
+
 	int nbTextures = this->textures.size();
 	//active and bind textures
 	for (i = 0; i < nbTextures; i++)
@@ -43,7 +102,7 @@ void Material::pushTexture(Texture *t)
 void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
 {
 	std::string p = pathToTextures + path;
-	bool find;
+	bool find = false;
 	for (int i = 0; i < scene->getTextures().size(); i++)
 	{
 		if (scene->getTextures()[i]->getPath() == p)

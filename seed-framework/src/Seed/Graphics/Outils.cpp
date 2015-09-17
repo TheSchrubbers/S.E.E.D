@@ -23,3 +23,19 @@ void printErrorOpenGL()
 		std::cerr << "OpenGL error: " << error << std::endl;
 	}
 }
+
+void scanSeedError(unsigned int flag)
+{
+	switch (flag)
+	{
+	case 1:
+		std::cout << "SUCCESS" << std::endl;
+		break;
+	case 50:
+		std::cout << "Error, file not founding" << std::endl;
+		break;
+	case 51:
+		std::cout << "Error, default shaders not founding" << std::endl;
+		break;
+	}
+}

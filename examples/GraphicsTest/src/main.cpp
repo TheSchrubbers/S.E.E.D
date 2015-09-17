@@ -43,6 +43,15 @@ int main()
 	float speed = 3.0f;
 	//speed view direction (mouse)
 	float mouseSpeed = 0.05f;
+
+
+	double currentTime = 0, lastTime = 0;
+	float deltaTime = 0;
+	float FoV = initFoV;
+	glm::vec3 direction;
+	glm::vec3 up;
+
+
 	//initialisation systeme
 	if (Initialisation() != 0)
 		return -1;
@@ -52,57 +61,27 @@ int main()
 
 	//create scene
 	Scene scene;
+	//create camera
+	Camera camera(position, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), initFoV, WIDTH, HEIGHT, near, far);
+	//adding camera to the scene
+	scene.setCamera(&camera);
+
+	unsigned int error;
 
 	//import model
 	scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
 
 	Node *node = scene.getNode("cube1");
 
-	Material *material = new Material(scene.getCamera(), "node_material");
-	unsigned int error;
+	Material *material = new Material(scene.getCamera(), "node_material", "", &error);
+	scanSeedError(error);
 	material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
-
-	if (error != SEED_SUCCESS)
-	{
-		std::cout << "texture pas chargée" << std::endl;
-	}
+	scanSeedError(error);
 	
 	node->setMaterialRecur(material);
-
-	//create camera
-	Camera camera(position, glm::vec3(0.0,0.0,0.0), glm::vec3(0.0,1.0,0.0), initFoV, WIDTH, HEIGHT, near, far);
-
-	scene.setCamera(&camera);
 	
 	//enable texturing
 	//glEnable(GL_TEXTURE_2D);
-
-	//GLuint TextureID = glGetUniformLocation(programID, "samplerTexture");
-	
-	//chargement texture
-	//Texture t(pathToTextures + "texture2.bmp");
-
-	double currentTime = 0, lastTime = 0;
-	float deltaTime = 0;
-	float FoV = initFoV;
-	glm::vec3 direction;
-	glm::vec3 up;
-
-	// Create and compile our GLSL program from the shaders
-	GLuint programID = loadShaders(pathToShaders + "shader1\\VertexShader.hlsl", pathToShaders + "shader1\\FragmentShader.hlsl");//(pathToShaders + "\FragmentShader.hlsl").c_str());
-
-	if (programID)
-	{
-		// Use our shader
-		glUseProgram(programID);
-	}
-
-
-	glm::mat4 M = glm::mat4(1.0);
-	//M = glm::translate(glm::mat4(1.0), glm::vec3(1.0, 0.0, 0.0));
-	// Send our transformation to the currently bound shader,
-	// in the "MVP" uniform
-	glm::mat4 MVP = scene.getCamera()->getProjectionMatrix() * camera.getViewMatrix() * M;
 
 	//main loop to render
 	do
@@ -115,16 +94,6 @@ int main()
 		scene.getCamera()->setViewMatrix(position, direction, up);
 		//update Projection Matrix
 		scene.getCamera()->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
-
-		// Get a handle for our "MVP" uniform.
-		// Only at initialisation time.
-		GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
-		// For each model you render, since the MVP will be different (at least the M part)
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-		//update MVP matrix
-		MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * M;
 
 		//Enable culling triangles which normal is not towards the camera
 		glEnable(GL_CULL_FACE);
@@ -152,15 +121,7 @@ int main()
 		deltaTime = float(lastTime - currentTime);
 
 
-	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
-
-	glDeleteProgram(programID);
-	
-	// Cleanup VBO
-	/*glDeleteBuffers(1, &VertexBuffer);
-	glDeleteBuffers(1, &ColorBuffer);
-	glDeleteVertexArrays(1, &VertexArrayID);*/
-	
+	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);		
 	
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

@@ -87,11 +87,11 @@ private:
 	/*!
 	* \brief the view Matrix
 	*/
-	glm::mat4 View_matrix;
+	glm::mat4 viewMatrix;
 	/*!
 	* \brief the projection matrix
 	*/
-	glm::mat4 Projection_matrix;
+	glm::mat4 projectionMatrix;
 };
 
 #endif

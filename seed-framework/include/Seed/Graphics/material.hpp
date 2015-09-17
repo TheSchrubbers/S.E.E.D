@@ -55,21 +55,24 @@ class Material
 		* \brief Constructor of class Material
 		* \param material: address of the aimaterial
 		* \param camera: address of the camera in the scene
+		* \param name: name of the material
 		*/
-		Material(const aiMaterial *material, Camera *camera, const std::string name);
+		Material(const aiMaterial *material, Camera *camera, std::string name, unsigned int *flag = NULL);
 		/*!
 		* \brief Constructor of class Material
 		* \param camera: address of the camera in the scene
+		* \param name: name of the material
+		* \param pathShaders: path to the directory who contains shaders' files
 		*/
-		Material(Camera *camera, const std::string name);
+		Material(Camera *camera, const std::string name, const std::string pathShaders = "", unsigned int *flag = NULL);
 
-		~Material(){};
+		~Material();
 
 		/*!
 		* \brief Load shaders from the directory "Shaders" in directory of this material
 		* \param pathDir: path to the directory of the shaders
 		*/
-		void addShaders(const std::string pathDir);
+		bool addShaders(const std::string pathDir);
 
 		void render(Model *model);
 		/*!
@@ -91,6 +94,8 @@ class Material
 		std::vector<Texture*> textures;
 		Camera *camera;
 		std::string name;
+
+		glm::mat4 MVP;
 };
 
 #endif

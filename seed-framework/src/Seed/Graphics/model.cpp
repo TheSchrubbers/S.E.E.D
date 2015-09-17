@@ -16,6 +16,8 @@ Model::~Model()
 }
 Model::Model(const aiMesh *mesh)
 {
+	//matrix of transformation of the model
+	this->transformationMatrix = glm::mat4(1.0);
 	this->geometry = new Geometry(mesh);
 	int nbVertices = this->geometry->getNumVertices();
 	int nbFaces = this->geometry->getNumFaces();
@@ -134,6 +136,11 @@ void Model::render()
 		glBindVertexArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+}
+
+glm::mat4 Model::getTransformationMatrix()
+{
+	return this->transformationMatrix;
 }
 
 void Model::afficher()
