@@ -49,7 +49,7 @@ Material::~Material()
 bool Material::addShaders(const std::string pathDir)
 {
 	//load shaders
-	this->programID = loadShaders(pathToShaders + pathDir + "/VertexShader.hlsl", pathToShaders + pathDir + "/FragmentShader.hlsl");
+	this->programID = loadShaders(pathDir + "/VertexShader.hlsl", pathDir + "/FragmentShader.hlsl");
 	//if shaders not loading we try with default shaders
 	if (!this->programID)
 	{
@@ -63,11 +63,11 @@ bool Material::addShaders(const std::string pathDir)
 	return true;
 }
 
-void Material::render(Model *model)
+/*void Material::render(Model *model)
 {
 	// Send our transformation to the currently bound shader,
 	// in the "MVP" uniform
-	this->MVP = this->camera->getProjectionMatrix() * camera->getViewMatrix() * model->getTransformationMatrix();
+	this->MVP = this->camera->getProjectionMatrix() * camera->getViewMatrix();
 
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
@@ -93,7 +93,7 @@ void Material::render(Model *model)
 	{
 		this->textures[i]->release();
 	}
-}
+}*/
 
 void Material::pushTexture(Texture *t)
 {
@@ -102,13 +102,14 @@ void Material::pushTexture(Texture *t)
 void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
 {
 	std::string p = pathToTextures + path;
+	std::cout << p << std::endl;
 	bool find = false;
-	for (int i = 0; i < scene->getTextures().size(); i++)
+	for (int i = 0; i < scene->getTextures()->size(); i++)
 	{
-		if (scene->getTextures()[i]->getPath() == p)
+		if (scene->getTextures()->at(i)->getPath() == p)
 		{
 			find = true;
-			this->pushTexture(scene->getTextures()[i]);
+			this->pushTexture(scene->getTextures()->at(i));
 			break;
 		}
 	}
@@ -118,7 +119,7 @@ void Material::addTexture(const std::string path, Scene *scene, unsigned int typ
 		//verify if the texture is correct
 		if (*flag == SEED_SUCCESS)
 		{
-			scene->getTextures().push_back(t);
+			scene->getTextures()->push_back(t);
 			this->pushTexture(t);
 		}
 		else
@@ -126,4 +127,11 @@ void Material::addTexture(const std::string path, Scene *scene, unsigned int typ
 			delete t;
 		}
 	}
+}
+
+void Material::setLight(float a, float d, float s)
+{
+	this->compl.ambiant = a;
+	this->compl.diffuse = d;
+	this->compl.specular = s;
 }

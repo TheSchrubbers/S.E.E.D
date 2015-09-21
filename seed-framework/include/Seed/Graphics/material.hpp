@@ -40,9 +40,8 @@
 #include <Seed/Graphics/texture.hpp>
 #include <Seed/Graphics/model.hpp>
 #include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/camera.hpp>
 
-class Camera;
-class Model;
 class Scene;
 /*! \class Material
 * \brief Material of a node
@@ -74,7 +73,7 @@ class Material
 		*/
 		bool addShaders(const std::string pathDir);
 
-		void render(Model *model);
+		virtual void render(Model *model) = 0;
 		/*!
 		* \brief Push texture in the textures' array
 		* \param t: Address of texture to push
@@ -87,15 +86,29 @@ class Material
 		* \return true if the texture is adding
 		*/
 		void addTexture(const std::string pathTexture, Scene *scene, unsigned int type, unsigned int *flag = NULL);
+		/*!
+		* \brief setting composants of material
+		* \param a: ambiant composant
+		* \param d: diffuse composant
+		* \param s: specular composant
+		*/
+		void setLight(float a, float d, float s);
 
-	private:
+	protected:
 
 		GLuint programID;
 		std::vector<Texture*> textures;
 		Camera *camera;
 		std::string name;
 
+		struct compLight
+		{
+			float ambiant, diffuse, specular;
+			GLuint ambiantID, diffuseID, specularID;
+		};
+
 		glm::mat4 MVP;
+		compLight compl;
 };
 
 #endif

@@ -39,24 +39,25 @@
 #include <Seed/Graphics/material.hpp>
 #include <Seed/Graphics/model.hpp>
 #include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/light.hpp>
 
+class Scene;
 class Model;
 class Material;
+
 /*! \class Node
 * \brief Nodes who contains differents things of the scene like meshes, lights, cameras...
 */
 class Node
 {
 	public:
+
 		/*!
 		* \brief Constructor of class Node
-		*/
-		Node();
-		/*!
-		* \brief Constructor of class Node
+		* \param scene: address of the scene
 		* \param name: name of the node
 		*/
-		Node(const std::string name);
+		Node(Scene *scene, const std::string name = "node");
 		/*!
 		* \brief Destructor of class Node
 		*/
@@ -100,14 +101,28 @@ class Node
 		* \return the name of the node
 		*/
 		std::string getName();
+		/*!
+		* \brief get the model of the node
+		* \return model of the node
+		*/
+		Model* getModel();
+		/*!
+		* \brief get the Mesh of the node
+		* \return mesh of the node
+		*/
+		Material* getMaterial();
 
 		std::vector<Node*> m_children;
 
 	private:
+
 		Model *model;
 		Material *material;
 		std::string name;
 		Node* father;
+		Light* light;
+		Scene* scene;
+		bool isRendering;
 };
 
 #endif

@@ -2,7 +2,8 @@
 
 Scene::Scene()
 {
-	this->rootNode = new Node();
+	this->rootNode = new Node(this, "RootNode");
+	glGenBuffers(1, &(this->SSBOLights));
 }
 
 Scene::~Scene()
@@ -60,7 +61,7 @@ bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path, con
 	int i = 0;
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
 	//adding child's node to the root node
-	Node *node = new Node(name);
+	Node *node = new Node(this, name);
 	//set the root node like father node
 	node->setFather(this->rootNode);
 	//set this node like son's node to the root node
@@ -95,12 +96,12 @@ void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Nod
 	//recursive method for exploring children's nodes and do the same thing
 	for (int i = 0; i < nodeFather->mNumChildren; i++)
 	{
-		Node *n = new Node(father->getName() + "_" + std::to_string(i));
+		Node *n = new Node(this, father->getName() + "_" + std::to_string(i));
 		father->addChild(n);
 		n->setFather(father);
 		this->insertRecurNode(pScene, nodeFather->mChildren[i], n);
 	}
-	father->afficher();
+	//father->afficher();
 }
 
 void Scene::loadMeshes(const aiScene *pScene)
@@ -115,7 +116,7 @@ void Scene::loadMeshes(const aiScene *pScene)
 
 void Scene::loadMaterials(const aiScene *pScene, const std::string name)
 {
-	aiString pathTexture;
+	/*aiString pathTexture;
 	unsigned int flag;
 	//insert materials
 	for (int i = 0; i < pScene->mNumMaterials; i++)
@@ -126,7 +127,7 @@ void Scene::loadMaterials(const aiScene *pScene, const std::string name)
 		//std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
 		if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
 		{
-			std::cout << pathTexture.data << std::endl;
+			//std::cout << pathTexture.data << std::endl;
 			Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE, &flag);
 			if (flag == SEED_SUCCESS)
 			{
@@ -145,7 +146,7 @@ void Scene::loadMaterials(const aiScene *pScene, const std::string name)
 		}
 
 		this->m_materials.push_back(m);
-	}
+	}*/
 }
 
 void Scene::setCamera(Camera *cam)
@@ -190,7 +191,63 @@ Node* Scene::getNode(const std::string name)
 	return NULL;
 }
 
-std::vector<Texture*> Scene::getTextures()
+std::vector<Texture*>* Scene::getTextures()
 {
-	return this->m_textures;
+	return &(this->m_textures);
+}
+
+void Scene::afficher()
+{
+	std::queue<Node*> nodes;
+	nodes.push(this->rootNode);
+	while (!nodes.empty())
+	{
+		Node* n = nodes.front();
+		nodes.pop();
+		std::cout << n->getName() << " : Model : " << (n->getModel()? 1:0) << ", Material : " << (n->getMaterial()? 1:0) << std::endl;
+		for (int i = 0; i < n->m_children.size(); i++)
+		{
+			nodes.push(n->m_children[i]);
+		}
+	}
+}
+
+void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
+{
+	//search the node root for lights
+	Node *light = this->getNode("Lights");
+	//if doesn't exists, so we create it
+	if (!light)
+	{
+		light = new Node(this, "Lights");
+		this->rootNode->addChild(light);
+	}
+	//search if the given name is the same of a light in the list of lights
+	for (int i = 0; i < light->m_children.size(); i++)
+	{
+		//if it's true we modify the given name
+		if (n == light->m_children[i]->getName())
+		{
+			n += "_2";
+			break;
+		}
+	}
+	//create a new node and push it like the children of node lights
+	Node *node = new Node(this, n);
+	light->addChild(node);
+}
+
+void Scene::lightsRendering()
+{
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOLights);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Light) * this->m_lights.size(), NULL, GL_DYNAMIC_COPY);
+	Light* p = (Light*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+	for (int i = 0; i < this->m_lights.size(); i++)
+	{
+		p[i].color = this->m_lights[i]->color;
+		p[i].position = this->m_lights[i]->position;
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+
 }

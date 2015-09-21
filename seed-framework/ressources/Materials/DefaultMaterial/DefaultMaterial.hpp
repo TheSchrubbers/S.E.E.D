@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file model.hpp
-* \brief Load and store Model from format OBJ, ...
+* \file DefaultMaterial.hpp
+* \brief Material of a node
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -30,60 +30,43 @@
 * \license Zlib License.
 */
 
+#ifndef DEFAULTMATERIAL_HPP
+#define DEFAULTMATERIAL_HPP
 
-#ifndef MODEL_HPP
-#define MODEL_HPP
-
-#include <iostream>
-#include <vector>
-#include <fstream>
-
-#include <glm/glm.hpp>
-#include <GL/glew.h>
-#include <assimp/ai_assert.h>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
 #include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/texture.hpp>
-#include <Seed/Graphics/Outils.hpp>
-#include <Seed/Graphics/shader.hpp>
-#include <Seed/Graphics/Constant.hpp>
-#include <Seed/Graphics/camera.hpp>
-#include <Seed/Graphics/geometry.hpp>
 
-/*! \class Model
-* \brief Loads and generate an Model in GPU
+/*! \class DefaultMaterial
+* \brief Material
 */
-class Model
+class DefaultMaterial : public Material
 {
-public:
-	/*!
-	* \brief Constructor of class Model
-	* \param path : path to the model file
-	*/
-	Model(const aiMesh *mesh);
-	/*!
-	* \brief Destructor of class Model
-	*/
-	~Model();
-	/*!
-	* \brief Render the model
-	*/
-	void render();
+	public:
 
-	void afficher();
+		/*!
+		* \brief Constructor of class DefaultMaterial
+		* \param material: address of the aimaterial
+		* \param camera: address of the camera in the scene
+		* \param name: name of the material
+		*/
+		DefaultMaterial(const aiMaterial *material, Camera *camera, std::string name, unsigned int *flag = NULL);
+		/*!
+		* \brief Constructor of class DefaultMaterial
+		* \param camera: address of the camera in the scene
+		* \param name: name of the material
+		* \param pathShaders: path to the directory who contains shaders' files
+		*/
+		DefaultMaterial(Camera *camera, const std::string name, unsigned int *flag = NULL);
 
-	
+		~DefaultMaterial();
 
-private:
+		void render(Model *model);
 
-	Geometry *geometry;
+	private:
 
-	GLuint VBO_vertices, VBO_normals, VBO_tangents, VBO_coordText, VBO_faces;
-	GLuint VAO;
+		void init();
 
-	std::string name;
+		glm::mat4 M, V, V_inverse, Normal_Matrix;
+		GLuint MVPID, VID, MID, INVERSEVID, NMID;
 };
 
 #endif

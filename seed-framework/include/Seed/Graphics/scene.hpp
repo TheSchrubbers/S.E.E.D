@@ -41,6 +41,7 @@
 #include <assimp/ai_assert.h>
 
 #include <Seed/Graphics/node.hpp>
+#include <Seed/Graphics/light.hpp>
 
 class Texture;
 class Model;
@@ -92,7 +93,18 @@ class Scene
 		* \brief get the textures
 		* \return textures
 		*/
-		std::vector<Texture*> getTextures();
+		std::vector<Texture*>* getTextures();
+		/*!
+		* \brief Adding light to the scene
+		* \param position: position of the light in the scene
+		* \param color: color of the light
+		* \param name of the light
+		*/
+		void addLight(const glm::vec3 position, const glm::vec3 color, const std::string name);
+
+		void lightsRendering();
+
+		void afficher();
 		
 
 	private:
@@ -101,7 +113,10 @@ class Scene
 		std::vector<Model*> m_models;
 		std::vector<Material*> m_materials;
 		std::vector<Texture*> m_textures;
+		std::vector<Light*> m_lights;
 		Camera *camera;
+
+		GLuint SSBOLights;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes
@@ -126,7 +141,7 @@ class Scene
 		* \param pScene: Address of scene of Assimp structure
 		* \param name: name of the material
 		*/
-		void loadMaterials(const aiScene *pScene, const std::string name);
+		void loadMaterials(const aiScene *pScene, std::string name);
 };
 
 #endif

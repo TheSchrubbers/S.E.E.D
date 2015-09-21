@@ -21,6 +21,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(lib-required/glm)
 # CLMG include directories
 include_directories(lib-required/clmg)
+# include Materials
+include_directories(ressources/Materials)
+# AntTweakBar include directories
+include_directories(lib-required/antTweakBar/include)
 
 if(WIN32)
 
@@ -77,6 +81,7 @@ if(WIN32)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glew_win32/lib/Release/Win32/glew32.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3dll.lib)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
 	target_link_libraries(Seed-Graphics ${OPENGL_INCLUDE_DIRS})
 
 else(WIN32)
@@ -91,7 +96,7 @@ endif(WIN32)
 #add_library(
 #    Seed-All
     
-# 	SHARED
+# 	STATIC
     
 #	${GRAPHICS_SRC}
 #)

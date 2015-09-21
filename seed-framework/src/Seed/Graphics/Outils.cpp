@@ -1,11 +1,16 @@
 #include <Seed/Graphics/Outils.hpp>
 
-void AfficherMatrices(glm::mat4 & mat)
+void printMat4(glm::mat4 & mat)
 {
 	for (int i = 0; i < 4; i++)
 	{
 		std::cout << mat[i].x << " " << mat[i].y << " " << mat[i].z << " " << mat[i].w << std::endl;
 	}
+}
+
+void printVec4(glm::vec4 & vec)
+{
+	std::cout << vec.x << " " <<vec.y << " " << vec.z << " " << vec.w << std::endl;
 }
 
 void printErrorOpenGL()
@@ -29,7 +34,7 @@ void scanSeedError(unsigned int flag)
 	switch (flag)
 	{
 	case 1:
-		std::cout << "SUCCESS" << std::endl;
+		//std::cout << "SUCCESS" << std::endl;
 		break;
 	case 50:
 		std::cout << "Error, file not founding" << std::endl;

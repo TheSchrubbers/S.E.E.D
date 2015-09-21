@@ -20,12 +20,16 @@
 #include <Seed/Graphics/Constant.hpp>
 #include <Seed/Graphics/Outils.hpp>
 #include <Seed/Graphics/scene.hpp>
+#include <DefaultMaterial/DefaultMaterial.hpp>
+#include "Materials/DefaultMaterial2/DefaultMaterial2.hpp"
 #include <time.h>
+#include <AntTweakBar.h>
 
 // Open a window and create its OpenGL context 
 GLFWwindow* window; // (In the accompanying source code, this variable is global) 
 
 int Initialisation();
+void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
 
 int main()
 {
@@ -51,13 +55,22 @@ int main()
 	glm::vec3 direction;
 	glm::vec3 up;
 
-
 	//initialisation systeme
 	if (Initialisation() != 0)
 		return -1;
 
-	//captur keys
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	Controller controller(window);
+
+	//initialisation AntWeakBar
+	TwInit(TW_OPENGL_CORE, NULL);
+
+	//windows size for anttweakbar
+	TwWindowSize(WIDTH, HEIGHT);
+
+	TwBar *myBar;
+	myBar = TwNewBar("Outils");
+
+	glfwSetMouseButtonCallback(window, mouse_buttonID_callback);
 
 	//create scene
 	Scene scene;
@@ -68,63 +81,97 @@ int main()
 
 	unsigned int error;
 
+	scene.addLight(glm::vec3(0.0), glm::vec3(1.0), "light_1");
+
+
 	//import model
 	scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
 
 	Node *node = scene.getNode("cube1");
+	if (node)
+	{
+		DefaultMaterial *material = new DefaultMaterial(scene.getCamera(), "node_material", &error);
+		scanSeedError(error);
+		material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
+		scanSeedError(error);
+		node->setMaterialRecur(material);
+	}
 
-	Material *material = new Material(scene.getCamera(), "node_material", "", &error);
-	scanSeedError(error);
-	material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
-	scanSeedError(error);
+	float a = 0.1f, d = 0.5f, s = 0.4f;
+	TwAddVarRW(myBar, "Ambiant composant", TW_TYPE_FLOAT, &a, " min=0.0 max=1.0 step=0.01 group=Engine label='Ambiant composant' ");
+	TwAddVarRW(myBar, "Diffuse composant", TW_TYPE_FLOAT, &d, " min=0.0 max=1.0 step=0.01 group=Engine label='Diffuse composant' ");
+	TwAddVarRW(myBar, "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");
+	/*scene.importModelFromFile(pathToModels + "cube.obj", "light");
+
+	Node *lightNode = scene.getNode("light");
+	if (lightNode)
+	{
+		DefaultMaterial2 *material2 = new DefaultMaterial2(scene.getCamera(), "light_material", &error);
+		scanSeedError(error);
+		lightNode->setMaterialRecur(material2);
+	}*/
 	
-	node->setMaterialRecur(material);
-	
+	/*scene.importModelFromFile(pathToModels + "cube.obj", "cube2");
+
+	Node *node2 = scene.getNode("cube2");
+	if (node2)
+	{
+		DefaultMaterial2 *material2 = new DefaultMaterial2(scene.getCamera(), "node2_material", &error);
+		scanSeedError(error);
+		material2->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
+		scanSeedError(error);
+		node2->setMaterialRecur(material2);
+	}*/
+
 	//enable texturing
 	//glEnable(GL_TEXTURE_2D);
+
+	scene.lightsRendering();
 
 	//main loop to render
 	do
 	{
+		// Clear the screen
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Black background
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+
+		//get events glfw
+		glfwPollEvents();
 		//get current time
 		currentTime = glfwGetTime();
 		//update mouse control and keyboard control
-		updateControl(window, WAngle, HAngle, mouseSpeed, deltaTime, speed, position ,  direction, up, initFoV, FoV);
+		controller.updateControl(window, WAngle, HAngle, mouseSpeed, deltaTime, speed, position,  direction, up, initFoV, FoV);
 		//update ViewMatrix
 		scene.getCamera()->setViewMatrix(position, direction, up);
 		//update Projection Matrix
 		scene.getCamera()->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
 
-		//Enable culling triangles which normal is not towards the camera
-		glEnable(GL_CULL_FACE);
-		// Enable depth test
-		glEnable(GL_DEPTH_TEST);
-		
-		// Black background
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Accept fragment if it closer to the camera than the former one
 		//glDepthFunc(GL_LESS);
 
+		node->getMaterial()->setLight(a, d, s);
+
 		scene.getRootNode()->render();
 
-		//on nettoie les buffers
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		//Draw anttweakbar
+		TwDraw();
 
 		//get current time
 		lastTime = glfwGetTime();
 		//time between 2 frames
 		deltaTime = float(lastTime - currentTime);
 
+		//on nettoie les buffers
+		glfwSwapBuffers(window);
 
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);		
 	
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
+	TwTerminate();
 	return 0;
 }
 
@@ -155,4 +202,33 @@ int Initialisation()
 		return -1;
 	}
 	return 0;
+}
+
+void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		switch (button)
+		{
+		case GLFW_MOUSE_BUTTON_LEFT:
+			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
+			break;
+		case GLFW_MOUSE_BUTTON_RIGHT:
+			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
+			break;
+		}
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		switch (button)
+		{
+		case GLFW_MOUSE_BUTTON_LEFT:
+			TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
+			break;
+		case GLFW_MOUSE_BUTTON_RIGHT:
+			TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_RIGHT);
+			break;
+		}
+	}
+	
 }

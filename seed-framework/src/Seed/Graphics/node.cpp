@@ -1,20 +1,13 @@
 #include <Seed/Graphics/node.hpp>
 
-
-Node::Node()
-{
-	this->father = NULL;
-	this->model = NULL;
-	this->name = "node";
-	this->material = NULL;
-}
-
-Node::Node(const std::string n)
+Node::Node(Scene* sce, const std::string n)
 {
 	this->father = NULL;
 	this->name = n;
 	this->model = NULL;
 	this->material = NULL;
+	this->isRendering = true;
+	this->scene = sce;
 }
 
 Node::~Node()
@@ -64,26 +57,53 @@ void Node::setMaterialRecur(Material* mat)
 
 void Node::render()
 {
-	for (int i = 0; i < this->m_children.size(); i++)
+	if (this->isRendering)
 	{
-		this->m_children[i]->render();
-	}
+		for (int i = 0; i < this->m_children.size(); i++)
+		{
+			//std::cout << this->getName() << " : " << (this->getModel() ? 1 : 0) << ", " << (this->getMaterial() ? 1 : 0);
+			this->m_children[i]->render();
+		}
 
-	if (this->material && this->model)
-	{
-		material->render(this->model);
+		if (this->material)
+		{
+			if (this->model)
+				material->render(this->model);
+			/*else
+				material->render();*/
+		}
+		else if(this->light)
+		{
+			this->light->render();
+		}
 	}
 }
 
 void Node::afficher()
 {
-	if (this->model)
-		this->model->afficher();
 }
 
 std::string Node::getName()
 {
 	return this->name;
 }
+
+Model* Node::getModel()
+{
+	//std::cout << this->model << std::endl;
+	if (this->model)
+		return this->model;
+	else
+		return NULL;
+}
+
+Material* Node::getMaterial()
+{
+	if (this->material)
+		return this->material;
+	else
+		return NULL;
+}
+
 
 

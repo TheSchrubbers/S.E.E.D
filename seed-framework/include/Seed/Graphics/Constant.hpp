@@ -6,7 +6,7 @@
 const int WIDTH = 1024;
 const int HEIGHT = 768;
 
-const std::string pathToShaders = "ressources/Shaders/";
+const std::string pathToShaders = "ressources/Materials/DefaultMaterial/Shaders/";
 const std::string pathToTextures = "ressources/textures/";
 const std::string pathToModels = "ressources/models/";
 const std::string pathToDefaultShadersDir = "default/";

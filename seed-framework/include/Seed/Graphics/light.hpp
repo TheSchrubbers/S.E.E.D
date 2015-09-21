@@ -21,7 +21,7 @@
 */
 
 /*!
-* \file model.hpp
+* \file light.hpp
 * \brief Load and store Model from format OBJ, ...
 * \author Jérémy RIFFET
 * \version 0.1
@@ -31,59 +31,39 @@
 */
 
 
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#ifndef LIGHT_HPP
+#define LIGHT_HPP
 
-#include <iostream>
-#include <vector>
-#include <fstream>
-
-#include <glm/glm.hpp>
+#include <glm\glm.hpp>
 #include <GL/glew.h>
-#include <assimp/ai_assert.h>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/texture.hpp>
-#include <Seed/Graphics/Outils.hpp>
-#include <Seed/Graphics/shader.hpp>
-#include <Seed/Graphics/Constant.hpp>
-#include <Seed/Graphics/camera.hpp>
-#include <Seed/Graphics/geometry.hpp>
+#include <iostream>
 
-/*! \class Model
-* \brief Loads and generate an Model in GPU
+/*! \class Light
+* \brief Light of the scene
 */
-class Model
+class Light
 {
 public:
 	/*!
-	* \brief Constructor of class Model
-	* \param path : path to the model file
+	* \brief Constructor of class Light
+	* \param name: name of the light
+	* \param color: color of the light
+	* \param position: position of the light
 	*/
-	Model(const aiMesh *mesh);
+	Light(glm::vec3 color, glm::vec3 position);
 	/*!
 	* \brief Destructor of class Model
 	*/
-	~Model();
+	~Light();
 	/*!
-	* \brief Render the model
+	* \brief Render the light in the scene
 	*/
 	void render();
 
-	void afficher();
-
-	
+	glm::vec3 color;
+	glm::vec3 position;
 
 private:
-
-	Geometry *geometry;
-
-	GLuint VBO_vertices, VBO_normals, VBO_tangents, VBO_coordText, VBO_faces;
-	GLuint VAO;
-
-	std::string name;
 };
 
 #endif
