@@ -42,12 +42,14 @@
 
 #include <Seed/Graphics/node.hpp>
 #include <Seed/Graphics/light.hpp>
+#include <Seed/Graphics/collector.hpp>
 
 class Texture;
 class Model;
 class Material;
 class Node;
 class Camera;
+class Collector;
 
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
@@ -90,11 +92,6 @@ class Scene
 		*/
 		Node* getNode(const std::string name);
 		/*!
-		* \brief get the textures
-		* \return textures
-		*/
-		std::vector<Texture*>* getTextures();
-		/*!
 		* \brief Adding light to the scene
 		* \param position: position of the light in the scene
 		* \param color: color of the light
@@ -102,7 +99,21 @@ class Scene
 		*/
 		void addLight(const glm::vec3 position, const glm::vec3 color, const std::string name);
 
-		void lightsRendering();
+		void lightsRender();
+		/*!
+		* \brief collect all the rendered nodes
+		*/
+		void collectRenderedNodes();
+		/*!
+		* \brief get the collector
+		* \return the collector of the scene
+		*/
+		Collector* getCollector();
+
+		/*!
+		*\brief Render nodes who be must rendered
+		*/
+		void render();
 
 		void afficher();
 		
@@ -110,11 +121,8 @@ class Scene
 	private:
 		
 		Node *rootNode;
-		std::vector<Model*> m_models;
-		std::vector<Material*> m_materials;
-		std::vector<Texture*> m_textures;
-		std::vector<Light*> m_lights;
 		Camera *camera;
+		Collector *collector;
 
 		GLuint SSBOLights;
 

@@ -102,30 +102,30 @@ void Material::pushTexture(Texture *t)
 void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
 {
 	std::string p = pathToTextures + path;
-	std::cout << p << std::endl;
-	bool find = false;
-	for (int i = 0; i < scene->getTextures()->size(); i++)
+	//we verify if the texture is already present
+	Texture *t = scene->getCollector()->getTexture(p);
+	//if not true
+	if (t == NULL)
 	{
-		if (scene->getTextures()->at(i)->getPath() == p)
-		{
-			find = true;
-			this->pushTexture(scene->getTextures()->at(i));
-			break;
-		}
-	}
-	if (!find)
-	{
+		//we get a new Texture
 		Texture *t = new Texture(p, type, flag);
 		//verify if the texture is correct
 		if (*flag == SEED_SUCCESS)
 		{
-			scene->getTextures()->push_back(t);
+			//texture is adding to the collector and the actual material
+			scene->getCollector()->collectTextures(t);
 			this->pushTexture(t);
 		}
 		else
 		{
 			delete t;
 		}
+	}
+	//if t exists
+	else
+	{
+		//we push t in the actual material
+		this->pushTexture(t);
 	}
 }
 

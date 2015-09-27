@@ -111,6 +111,22 @@ class Node
 		* \return mesh of the node
 		*/
 		Material* getMaterial();
+		/*!
+		* \brief is rendering?
+		* \return boolean if the node must be rendered
+		*/
+		bool isRendered();
+
+		/*!
+		* \brief has material?
+		* \return boolean if the node has material
+		*/
+		bool hasMaterial();
+		/*!
+		* \brief has model ?
+		* \return boolean if the node has model
+		*/
+		bool hasModel();
 
 		std::vector<Node*> m_children;
 
@@ -122,7 +138,7 @@ class Node
 		Node* father;
 		Light* light;
 		Scene* scene;
-		bool isRendering;
+		bool rendered;
 };
 
 #endif

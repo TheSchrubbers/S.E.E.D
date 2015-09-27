@@ -6,7 +6,7 @@ Node::Node(Scene* sce, const std::string n)
 	this->name = n;
 	this->model = NULL;
 	this->material = NULL;
-	this->isRendering = true;
+	this->rendered = true;
 	this->scene = sce;
 }
 
@@ -57,7 +57,7 @@ void Node::setMaterialRecur(Material* mat)
 
 void Node::render()
 {
-	if (this->isRendering)
+	if (this->rendered)
 	{
 		for (int i = 0; i < this->m_children.size(); i++)
 		{
@@ -103,6 +103,25 @@ Material* Node::getMaterial()
 		return this->material;
 	else
 		return NULL;
+}
+
+bool Node::isRendered()
+{
+	return this->rendered;
+}
+
+bool Node::hasMaterial()
+{
+	if (this->material)
+		return true;
+	return false;
+}
+
+bool Node::hasModel()
+{
+	if (this->model)
+		return true;
+	return false;
 }
 
 

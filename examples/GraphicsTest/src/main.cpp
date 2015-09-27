@@ -83,7 +83,6 @@ int main()
 
 	scene.addLight(glm::vec3(0.0), glm::vec3(1.0), "light_1");
 
-
 	//import model
 	scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
 
@@ -126,7 +125,8 @@ int main()
 	//enable texturing
 	//glEnable(GL_TEXTURE_2D);
 
-	scene.lightsRendering();
+	//scene.lightsRendering();
+	scene.collectRenderedNodes();
 
 	//main loop to render
 	do
@@ -154,7 +154,8 @@ int main()
 
 		node->getMaterial()->setLight(a, d, s);
 
-		scene.getRootNode()->render();
+		//scene.getRootNode()->render();
+		scene.render();
 
 		//Draw anttweakbar
 		TwDraw();
@@ -206,8 +207,10 @@ int Initialisation()
 
 void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods)
 {
+	//if action is press button
 	if (action == GLFW_PRESS)
 	{
+		//we get the right and left button of the souris to send these to anttweakbar
 		switch (button)
 		{
 		case GLFW_MOUSE_BUTTON_LEFT:
@@ -218,6 +221,7 @@ void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mod
 			break;
 		}
 	}
+	//if user release button we do the same thing that above
 	else if (action == GLFW_RELEASE)
 	{
 		switch (button)

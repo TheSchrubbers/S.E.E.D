@@ -1,5 +1,26 @@
 #include <Seed/Graphics/shader.hpp>
 
+/*void createNameARB(std::string name, std::string path)
+{
+	name = "/" + name;
+	std::ifstream ShaderStream(path.c_str(), std::ios::in);
+	std::string ShaderCode;
+	if (ShaderStream.is_open())
+	{
+		std::string Line = "";
+		while (getline(ShaderStream, Line))
+			ShaderCode += "\n" + Line;
+		ShaderStream.close();
+	}
+	glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, ShaderCode.c_str());
+}
+
+void createShader(const std::string path, const std::string name)
+{
+	GLuint shader;
+	createNameARB(name, path);
+	glCompileShaderIncludeARB(shader, 1, path.c_str(), -1);
+}*/
 GLuint loadShaders(const std::string vertex_file_path, const std::string fragment_file_path){
 
 	// Create the shaders

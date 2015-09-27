@@ -3,16 +3,18 @@
 Scene::Scene()
 {
 	this->rootNode = new Node(this, "RootNode");
-	glGenBuffers(1, &(this->SSBOLights));
+	this->collector = new Collector();
+	//glGenBuffers(1, &(this->SSBOLights));
+	//std::string s = "/Common";
+	//std::string s2 = "CommonShader";
+	//glNamedStringARB(GL_SHADER_INCLUDE_ARB, s2.length(), s2.c_str(), s.length(), s.c_str());
+	//loadShader("C:/Users/jeremy/Source/Repos/S.E.E.D/seed-framework/ressources/Materials/Common/Common.hlsli");
 }
 
 Scene::~Scene()
 {
 	delete rootNode;
-	for (int i = 0; i < this->m_models.size(); i++)
-	{
-		delete this->m_models[i];
-	}
+	delete collector;
 }
 
 bool Scene::importModelFromFile(const std::string path, const std::string name)
@@ -86,7 +88,7 @@ void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Nod
 	//attribute address's meshe to the node if this is a leaf
 	if (nodeFather->mNumMeshes == 1)
 	{
-		father->setModel(this->m_models[nodeFather->mMeshes[0]]);
+		father->setModel(this->collector->getModelIndexed(nodeFather->mMeshes[0]));
 		/*unsigned int indexMaterial = pScene->mMeshes[nodeFather->mMeshes[0]]->mMaterialIndex;
 		if (indexMaterial >= 0)
 		{
@@ -110,7 +112,7 @@ void Scene::loadMeshes(const aiScene *pScene)
 	for (int i = 0; i < pScene->mNumMeshes; i++)
 	{
 		Model *m = new Model(pScene->mMeshes[i]);
-		this->m_models.push_back(m);
+		this->collector->collectModels(m);
 	}
 }
 
@@ -191,11 +193,6 @@ Node* Scene::getNode(const std::string name)
 	return NULL;
 }
 
-std::vector<Texture*>* Scene::getTextures()
-{
-	return &(this->m_textures);
-}
-
 void Scene::afficher()
 {
 	std::queue<Node*> nodes;
@@ -215,11 +212,11 @@ void Scene::afficher()
 void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
 {
 	//search the node root for lights
-	Node *light = this->getNode("Lights");
+	Node *light = this->getNode("RootLightNode");
 	//if doesn't exists, so we create it
 	if (!light)
 	{
-		light = new Node(this, "Lights");
+		light = new Node(this, "RootLightNode");
 		this->rootNode->addChild(light);
 	}
 	//search if the given name is the same of a light in the list of lights
@@ -237,9 +234,9 @@ void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
 	light->addChild(node);
 }
 
-void Scene::lightsRendering()
+void Scene::lightsRender()
 {
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOLights);
+	/*glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOLights);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Light) * this->m_lights.size(), NULL, GL_DYNAMIC_COPY);
 	Light* p = (Light*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 	for (int i = 0; i < this->m_lights.size(); i++)
@@ -247,7 +244,25 @@ void Scene::lightsRendering()
 		p[i].color = this->m_lights[i]->color;
 		p[i].position = this->m_lights[i]->position;
 	}
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+}
 
+void Scene::collectRenderedNodes()
+{
+	this->collector->collectRenderedNodes(this->rootNode);
+}
 
+Collector* Scene::getCollector()
+{
+	return this->collector;
+}
+
+void Scene::render()
+{
+	std::vector<Node*> *renderedNodes = this->collector->getRenderedCollectedNodes();
+	for (int i = 0; i < renderedNodes->size(); i++)
+	{
+		renderedNodes->at(i)->render();
+	}
+	this->lightsRender();
 }
