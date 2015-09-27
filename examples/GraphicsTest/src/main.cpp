@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 //*
 // Include GLEW. Always include it before gl.h and glfw.h
@@ -24,6 +24,8 @@
 #include "Materials/DefaultMaterial2/DefaultMaterial2.hpp"
 #include <time.h>
 #include <AntTweakBar.h>
+
+#define GLFW_INCLUDE_GLCOREARB
 
 // Open a window and create its OpenGL context 
 GLFWwindow* window; // (In the accompanying source code, this variable is global) 
@@ -184,22 +186,24 @@ int Initialisation()
 		std::cout << "Failed to initialize GLFW" << std::endl;
 		return -1;
 	}
-	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL 
-
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
+	
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Moteur3d", NULL, NULL);
+
 	if (window == NULL){
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		glfwTerminate();
 		return -1;
 	}
 	glfwMakeContextCurrent(window); // Initialize GLEW 
-	glewExperimental = true; // Needed in core profile 
+	glewExperimental = GL_TRUE; // Needed in core profile 
+
 	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
+		fprintf(stderr, "Failed to initialize GLEW, version of opengl must be greater or equal than opengl 3.2\n");
 		return -1;
 	}
 	return 0;

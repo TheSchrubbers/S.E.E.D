@@ -236,15 +236,13 @@ void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
 
 void Scene::lightsRender()
 {
-	/*glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOLights);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Light) * this->m_lights.size(), NULL, GL_DYNAMIC_COPY);
-	Light* p = (Light*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-	for (int i = 0; i < this->m_lights.size(); i++)
+	struct l
 	{
-		p[i].color = this->m_lights[i]->color;
-		p[i].position = this->m_lights[i]->position;
-	}
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);*/
+		glm::vec4 color;
+		glm::vec4 position;
+	};
+	l *lights;
+	std::vector<Light*> l;
 }
 
 void Scene::collectRenderedNodes()
@@ -259,10 +257,12 @@ Collector* Scene::getCollector()
 
 void Scene::render()
 {
+	//we get all the rendered nodes(models, materials...)
 	std::vector<Node*> *renderedNodes = this->collector->getRenderedCollectedNodes();
+	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
 		renderedNodes->at(i)->render();
 	}
-	this->lightsRender();
+	//this->lightsRender();
 }
