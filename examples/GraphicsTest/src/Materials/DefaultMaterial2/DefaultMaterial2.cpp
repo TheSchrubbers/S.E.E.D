@@ -1,6 +1,6 @@
 #include "DefaultMaterial2.hpp"
 
-DefaultMaterial2::DefaultMaterial2(Camera *cam, const std::string n, unsigned int *flag) : Material(cam, n, "C:/Users/jeremy/Documents/Seed-Graphics/Release/ressources/Materials/DefaultMaterial2/Shaders", flag)
+DefaultMaterial2::DefaultMaterial2(Scene *sce, const std::string n, unsigned int *flag) : Material(sce, n, "C:/Users/jeremy/Documents/Seed-Graphics/Release/ressources/Materials/DefaultMaterial2/Shaders", flag)
 {
 	//this->M = glm::mat4(1.0);
 	//this->M = glm::translate(M, glm::vec3(-1.5, 0.0, 0.0));

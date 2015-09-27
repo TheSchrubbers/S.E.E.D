@@ -59,11 +59,20 @@ public:
 	* \brief Render the light in the scene
 	*/
 	void render();
-
-	glm::vec3 color;
-	glm::vec3 position;
+	/*!
+	* \brief Get color of the light
+	* \return Color of the light
+	*/
+	glm::vec3 getColor();
+	/*!
+	* \brief Get position of the light
+	* \return Position of the light
+	*/
+	glm::vec3 getPosition();
 
 private:
+	glm::vec3 color;
+	glm::vec3 position;
 };
 
 #endif

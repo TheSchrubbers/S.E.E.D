@@ -45,17 +45,17 @@ class DefaultMaterial : public Material
 		/*!
 		* \brief Constructor of class DefaultMaterial
 		* \param material: address of the aimaterial
-		* \param camera: address of the camera in the scene
+		* \param scene : adress of the scene
 		* \param name: name of the material
 		*/
-		DefaultMaterial(const aiMaterial *material, Camera *camera, std::string name, unsigned int *flag = NULL);
+		DefaultMaterial(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = NULL);
 		/*!
 		* \brief Constructor of class DefaultMaterial
-		* \param camera: address of the camera in the scene
+		* \param scene: address of the scene
 		* \param name: name of the material
 		* \param pathShaders: path to the directory who contains shaders' files
 		*/
-		DefaultMaterial(Camera *camera, const std::string name, unsigned int *flag = NULL);
+		DefaultMaterial(Scene *scene, const std::string name, unsigned int *flag = NULL);
 
 		~DefaultMaterial();
 
@@ -67,6 +67,7 @@ class DefaultMaterial : public Material
 
 		glm::mat4 M, V, V_inverse, Normal_Matrix;
 		GLuint MVPID, VID, MID, INVERSEVID, NMID;
+		unsigned int block_index_lights;
 };
 
 #endif

@@ -67,12 +67,12 @@ public:
 	*/
 	void updateBuffer(void* data, int size);
 	/*!
-	* \brief delete SBBOBuffer
+	* \brief delete SSBOBuffer
 	*/
 	void deleteBuffer();
 	/*!
 	* \brief get Id of the SSBO buffer
-	* \return ID of the SSBo buffer
+	* \return ID of the SSBO buffer
 	*/
 	GLuint getID();
 

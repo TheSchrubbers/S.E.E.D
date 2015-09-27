@@ -43,6 +43,7 @@
 #include <Seed/Graphics/node.hpp>
 #include <Seed/Graphics/light.hpp>
 #include <Seed/Graphics/collector.hpp>
+#include <Seed/Graphics/UBOBuffer.hpp>
 
 class Texture;
 class Model;
@@ -92,6 +93,11 @@ class Scene
 		*/
 		Node* getNode(const std::string name);
 		/*!
+		* \brief Get the UBO lights
+		* \return UBO lights
+		*/
+		UBOBuffer* getLightUBO();
+		/*!
 		* \brief Adding light to the scene
 		* \param position: position of the light in the scene
 		* \param color: color of the light
@@ -123,8 +129,7 @@ class Scene
 		Node *rootNode;
 		Camera *camera;
 		Collector *collector;
-
-		GLuint SSBOLights;
+		UBOBuffer *lightBuf;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

@@ -51,10 +51,9 @@ void Collector::collectRenderedLightingNodes(Node *node)
 			this->collectRenderedLightingNodes(node->m_children[i]);
 		}
 		//if the node has material and model
-		if (node->hasMaterial())
+		if (node->hasLight())
 		{
-			if (node->hasModel())
-				this->nodesLightRenderer.push_back(node);
+			this->nodesLightRenderer.push_back(node);
 		}
 	}
 }
@@ -135,4 +134,9 @@ Texture* Collector::getTexture(const std::string name)
 std::vector<Node*> * Collector::getRenderedCollectedNodes()
 {
 	return &(this->nodesRenderer);
+}
+
+std::vector<Node*> * Collector::getLightingRenderedCollectedNodes()
+{
+	return &(this->nodesLightRenderer);
 }

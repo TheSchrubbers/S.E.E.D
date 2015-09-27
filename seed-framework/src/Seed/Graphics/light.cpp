@@ -14,3 +14,13 @@ void Light::render()
 {
 
 }
+
+glm::vec3 Light::getColor()
+{
+	return this->color;
+}
+
+glm::vec3 Light::getPosition()
+{
+	return this->position;
+}

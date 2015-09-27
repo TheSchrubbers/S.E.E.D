@@ -83,7 +83,7 @@ int main()
 
 	unsigned int error;
 
-	scene.addLight(glm::vec3(0.0), glm::vec3(1.0), "light_1");
+	scene.addLight(glm::vec3(0.0,0.0,5.0), glm::vec3(1.0), "light_1");
 
 	//import model
 	scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
@@ -91,7 +91,7 @@ int main()
 	Node *node = scene.getNode("cube1");
 	if (node)
 	{
-		DefaultMaterial *material = new DefaultMaterial(scene.getCamera(), "node_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "node_material", &error);
 		scanSeedError(error);
 		material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
 		scanSeedError(error);
@@ -126,8 +126,7 @@ int main()
 
 	//enable texturing
 	//glEnable(GL_TEXTURE_2D);
-
-	//scene.lightsRendering();
+	//scene.afficher();
 	scene.collectRenderedNodes();
 
 	//main loop to render
@@ -187,8 +186,8 @@ int Initialisation()
 		return -1;
 	}
 	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 	

@@ -1,8 +1,9 @@
 #include <Seed/Graphics/material.hpp>
 
-Material::Material(const aiMaterial *material, Camera *cam, const std::string n, unsigned int *flag)
+Material::Material(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag)
 {
-	this->camera = cam;
+	this->scene = sce;
+	this->camera = sce->getCamera();
 	this->name = n;
 	if (!this->addShaders(pathToDefaultShadersDir))
 	{
@@ -13,9 +14,10 @@ Material::Material(const aiMaterial *material, Camera *cam, const std::string n,
 		*flag = SEED_SUCCESS;
 	}
 }
-Material::Material(Camera *cam, const std::string n, const std::string pathShaders, unsigned int *flag)
+Material::Material(Scene *sce, const std::string n, const std::string pathShaders, unsigned int *flag)
 {
-	this->camera = cam;
+	this->scene = sce;
+	this->camera = sce->getCamera();
 	this->name = n;
 	//if user doesn't give path to the shaders, we take the default shaders
 	if (pathShaders == "")
@@ -60,6 +62,7 @@ bool Material::addShaders(const std::string pathDir)
 	}
 	//load shaders in memory
 	glUseProgram(programID);
+
 	return true;
 }
 

@@ -62,11 +62,25 @@ class Node
 		* \brief Destructor of class Node
 		*/
 		~Node();
+
+		void afficher();
+		/*!
+		* \brief render the node
+		*/
+		void render();
+
+		//SETTERS & GETTERS
+
 		/*!
 		* \brief setting a model to the node
 		* \param model: It's the address to the model
 		*/
 		void setModel(Model *model);
+		/*!
+		* \brief setting a light to the node
+		* \param light: It's the address to the light
+		*/
+		void setLight(Light *light);
 		/*!
 		* \brief Adding a child's node
 		* \param child: Address of the child's node added
@@ -88,14 +102,6 @@ class Node
 		* \param material: Address of the material
 		*/
 		void setMaterialRecur(Material* material);
-
-		void afficher();
-
-		/*!
-		* \brief render the node
-		*/
-		void render();
-
 		/*!
 		* \brief get the name of the node
 		* \return the name of the node
@@ -107,16 +113,20 @@ class Node
 		*/
 		Model* getModel();
 		/*!
-		* \brief get the Mesh of the node
-		* \return mesh of the node
+		* \brief get the material of the node
+		* \return material of the node
 		*/
 		Material* getMaterial();
+		/*!
+		* \brief get the light of the node
+		* \return light of the node
+		*/
+		Light* getLight();
 		/*!
 		* \brief is rendering?
 		* \return boolean if the node must be rendered
 		*/
 		bool isRendered();
-
 		/*!
 		* \brief has material?
 		* \return boolean if the node has material
@@ -127,6 +137,12 @@ class Node
 		* \return boolean if the node has model
 		*/
 		bool hasModel();
+		/*!
+		* \brief has light ?
+		* \return boolean if the node has light
+		*/
+		bool hasLight();
+
 
 		std::vector<Node*> m_children;
 

@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file DefaultMaterial2.hpp
-* \brief Material of a node
+* \file SSBOBuffer.hpp
+* \brief geometry of the mesh
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -30,34 +30,56 @@
 * \license Zlib License.
 */
 
-#ifndef DEFAULTMATERIAL2_HPP
-#define DEFAULTMATERIAL2_HPP
 
-#include <Seed/Graphics/material.hpp>
+#ifndef UBOBUFFER_HPP
+#define UBOBUFFER_HPP
 
-/*! \class DefaultMaterial2
-* \brief Material
+#include <iostream>
+#include <vector>
+
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <Seed/Graphics/Outils.hpp>
+
+/*! \class UBOBuffer
+* \brief Create, update, delete UBOBuffers
 */
-class DefaultMaterial2 : public Material
+class UBOBuffer
 {
 public:
-
 	/*!
-	* \brief Constructor of class DefaultMaterial2
-	* \param scene: address of the scene
-	* \param name: name of the material
-	* \param pathShaders: path to the directory who contains shaders' files
+	* \brief Constructor of class UBOBuffer
 	*/
-	DefaultMaterial2(Scene *scene, const std::string name, unsigned int *flag = NULL);
-
-	~DefaultMaterial2();
-
-	void render(Model *model);
+	UBOBuffer();
+	/*!
+	* \brief Destructor of class UBOBuffer
+	*/
+	~UBOBuffer();
+	/*!
+	* \brief Create UBOBuffer
+	* \param size: size of the buffer
+	* \return true if the creation is a success
+	*/
+	void createBuffer(int size);
+	/*!
+	* \brief Update UBOBuffer
+	* \param data pointer to the datas
+	* \param size size of the datas
+	*/
+	void updateBuffer(void* data, int size);
+	/*!
+	* \brief delete UBOBuffer
+	*/
+	void deleteBuffer();
+	/*!
+	* \brief get Id of the UBO buffer
+	* \return ID of the UBO buffer
+	*/
+	GLuint getID();
 
 private:
-	glm::mat4 M;
-	GLuint matrixID;
-
+	GLuint UBOID;
+	int size;
 };
 
 #endif

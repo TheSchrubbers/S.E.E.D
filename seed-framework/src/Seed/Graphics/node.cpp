@@ -6,6 +6,7 @@ Node::Node(Scene* sce, const std::string n)
 	this->name = n;
 	this->model = NULL;
 	this->material = NULL;
+	this->light = NULL;
 	this->rendered = true;
 	this->scene = sce;
 }
@@ -22,6 +23,11 @@ Node::~Node()
 void Node::setModel(Model *m)
 {
 	this->model = m;
+}
+
+void Node::setLight(Light *l)
+{
+	this->light = l;
 }
 
 void Node::addChild(Node* node)
@@ -90,19 +96,12 @@ std::string Node::getName()
 
 Model* Node::getModel()
 {
-	//std::cout << this->model << std::endl;
-	if (this->model)
-		return this->model;
-	else
-		return NULL;
+	return this->model;
 }
 
 Material* Node::getMaterial()
 {
-	if (this->material)
-		return this->material;
-	else
-		return NULL;
+	return this->material;
 }
 
 bool Node::isRendered()
@@ -122,6 +121,18 @@ bool Node::hasModel()
 	if (this->model)
 		return true;
 	return false;
+}
+
+bool Node::hasLight()
+{
+	if (this->light)
+		return true;
+	return false;
+}
+
+Light* Node::getLight()
+{
+	return this->light;
 }
 
 

@@ -193,6 +193,11 @@ Node* Scene::getNode(const std::string name)
 	return NULL;
 }
 
+UBOBuffer* Scene::getLightUBO()
+{
+	return this->lightBuf;
+}
+
 void Scene::afficher()
 {
 	std::queue<Node*> nodes;
@@ -201,7 +206,7 @@ void Scene::afficher()
 	{
 		Node* n = nodes.front();
 		nodes.pop();
-		std::cout << n->getName() << " : Model : " << (n->getModel()? 1:0) << ", Material : " << (n->getMaterial()? 1:0) << std::endl;
+		std::cout << n->getName() << " : Model : " << (n->getModel()? 1:0) << ", Material : " << (n->getMaterial()? 1:0) << ", Light : " << (n->getLight()?1:0) << std::endl;
 		for (int i = 0; i < n->m_children.size(); i++)
 		{
 			nodes.push(n->m_children[i]);
@@ -231,23 +236,51 @@ void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
 	}
 	//create a new node and push it like the children of node lights
 	Node *node = new Node(this, n);
+	node->setLight(new Light(c, pos));
 	light->addChild(node);
+	node->setFather(light);
 }
 
 void Scene::lightsRender()
 {
-	struct l
+	//structure for ssbo of light
+	struct lightStruct
 	{
-		glm::vec4 color;
 		glm::vec4 position;
+		glm::vec4 color;
+		glm::ivec4 size;
 	};
-	l *lights;
-	std::vector<Light*> l;
+	//array of structures of light
+	lightStruct *lights;
+	//vec3 of colors and positions of light
+	glm::vec3 c, p;
+	//we get the lights nodes rendering
+	std::vector<Node*> *l = this->collector->getLightingRenderedCollectedNodes();
+	//number of nodes
+	int t = l->size();
+	lights = new lightStruct[t];
+
+	//we set the light rendered to the structures of light
+	for (int i = 0; i < t; i++)
+	{
+		c = l->at(i)->getLight()->getColor();
+		p = l->at(i)->getLight()->getPosition();
+		lights[i].color = glm::vec4(c.x, c.y, c.z, 1.0);
+		lights[i].position = glm::vec4(p.x, p.y, p.z, 1.0);
+		lights[i].size = glm::ivec4(t);
+	}
+	//std::cout << t << std::endl;
+	//create a UBObuffer
+	lightBuf = new UBOBuffer();
+	lightBuf->createBuffer(t * sizeof(lightStruct));
+	//send data of lights
+	lightBuf->updateBuffer(lights, t * sizeof(lightStruct));
 }
 
 void Scene::collectRenderedNodes()
 {
 	this->collector->collectRenderedNodes(this->rootNode);
+	this->lightsRender();
 }
 
 Collector* Scene::getCollector()

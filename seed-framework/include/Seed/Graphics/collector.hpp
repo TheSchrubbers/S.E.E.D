@@ -130,6 +130,11 @@ public:
 	* \return the rendered collected nodes
 	*/
 	std::vector<Node*> * getRenderedCollectedNodes();
+	/*!
+	* \brief get the lighting rendered collected nodes
+	* \return the lighting rendered collected nodes
+	*/
+	std::vector<Node*> * getLightingRenderedCollectedNodes();
 
 	std::vector<Node*> nodesRenderer;
 	std::vector<Node*> nodesLightRenderer;

@@ -10,11 +10,11 @@ SSBOBuffer::~SSBOBuffer()
 	glDeleteBuffers(1, &(this->SSBOID));
 }
 
-void SSBOBuffer::createBuffer(int size)
+void SSBOBuffer::createBuffer(int s)
 {
-	size = size;
+	this->size = s;
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOID);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, size, NULL, GL_DYNAMIC_COPY);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, s, NULL, GL_DYNAMIC_COPY);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
@@ -25,6 +25,7 @@ void SSBOBuffer::updateBuffer(void* data, int s)
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOID);
 		GLvoid* pointer = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 		memcpy(pointer, data, s);
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }

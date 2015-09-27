@@ -53,17 +53,17 @@ class Material
 		/*!
 		* \brief Constructor of class Material
 		* \param material: address of the aimaterial
-		* \param camera: address of the camera in the scene
+		* \param scene: address of the scene
 		* \param name: name of the material
 		*/
-		Material(const aiMaterial *material, Camera *camera, std::string name, unsigned int *flag = NULL);
+		Material(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = NULL);
 		/*!
 		* \brief Constructor of class Material
-		* \param camera: address of the camera in the scene
+		* \param scene: address of the scene
 		* \param name: name of the material
 		* \param pathShaders: path to the directory who contains shaders' files
 		*/
-		Material(Camera *camera, const std::string name, const std::string pathShaders = "", unsigned int *flag = NULL);
+		Material(Scene *scene, const std::string name, const std::string pathShaders = "", unsigned int *flag = NULL);
 
 		~Material();
 
@@ -80,7 +80,7 @@ class Material
 		*/
 		void pushTexture(Texture *texture);
 		/*!
-		* \brief adding texture to the material since the textures' folder
+		* \brief adding texture to the material since the textur es' folder
 		* \param path to the texture
 		* \param scene: address of the current scene
 		* \return true if the texture is adding
@@ -98,6 +98,7 @@ class Material
 
 		GLuint programID;
 		std::vector<Texture*> textures;
+		Scene *scene;
 		Camera *camera;
 		std::string name;
 

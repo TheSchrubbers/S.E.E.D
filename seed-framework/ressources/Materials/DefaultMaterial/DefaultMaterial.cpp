@@ -1,10 +1,10 @@
 #include <DefaultMaterial/DefaultMaterial.hpp>
 
-DefaultMaterial::DefaultMaterial(const aiMaterial *material, Camera *cam, const std::string n, unsigned int *flag) : Material(material, cam, n, flag)
+DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag) : Material(material, sce, n, flag)
 {
 	this->init();
 }
-DefaultMaterial::DefaultMaterial(Camera *cam, const std::string n, unsigned int *flag) : Material(cam, n, "C:/Users/jeremy/Source/Repos/S.E.E.D/seed-framework/ressources/Materials/DefaultMaterial/Shaders", flag)
+DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, unsigned int *flag) : Material(sce, n, "C:/Users/jeremy/Source/Repos/S.E.E.D/seed-framework/ressources/Materials/DefaultMaterial/Shaders", flag)
 {
 	this->init();
 }
@@ -28,6 +28,8 @@ void DefaultMaterial::init()
 	this->compl.ambiantID = glGetUniformLocation(programID, "light.ambiant");
 	this->compl.diffuseID = glGetUniformLocation(programID, "light.diffuse");
 	this->compl.specularID = glGetUniformLocation(programID, "light.specular");
+
+	this->block_index_lights = glGetUniformBlockIndex(programID, "LightsBuffer");
 }
 
 DefaultMaterial::~DefaultMaterial()
@@ -61,7 +63,6 @@ void DefaultMaterial::render(Model *model)
 	glEnable(GL_DEPTH_TEST);
 
 
-
 	int nbTextures = this->textures.size();
 	//active and bind textures
 	for (i = 0; i < nbTextures; i++)
@@ -69,8 +70,16 @@ void DefaultMaterial::render(Model *model)
 		glActiveTexture(GL_TEXTURE0 + i);
 		this->textures[i]->bind();
 	}
+
+	//bind UBO buffer light
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getLightUBO()->getID());
+	//bind UBO lighting with program shader
+	glUniformBlockBinding(this->programID, this->block_index_lights, 0);
+
 	//render model
 	model->render();
+
+	//glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0);
 
 	//release textures
 	for (i = 0; i < nbTextures; i++)
