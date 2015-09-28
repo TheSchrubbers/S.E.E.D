@@ -24,18 +24,12 @@
 #include "Materials/DefaultMaterial2/DefaultMaterial2.hpp"
 #include <time.h>
 #include <AntTweakBar.h>
+#include <Seed/Graphics/engine.hpp>
 
 #define GLFW_INCLUDE_GLCOREARB
 
-// Open a window and create its OpenGL context 
-GLFWwindow* window; // (In the accompanying source code, this variable is global) 
-
-int Initialisation();
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
-
 int main()
 {
-
 	//position of the camera
 	glm::vec3 position = glm::vec3(0.0, 0.0, 5.0);
 	//horizontal and vertical angle
@@ -50,18 +44,20 @@ int main()
 	//speed view direction (mouse)
 	float mouseSpeed = 0.05f;
 
-
-	double currentTime = 0, lastTime = 0;
-	float deltaTime = 0;
 	float FoV = initFoV;
-	glm::vec3 direction;
-	glm::vec3 up;
 
-	//initialisation systeme
-	if (Initialisation() != 0)
+	//INIT ENGINE 
+	Engine engine;
+
+	if (!engine.initSystem())
+	{
 		return -1;
+	}
 
-	Controller controller(window);
+	if (!engine.initController())
+	{
+		return -1;
+	}
 
 	//initialisation AntWeakBar
 	TwInit(TW_OPENGL_CORE, NULL);
@@ -72,12 +68,12 @@ int main()
 	TwBar *myBar;
 	myBar = TwNewBar("Outils");
 
-	glfwSetMouseButtonCallback(window, mouse_buttonID_callback);
+	glfwSetMouseButtonCallback(engine.window, mouse_buttonID_callback);
 
 	//create scene
 	Scene scene;
 	//create camera
-	Camera camera(position, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), initFoV, WIDTH, HEIGHT, near, far);
+	Camera camera(position, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), initFoV, WIDTH, HEIGHT, near, far, WAngle, HAngle, speed, mouseSpeed);
 	//adding camera to the scene
 	scene.setCamera(&camera);
 
@@ -124,118 +120,9 @@ int main()
 		node2->setMaterialRecur(material2);
 	}*/
 
-	//enable texturing
-	//glEnable(GL_TEXTURE_2D);
-	//scene.afficher();
 	scene.collectRenderedNodes();
 
-	//main loop to render
-	do
-	{
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Black background
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	engine.mainRender(&scene);
 
-
-		//get events glfw
-		glfwPollEvents();
-		//get current time
-		currentTime = glfwGetTime();
-		//update mouse control and keyboard control
-		controller.updateControl(window, WAngle, HAngle, mouseSpeed, deltaTime, speed, position,  direction, up, initFoV, FoV);
-		//update ViewMatrix
-		scene.getCamera()->setViewMatrix(position, direction, up);
-		//update Projection Matrix
-		scene.getCamera()->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
-
-
-		// Accept fragment if it closer to the camera than the former one
-		//glDepthFunc(GL_LESS);
-
-		node->getMaterial()->setLight(a, d, s);
-
-		//scene.getRootNode()->render();
-		scene.render();
-
-		//Draw anttweakbar
-		TwDraw();
-
-		//get current time
-		lastTime = glfwGetTime();
-		//time between 2 frames
-		deltaTime = float(lastTime - currentTime);
-
-		//on nettoie les buffers
-		glfwSwapBuffers(window);
-
-	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);		
-	
-	// Close OpenGL window and terminate GLFW
-	glfwTerminate();
-	TwTerminate();
 	return 0;
-}
-
-int Initialisation()
-{
-	// Initialise GLFW
-	if (!glfwInit())
-	{
-		std::cout << "Failed to initialize GLFW" << std::endl;
-		return -1;
-	}
-	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
-	
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Moteur3d", NULL, NULL);
-
-	if (window == NULL){
-		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window); // Initialize GLEW 
-	glewExperimental = GL_TRUE; // Needed in core profile 
-
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW, version of opengl must be greater or equal than opengl 3.2\n");
-		return -1;
-	}
-	return 0;
-}
-
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	//if action is press button
-	if (action == GLFW_PRESS)
-	{
-		//we get the right and left button of the souris to send these to anttweakbar
-		switch (button)
-		{
-		case GLFW_MOUSE_BUTTON_LEFT:
-			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
-			break;
-		case GLFW_MOUSE_BUTTON_RIGHT:
-			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
-			break;
-		}
-	}
-	//if user release button we do the same thing that above
-	else if (action == GLFW_RELEASE)
-	{
-		switch (button)
-		{
-		case GLFW_MOUSE_BUTTON_LEFT:
-			TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
-			break;
-		case GLFW_MOUSE_BUTTON_RIGHT:
-			TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_RIGHT);
-			break;
-		}
-	}
-	
 }

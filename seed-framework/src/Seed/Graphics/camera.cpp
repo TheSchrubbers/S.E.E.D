@@ -2,8 +2,18 @@
 
 //#include "..\..\..\include\Seed\Graphics\camera.hpp"
 
-Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float near, float far)
+Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float n, float f , float WA, float HA, float s, float ms)
 {
+	this->position = pos;
+	this->direction = glm::normalize(look - pos);
+	this->up = glm::normalize(upVector);
+	this->WAngle = WA;
+	this->HAngle = HA;
+	this->FoV = f;
+	this->near = n;
+	this->far = f;
+	this->speed = s;
+	this->mouseSpeed = ms;
 	viewMatrix = glm::lookAt(pos, look, upVector);
 	projectionMatrix = glm::perspective(
 		FOV,         //angle d'ouverture de la caméra
@@ -23,12 +33,84 @@ glm::mat4 Camera::getProjectionMatrix()
 	return projectionMatrix;
 }
 
-void Camera::setProjectionMatrix(const float &Fov, const int width, const int height, const float &near, const float &far)
+glm::vec3 Camera::getPosition()
 {
-	projectionMatrix = glm::perspective(Fov, (float)width / (float)height, near, far);
+	return this->position;
 }
 
-void Camera::setViewMatrix(glm::vec3 & pos, glm::vec3 &dir, glm::vec3 &up)
+glm::vec3 Camera::getDirection()
 {
-	viewMatrix = glm::lookAt(pos, pos + dir, up);
+	return this->direction;
+}
+
+glm::vec3 Camera::getUp()
+{
+	return this->up;
+}
+
+float Camera::getWAngle()
+{
+	return this->WAngle;
+}
+
+float Camera::getHAngle()
+{
+	return this->HAngle;
+}
+
+float Camera::getNear()
+{
+	return this->near;
+}
+
+float Camera::getFar()
+{
+	return this->far;
+}
+
+float Camera::getSpeed()
+{
+	return this->speed;
+}
+
+float Camera::getMouseSpeed()
+{
+	return this->mouseSpeed;
+}
+
+float Camera::getFoV()
+{
+	return this->FoV;
+}
+
+const float Camera::getInitFoV()
+{
+	return this->initFoV;
+}
+
+void Camera::setHAngle(float HA)
+{
+	this->HAngle = HA;
+}
+
+void Camera::setWAngle(float WA)
+{
+	this->WAngle = WA;
+}
+
+
+void Camera::setProjectionMatrix(const float &F, const int width, const int height, const float &n, const float &fa)
+{
+	this->FoV = F;
+	this->near = n;
+	this->far = fa;
+	projectionMatrix = glm::perspective(F, (float)width / (float)height, n, fa);
+}
+
+void Camera::setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &u)
+{
+	this->position = pos;
+	this->direction = dir;
+	this->up = u;
+	viewMatrix = glm::lookAt(pos, pos + dir, u);
 }

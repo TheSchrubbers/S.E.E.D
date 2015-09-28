@@ -51,8 +51,12 @@ public:
 	* \param height : the height resolution of the screen
 	* \param near : the min distance of field of view
 	* \param far : the max distance of filed of view
+	* \param WAngle : the horizontal angle
+	* \param HAngle : the vertical angle
+	* \param speed : speed of the translation of the camera
+	* \param mouseSpeed : the speed of the mouse for the rotation
 	*/
-	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float near, float far);
+	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float near, float far, float WAngle, float HAngle, float speed, float mouseSpeed);
 	/*!
 	* \brief Destructor of class Texture
 	*/
@@ -67,6 +71,71 @@ public:
 	* \return glm::mat4 : Projection matrix
 	*/
 	glm::mat4 getProjectionMatrix();
+	/*!
+	* \brief get the position of the camera
+	* \return the position of the camera
+	*/
+	glm::vec3 getPosition();
+	/*!
+	* \brief get the direction vector of the camera
+	* \return the direction vector of the camera
+	*/
+	glm::vec3 getDirection();
+	/*!
+	* \brief get the up vector of the camera
+	* \return the vector up of the camera
+	*/
+	glm::vec3 getUp();
+	/*!
+	* \brief get the horizontal angle
+	* \return the horizontal angle
+	*/
+	float getWAngle();
+	/*!
+	* \brief get the vertical angle
+	* \return the vertical angle
+	*/
+	float getHAngle();
+	/*!
+	* \brief get the near of the view
+	* \return the near of the view
+	*/
+	float getNear();
+	/*!
+	* \brief get the far of the view
+	* \return the far of the view
+	*/
+	float getFar();
+	/*!
+	* \brief get the speed of the camera translation
+	* \return the speed of the camera translation
+	*/
+	float getSpeed();
+	/*!
+	* \brief get the mouse speed
+	* \return the mouse speed
+	*/
+	float getMouseSpeed();
+	/*!
+	* \brief get the field of view
+	* \return the field of view
+	*/
+	float getFoV();
+	/*!
+	* \brief get the initial field of view
+	* \return the initial field of view
+	*/
+	const float getInitFoV();
+	/*!
+	* \brief set the vertical angle
+	*/
+	void setHAngle(float HAngle);
+	/*!
+	* \brief set the horizonal angle
+	*/
+	void setWAngle(float WAngle);
+
+
 	/*!
 	* \brief set the view matrix
 	* \param pos : reference to the position of the camera
@@ -95,6 +164,11 @@ private:
 	*/
 	glm::mat4 projectionMatrix;
 
+	glm::vec3 position, direction, up;
+	//horizontal and vertical angle
+	float WAngle, HAngle, near, far, speed, mouseSpeed, FoV;
+	//field of view
+	float initFoV = 45.0;
 };
 
 //structure for UBO for camera
