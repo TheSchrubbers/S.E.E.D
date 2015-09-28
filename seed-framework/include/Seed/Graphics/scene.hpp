@@ -98,6 +98,11 @@ class Scene
 		*/
 		UBOBuffer* getLightUBO();
 		/*!
+		* \brief Get the UBO camera
+		* \return UBO camera
+		*/
+		UBOBuffer* getCamUBO();
+		/*!
 		* \brief Adding light to the scene
 		* \param position: position of the light in the scene
 		* \param color: color of the light
@@ -105,7 +110,14 @@ class Scene
 		*/
 		void addLight(const glm::vec3 position, const glm::vec3 color, const std::string name);
 
+		/*!
+		* \brief Put the lights in the UBO BUffer
+		*/
 		void lightsRender();
+		/*!
+		* \brief Put the camera in the UBO BUffer
+		*/
+		void cameraUpdate();
 		/*!
 		* \brief collect all the rendered nodes
 		*/
@@ -129,7 +141,7 @@ class Scene
 		Node *rootNode;
 		Camera *camera;
 		Collector *collector;
-		UBOBuffer *lightBuf;
+		UBOBuffer *lightBuf, *camBuf;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

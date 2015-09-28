@@ -4,11 +4,9 @@ Scene::Scene()
 {
 	this->rootNode = new Node(this, "RootNode");
 	this->collector = new Collector();
-	//glGenBuffers(1, &(this->SSBOLights));
-	//std::string s = "/Common";
-	//std::string s2 = "CommonShader";
-	//glNamedStringARB(GL_SHADER_INCLUDE_ARB, s2.length(), s2.c_str(), s.length(), s.c_str());
-	//loadShader("C:/Users/jeremy/Source/Repos/S.E.E.D/seed-framework/ressources/Materials/Common/Common.hlsli");
+	//create a UBObuffer
+	this->camBuf = new UBOBuffer();
+	this->camBuf->createBuffer(sizeof(cameraStruct));
 }
 
 Scene::~Scene()
@@ -198,6 +196,11 @@ UBOBuffer* Scene::getLightUBO()
 	return this->lightBuf;
 }
 
+UBOBuffer* Scene::getCamUBO()
+{
+	return this->camBuf;
+}
+
 void Scene::afficher()
 {
 	std::queue<Node*> nodes;
@@ -243,13 +246,6 @@ void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
 
 void Scene::lightsRender()
 {
-	//structure for ssbo of light
-	struct lightStruct
-	{
-		glm::vec4 position;
-		glm::vec4 color;
-		glm::ivec4 size;
-	};
 	//array of structures of light
 	lightStruct *lights;
 	//vec3 of colors and positions of light
@@ -269,16 +265,30 @@ void Scene::lightsRender()
 		lights[i].position = glm::vec4(p.x, p.y, p.z, 1.0);
 		lights[i].size = glm::ivec4(t);
 	}
-	//std::cout << t << std::endl;
 	//create a UBObuffer
-	lightBuf = new UBOBuffer();
-	lightBuf->createBuffer(t * sizeof(lightStruct));
+	this->lightBuf = new UBOBuffer();
+	this->lightBuf->createBuffer(t * sizeof(lightStruct));
 	//send data of lights
-	lightBuf->updateBuffer(lights, t * sizeof(lightStruct));
+	this->lightBuf->updateBuffer(lights, t * sizeof(lightStruct));
+}
+
+void Scene::cameraUpdate()
+{
+	//structure of camera
+	cameraStruct *cam = new cameraStruct;
+
+	//we set the camera in the structure
+	cam->V = this->camera->getViewMatrix();
+	cam->P = this->camera->getProjectionMatrix();
+	cam->V_inverse = glm::inverse(this->camera->getViewMatrix());
+	
+	//send data of lights
+	camBuf->updateBuffer(cam, sizeof(cameraStruct));
 }
 
 void Scene::collectRenderedNodes()
 {
+	this->cameraUpdate();
 	this->collector->collectRenderedNodes(this->rootNode);
 	this->lightsRender();
 }
@@ -290,6 +300,7 @@ Collector* Scene::getCollector()
 
 void Scene::render()
 {
+	cameraUpdate();
 	//we get all the rendered nodes(models, materials...)
 	std::vector<Node*> *renderedNodes = this->collector->getRenderedCollectedNodes();
 	//each node rendering

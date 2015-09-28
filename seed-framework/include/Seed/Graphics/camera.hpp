@@ -83,6 +83,8 @@ public:
 	* \param far : reference to the max distance of field of view
 	*/
 	void setProjectionMatrix(const float &Fov, const int width, const int height, const float &near, const float &far);
+
+
 private:
 	/*!
 	* \brief the view Matrix
@@ -92,6 +94,15 @@ private:
 	* \brief the projection matrix
 	*/
 	glm::mat4 projectionMatrix;
+
+};
+
+//structure for UBO for camera
+struct cameraStruct
+{
+	glm::mat4 V;
+	glm::mat4 P;
+	glm::mat4 V_inverse;
 };
 
 #endif

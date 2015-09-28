@@ -75,4 +75,12 @@ private:
 	glm::vec3 position;
 };
 
+//structure for UBO of light
+struct lightStruct
+{
+	glm::vec4 position;
+	glm::vec4 color;
+	glm::ivec4 size;
+};
+
 #endif

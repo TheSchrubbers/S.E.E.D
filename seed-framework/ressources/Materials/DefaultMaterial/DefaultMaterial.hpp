@@ -65,9 +65,9 @@ class DefaultMaterial : public Material
 
 		void init();
 
-		glm::mat4 M, V, V_inverse, Normal_Matrix;
-		GLuint MVPID, VID, MID, INVERSEVID, NMID;
-		unsigned int block_index_lights;
+		glm::mat4 M, Normal_Matrix;
+		GLuint MID, NMID;
+		unsigned int block_index_lights, block_index_camera;
 };
 
 #endif

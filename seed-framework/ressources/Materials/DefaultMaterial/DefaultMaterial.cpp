@@ -20,16 +20,14 @@ void DefaultMaterial::init()
 
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
-	this->MVPID = glGetUniformLocation(programID, "MVP");
-	this->VID = glGetUniformLocation(programID, "V");
 	this->MID = glGetUniformLocation(programID, "M");
 	this->NMID = glGetUniformLocation(programID, "Normal_Matrix");
-	this->INVERSEVID = glGetUniformLocation(programID, "V_inverse");
 	this->compl.ambiantID = glGetUniformLocation(programID, "light.ambiant");
 	this->compl.diffuseID = glGetUniformLocation(programID, "light.diffuse");
 	this->compl.specularID = glGetUniformLocation(programID, "light.specular");
 
 	this->block_index_lights = glGetUniformBlockIndex(programID, "LightsBuffer");
+	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 }
 
 DefaultMaterial::~DefaultMaterial()
@@ -39,17 +37,9 @@ DefaultMaterial::~DefaultMaterial()
 void DefaultMaterial::render(Model *model)
 {
 	this->M *= glm::rotate(0.005f, glm::vec3(0, 1, 0));
-	// Send our transformation to the currently bound shader,
-	// in the "MVP" uniform
-	this->MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * this->M;
-	this->V = camera->getViewMatrix();
-	this->V_inverse = glm::inverse(this->camera->getViewMatrix());
 	this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
 	//set the uniform variable MVP
-	glUniformMatrix4fv(this->MVPID, 1, GL_FALSE, &MVP[0][0]);
-	glUniformMatrix4fv(this->VID, 1, GL_FALSE, &V[0][0]);
 	glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
-	glUniformMatrix4fv(this->INVERSEVID, 1, GL_FALSE, &V_inverse[0][0]);
 	glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
 	glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));
 	glUniform1fv(this->compl.diffuseID, 1, &(compl.diffuse));
@@ -75,6 +65,11 @@ void DefaultMaterial::render(Model *model)
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getLightUBO()->getID());
 	//bind UBO lighting with program shader
 	glUniformBlockBinding(this->programID, this->block_index_lights, 0);
+
+	//bind UBO buffer camera
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->scene->getCamUBO()->getID());
+	//bind UBO camera with program shader
+	glUniformBlockBinding(this->programID, this->block_index_camera, 1);
 
 	//render model
 	model->render();

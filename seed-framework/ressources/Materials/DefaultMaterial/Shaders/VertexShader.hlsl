@@ -8,10 +8,21 @@ struct Light
 	vec4 color;
 	ivec4 size;
 };
+struct Camera
+{
+	mat4 V;
+	mat4 P;
+	mat4 V_inverse;
+};
 
 layout(std140, binding = 0) uniform LightsBuffer
 {
 	Light lights[MAX_NUM_TOTAL_LIGHTS];
+};
+
+layout(std140, binding = 1) uniform CameraBuffer
+{
+	Camera cam;
 };
 
 //vertexs
@@ -20,10 +31,7 @@ layout(location = 1) in vec3 Normal;
 layout(location = 2) in vec3 Tangent;
 layout(location = 3) in vec2 UVcoord;
 
-uniform mat4 MVP;
-uniform mat4 V;
 uniform mat4 M;
-uniform mat4 V_inverse;
 uniform mat4 Normal_Matrix;
 
 out vec3 L[MAX_NUM_TOTAL_LIGHTS];
@@ -42,13 +50,11 @@ void main()
 		Ltmp = lights[i].position.xyz;
 		L[i] = normalize(Ltmp - Ptmp);
 	}
-	vec3 Ctmp = (V_inverse * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-	//L = lights[0].position.xyz;
+	vec3 Ctmp = (cam.V_inverse * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 	C = normalize(Ptmp - Ctmp);
 	N = normalize(mat3(Normal_Matrix) * Normal);
-	//N = Normal;
 	UV = UVcoord;
 
 
-	gl_Position = MVP * vec4(Position, 1.0);
+	gl_Position = cam.P * cam.V * M * vec4(Position, 1.0);
 }
