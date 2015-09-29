@@ -135,6 +135,12 @@ public:
 	* \return the lighting rendered collected nodes
 	*/
 	std::vector<Node*> * getLightingRenderedCollectedNodes();
+	/*!
+	* \brief verify if the path corresponds with one mesh
+	* \param path: the path to the mesh
+	* \return true if the mesh already exists
+	*/
+	bool meshExists(std::string path);
 
 	std::vector<Node*> nodesRenderer;
 	std::vector<Node*> nodesLightRenderer;

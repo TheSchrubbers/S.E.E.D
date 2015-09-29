@@ -2,9 +2,9 @@
 
 Controller::Controller(GLFWwindow *window)
 {
-	std::cout << window << std::endl;
 	//captur keys
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetMouseButtonCallback(window, mouse_buttonID_callback);
 	this->context = 0;
 }
 
@@ -188,4 +188,21 @@ void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mod
 		}
 	}
 
+}
+
+void Controller::initAntWeakBar(std::string name)
+{
+	//initialisation AntWeakBar
+	TwInit(TW_OPENGL_CORE, NULL);
+
+	//windows size for anttweakbar
+	TwWindowSize(WIDTH, HEIGHT);
+
+	//initialize bar
+	this->bar = TwNewBar(name.c_str());
+}
+
+TwBar* Controller::getBar()
+{
+	return this->bar;
 }

@@ -34,7 +34,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-
+#include <Seed/Graphics/Constant.hpp>
 /*! \class Camera
 * \brief Camera class with matrix transformation attributes
 */
@@ -56,7 +56,7 @@ public:
 	* \param speed : speed of the translation of the camera
 	* \param mouseSpeed : the speed of the mouse for the rotation
 	*/
-	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float near, float far, float WAngle, float HAngle, float speed, float mouseSpeed);
+	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector = glm::vec3(0.0,1.0,0.0), float FOV = 45, float width = WIDTH, float height = HEIGHT, float near = 0.1f, float far = 100.0f, float WAngle = 3.14f, float HAngle = 0.0f, float speed = 3.0f, float mouseSpeed = 0.05f);
 	/*!
 	* \brief Destructor of class Texture
 	*/

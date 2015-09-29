@@ -64,9 +64,6 @@ class DefaultMaterial : public Material
 	private:
 
 		void init();
-
-		glm::mat4 M, Normal_Matrix;
-		GLuint MID, NMID;
 		unsigned int block_index_lights, block_index_camera;
 };
 

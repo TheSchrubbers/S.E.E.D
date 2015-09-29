@@ -93,6 +93,11 @@ class Material
 		* \param s: specular composant
 		*/
 		void setLight(float a, float d, float s);
+		/*!
+		* \brief Transform the model matrix
+		* \param T: Vector of translation
+		*/
+		void translate(glm::vec3 T);
 
 	protected:
 
@@ -108,7 +113,8 @@ class Material
 			GLuint ambiantID, diffuseID, specularID;
 		};
 
-		glm::mat4 MVP;
+		glm::mat4 M, Normal_Matrix;
+		GLuint MID, NMID;
 		compLight compl;
 };
 

@@ -14,14 +14,13 @@ Model::~Model()
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 }
-Model::Model(const aiMesh *mesh)
+Model::Model(const aiMesh *mesh, std::string p)
 {
-	//matrix of transformation of the model
-	//glm::mat4 M = glm::mat4(1.0);
 	this->geometry = new Geometry(mesh);
 	int nbVertices = this->geometry->getNumVertices();
 	int nbFaces = this->geometry->getNumFaces();
 	this->name = mesh->mName.C_Str();
+	this->pathMesh = p;
 
 	if (geometry->hasFaces())
 	{
@@ -137,6 +136,11 @@ void Model::render()
 		glBindVertexArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+}
+
+std::string Model::getPathName()
+{
+	return this->pathMesh;
 }
 
 void Model::afficher()

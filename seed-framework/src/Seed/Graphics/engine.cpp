@@ -31,7 +31,6 @@ void Engine::mainRender(Scene *scene)
 		currentTime = glfwGetTime();
 
 		//update mouse control and keyboard control
-		//this->controller->updateControl(this->window, WAngle, HAngle, mouseSpeed, deltaTime, speed, position, direction, up, initFoV, FoV);
 		this->controller->updateControl(this->window, scene->getCamera(), deltaTime);
 
 		//node->getMaterial()->setLight(a, d, s);
@@ -78,13 +77,21 @@ bool Engine::initSystem()
 		std::cout << "Failed to initialize GLEW, version of opengl must be greater or equal than opengl 3.2\n" << std::endl;
 		return false;
 	}
-
-	std::cout << window << std::endl;
 	return true;
 }
 
 bool Engine::initController()
 {
-	this->controller = new Controller(window);
+	this->controller = new Controller(this->window);
 	return true;
+}
+
+void Engine::initAntWeakBar(std::string name)
+{
+	this->controller->initAntWeakBar(name);
+
+	float a = 0.1f, d = 0.5f, s = 0.4f;
+	TwAddVarRW(this->controller->getBar(), "Ambiant composant", TW_TYPE_FLOAT, &a, " min=0.0 max=1.0 step=0.01 group=Engine label='Ambiant composant' ");
+	TwAddVarRW(this->controller->getBar(), "Diffuse composant", TW_TYPE_FLOAT, &d, " min=0.0 max=1.0 step=0.01 group=Engine label='Diffuse composant' ");
+	TwAddVarRW(this->controller->getBar(), "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");
 }

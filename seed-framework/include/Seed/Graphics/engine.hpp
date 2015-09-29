@@ -39,9 +39,7 @@
 
 #include <Seed/Graphics/control.hpp>
 #include <Seed/Graphics/scene.hpp>
-
-
-
+#include <DefaultMaterial/DefaultMaterial.hpp>
 #define GLFW_INCLUDE_GLCOREARB
 
 
@@ -65,6 +63,12 @@ class Engine
 		bool initSystem();
 
 		bool initController();
+
+		/*!
+		* \brief init bar antWeakbar
+		* \param name: nale of the interface antWeakBar
+		*/
+		void initAntWeakBar(std::string name);
 		
 		GLFWwindow* window;
 		Controller *controller;

@@ -60,9 +60,10 @@ class Model
 public:
 	/*!
 	* \brief Constructor of class Model
+	* \param mesh: address to the aimesh
 	* \param path : path to the model file
 	*/
-	Model(const aiMesh *mesh);
+	Model(const aiMesh *mesh, std::string path);
 	/*!
 	* \brief Destructor of class Model
 	*/
@@ -71,7 +72,11 @@ public:
 	* \brief Render the model
 	*/
 	void render();
-
+	/*!
+	* \brief get the pathname of the mesh
+	* \return the path name
+	*/
+	std::string getPathName();
 	void afficher();
 
 	
@@ -84,6 +89,7 @@ private:
 	GLuint VAO;
 
 	std::string name;
+	std::string pathMesh;
 };
 
 #endif

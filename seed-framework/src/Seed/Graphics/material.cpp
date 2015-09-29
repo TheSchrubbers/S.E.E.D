@@ -66,38 +66,6 @@ bool Material::addShaders(const std::string pathDir)
 	return true;
 }
 
-/*void Material::render(Model *model)
-{
-	// Send our transformation to the currently bound shader,
-	// in the "MVP" uniform
-	this->MVP = this->camera->getProjectionMatrix() * camera->getViewMatrix();
-
-	// Get a handle for our "MVP" uniform.
-	// Only at initialisation time.
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-
-	//set the uniform variable MVP
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-
-	int i = 0;
-
-	int nbTextures = this->textures.size();
-	//active and bind textures
-	for (i = 0; i < nbTextures; i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i);
-		this->textures[i]->bind();
-	}
-	//render model
-	model->render();
-
-	//release textures
-	for (i = 0; i < nbTextures; i++)
-	{
-		this->textures[i]->release();
-	}
-}*/
-
 void Material::pushTexture(Texture *t)
 {
 	this->textures.push_back(t);
@@ -137,4 +105,9 @@ void Material::setLight(float a, float d, float s)
 	this->compl.ambiant = a;
 	this->compl.diffuse = d;
 	this->compl.specular = s;
+}
+
+void Material::translate(glm::vec3 T)
+{
+	this->M = glm::translate(this->M, T);
 }

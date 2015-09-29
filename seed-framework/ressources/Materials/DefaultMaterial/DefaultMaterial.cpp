@@ -16,7 +16,6 @@ void DefaultMaterial::init()
 	this->compl.specular = 0.4;
 
 	this->M = glm::mat4(1.0);
-	//this->M = glm::translate(M, glm::vec3(1.0, 0.0, 0.0));
 
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.

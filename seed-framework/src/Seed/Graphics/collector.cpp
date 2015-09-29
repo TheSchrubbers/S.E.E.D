@@ -140,3 +140,15 @@ std::vector<Node*> * Collector::getLightingRenderedCollectedNodes()
 {
 	return &(this->nodesLightRenderer);
 }
+
+bool Collector::meshExists(std::string path)
+{
+	for (int i = 0; i < m_models.size(); i++)
+	{
+		if (path == m_models[i]->getPathName())
+		{
+			return true;
+		}
+	}
+	return false;
+}

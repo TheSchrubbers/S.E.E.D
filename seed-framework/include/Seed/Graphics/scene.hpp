@@ -34,8 +34,8 @@
 
 #include <fstream>
 #include <string>
+#include <stack>
 #include <queue>
-
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/ai_assert.h>
@@ -71,7 +71,7 @@ class Scene
 		* \param path: path to the file imported
 		* \param name: name of the node
 		*/
-		bool importModelFromFile(const std::string path, const std::string name);
+		Node* importModelFromFile(const std::string path, const std::string name);
 		/*!
 		* \brief Get the rootnode of the scene
 		*/
@@ -102,6 +102,11 @@ class Scene
 		* \return UBO camera
 		*/
 		UBOBuffer* getCamUBO();
+		/*!
+		* \brief add node to the scene
+		* \param node: node or hierarchy of node
+		*/
+		void addNode(Node *node);
 		/*!
 		* \brief Adding light to the scene
 		* \param position: position of the light in the scene
@@ -148,7 +153,7 @@ class Scene
 		* \param pScene: The assimp scene object
 		* \param path : The path to the model file
 		*/
-		bool loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name);
+		Node* loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name);
 		/*!
 		* \brief Build tree of nodes of the model added
 		* \param nodeFather: an ainode object of the tree of nodes
@@ -158,9 +163,9 @@ class Scene
 		/*!
 		* \brief Load meshes in an array and push its in the GPU memory
 		* \param pScene: Address of scene of Assimp structure
-		* \param name: name of the meshes
+		* \param path: path name of the mesh importing
 		*/
-		void loadMeshes(const aiScene *pScene);
+		void loadMeshes(const aiScene *pScene, std::string path);
 		/*!
 		* \brief Load materials in an array and push its in the GPU memory
 		* \param pScene: Address of scene of Assimp structure

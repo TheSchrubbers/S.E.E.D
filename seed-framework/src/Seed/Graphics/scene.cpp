@@ -3,6 +3,8 @@
 Scene::Scene()
 {
 	this->rootNode = new Node(this, "RootNode");
+	this->rootNode->addChild(new Node(this, "RootModelNode"));
+	this->rootNode->addChild(new Node(this, "RootLightNode"));
 	this->collector = new Collector();
 	//create a UBObuffer
 	this->camBuf = new UBOBuffer();
@@ -15,7 +17,7 @@ Scene::~Scene()
 	delete collector;
 }
 
-bool Scene::importModelFromFile(const std::string path, const std::string name)
+Node* Scene::importModelFromFile(const std::string path, const std::string name)
 {
 	Assimp::Importer importer;
 	bool exist = false;
@@ -29,19 +31,21 @@ bool Scene::importModelFromFile(const std::string path, const std::string name)
 	else
 	{
 		std::cout << "ERROR LOADING MODEL : Couldn't open file: " << path << std::endl;
-		return false;
+		return NULL;
 	}
+
+	Node* node = NULL;
+
 	//if file exists
 	if (exist)
 	{
 		//imports model in pScene, the model is triangulate, with tangents informations and merges same vertices
 		//A REDEFINIR!!
 		const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
-		
 		//if pScene exists, the mesh is assigning with node
 		if (pScene)
 		{
-			if (!loadObjectInScene(pScene, path, name))
+			if ((node = loadObjectInScene(pScene, path, name)) == NULL)
 			{
 				std::cout << "ERROR LOADING MODEL : error parsing " << path << std::endl << importer.GetErrorString() << std::endl;
 				return false;
@@ -53,22 +57,22 @@ bool Scene::importModelFromFile(const std::string path, const std::string name)
 			return false;
 		}
 	}
-	return true;
+	return node;
 }
 
-bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name)
+Node* Scene::loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name)
 {
 	int i = 0;
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
 	//adding child's node to the root node
 	Node *node = new Node(this, name);
 	//set the root node like father node
-	node->setFather(this->rootNode);
+	//node->setFather(this->rootNode);
 	//set this node like son's node to the root node
-	this->rootNode->addChild(node);
+	//this->rootNode->addChild(node);
 
 	//load Meshes
-	this->loadMeshes(pScene);
+	this->loadMeshes(pScene, path);
 
 	//load Materials
 	//this->loadMaterials(pScene, name);
@@ -76,7 +80,7 @@ bool Scene::loadObjectInScene(const aiScene *pScene, const std::string path, con
 	//insert nodes
 	this->insertRecurNode(pScene, pScene->mRootNode, node);
 	
-	return true;
+	return node;
 }
 
 //build the child's tree of nodes of the scene 
@@ -101,52 +105,16 @@ void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Nod
 		n->setFather(father);
 		this->insertRecurNode(pScene, nodeFather->mChildren[i], n);
 	}
-	//father->afficher();
 }
 
-void Scene::loadMeshes(const aiScene *pScene)
+void Scene::loadMeshes(const aiScene *pScene, std::string path)
 {
 	//insert meshes
 	for (int i = 0; i < pScene->mNumMeshes; i++)
 	{
-		Model *m = new Model(pScene->mMeshes[i]);
+		Model *m = new Model(pScene->mMeshes[i], path);
 		this->collector->collectModels(m);
 	}
-}
-
-void Scene::loadMaterials(const aiScene *pScene, const std::string name)
-{
-	/*aiString pathTexture;
-	unsigned int flag;
-	//insert materials
-	for (int i = 0; i < pScene->mNumMaterials; i++)
-	{
-		//create a new material
-		Material *m = new Material(pScene->mMaterials[i], this->getCamera(), name);
-		aiString pathTexture;
-		//std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
-		if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
-		{
-			//std::cout << pathTexture.data << std::endl;
-			Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE, &flag);
-			if (flag == SEED_SUCCESS)
-			{
-				this->m_textures.push_back(t);
-				m->pushTexture(t);
-			}
-		}
-		if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &pathTexture) == AI_SUCCESS)
-		{
-			Texture *t = new Texture(pathTexture.data, TEXTURE_SPECULAR, &flag);
-			if (flag == SEED_SUCCESS)
-			{
-				this->m_textures.push_back(t);
-				m->pushTexture(t);
-			}
-		}
-
-		this->m_materials.push_back(m);
-	}*/
 }
 
 void Scene::setCamera(Camera *cam)
@@ -203,11 +171,11 @@ UBOBuffer* Scene::getCamUBO()
 
 void Scene::afficher()
 {
-	std::queue<Node*> nodes;
+	std::stack<Node*> nodes;
 	nodes.push(this->rootNode);
 	while (!nodes.empty())
 	{
-		Node* n = nodes.front();
+		Node* n = nodes.top();
 		nodes.pop();
 		std::cout << n->getName() << " : Model : " << (n->getModel()? 1:0) << ", Material : " << (n->getMaterial()? 1:0) << ", Light : " << (n->getLight()?1:0) << std::endl;
 		for (int i = 0; i < n->m_children.size(); i++)
@@ -309,4 +277,50 @@ void Scene::render()
 		renderedNodes->at(i)->render();
 	}
 	//this->lightsRender();
+}
+
+void Scene::addNode(Node* node)
+{
+	Node *n = this->getNode("RootModelNode");
+	if (!n)
+	{
+		this->rootNode->addChild(new Node(this, "RootModelNode"));
+	}
+	n->addChild(node);
+	node->setFather(n);
+}
+
+void Scene::loadMaterials(const aiScene *pScene, const std::string name)
+{
+	/*aiString pathTexture;
+	unsigned int flag;
+	//insert materials
+	for (int i = 0; i < pScene->mNumMaterials; i++)
+	{
+	//create a new material
+	Material *m = new Material(pScene->mMaterials[i], this->getCamera(), name);
+	aiString pathTexture;
+	//std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+	if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
+	{
+	//std::cout << pathTexture.data << std::endl;
+	Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE, &flag);
+	if (flag == SEED_SUCCESS)
+	{
+	this->m_textures.push_back(t);
+	m->pushTexture(t);
+	}
+	}
+	if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &pathTexture) == AI_SUCCESS)
+	{
+	Texture *t = new Texture(pathTexture.data, TEXTURE_SPECULAR, &flag);
+	if (flag == SEED_SUCCESS)
+	{
+	this->m_textures.push_back(t);
+	m->pushTexture(t);
+	}
+	}
+
+	this->m_materials.push_back(m);
+	}*/
 }

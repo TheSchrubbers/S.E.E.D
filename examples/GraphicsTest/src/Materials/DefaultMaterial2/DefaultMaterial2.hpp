@@ -57,6 +57,7 @@ public:
 private:
 	glm::mat4 M;
 	GLuint matrixID;
+	unsigned int block_index_camera;
 
 };
 
