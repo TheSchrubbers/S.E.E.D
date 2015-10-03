@@ -35,6 +35,8 @@ DefaultMaterial::~DefaultMaterial()
 
 void DefaultMaterial::render(Model *model)
 {
+
+	//UNIFORMS
 	this->M *= glm::rotate(0.005f, glm::vec3(0, 1, 0));
 	this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
 	//set the uniform variable MVP
@@ -44,22 +46,16 @@ void DefaultMaterial::render(Model *model)
 	glUniform1fv(this->compl.diffuseID, 1, &(compl.diffuse));
 	glUniform1fv(this->compl.specularID, 1, &(compl.specular));
 
-	int i = 0;
-
+	//OPTIONS
 	//Enable culling triangles which normal is not towards the camera
 	glEnable(GL_CULL_FACE);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
+	//TEXTURES
+	this->activeTextures();
 
-	int nbTextures = this->textures.size();
-	//active and bind textures
-	for (i = 0; i < nbTextures; i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i);
-		this->textures[i]->bind();
-	}
-
+	//BUFFERS
 	//bind UBO buffer light
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getLightUBO()->getID());
 	//bind UBO lighting with program shader
@@ -70,14 +66,12 @@ void DefaultMaterial::render(Model *model)
 	//bind UBO camera with program shader
 	glUniformBlockBinding(this->programID, this->block_index_camera, 1);
 
+	//RENDER
 	//render model
 	model->render();
 
+	//RELEASE
+	this->releaseTextures();
 	//glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0);
 
-	//release textures
-	for (i = 0; i < nbTextures; i++)
-	{
-		this->textures[i]->release();
-	}
 }

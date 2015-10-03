@@ -37,6 +37,9 @@ if(WIN32)
 	# GLFW include directories for windows
 	include_directories(lib-required/glfw_win32/include)
 
+	# SOIL include directories for windows
+	include_directories(lib-required/soil_win32/include)
+
 else(WIN32)
 
 	# Assimp include directories for linux
@@ -47,6 +50,9 @@ else(WIN32)
 
 	# GLFW include directories for linux
 	include_directories(lib-required/glfw_linux/include)
+
+	#FreeImage include directories for linux
+	include_directories(lib-required/soil_linux/include)
 
 endif(WIN32)
 
@@ -82,6 +88,7 @@ if(WIN32)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3dll.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/soil_win32/lib/SOIL.lib)
 	target_link_libraries(Seed-Graphics ${OPENGL_INCLUDE_DIRS})
 
 else(WIN32)

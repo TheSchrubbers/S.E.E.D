@@ -5,7 +5,6 @@ parserImage::parserImage()
 
 bool parserImage::readImage(const char* path)
 {
-	//cimg_library::CImg<unsigned char> test(path);
 	std::ifstream imgFile(path, std::ios::binary);
 	//type of bmp image
 	unsigned short type;

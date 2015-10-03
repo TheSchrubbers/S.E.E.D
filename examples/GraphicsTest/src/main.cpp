@@ -39,7 +39,7 @@ int main()
 	{
 		DefaultMaterial *material = new DefaultMaterial(&scene, "cube1_material", &error);
 		scanSeedError(error);
-		material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
+		material->addTexture("bois.bmp", &scene, TEXTURE_AMBIANT, &error);
 		scanSeedError(error);
 		cube1->setMaterialRecur(material);
 	}
@@ -52,7 +52,7 @@ int main()
 	{
 		DefaultMaterial *material = new DefaultMaterial(&scene, "cube2_material", &error);
 		scanSeedError(error);
-		material->addTexture("texture1.bmp", &scene, TEXTURE_DIFFUSE, &error);
+		material->addTexture("texture1.bmp", &scene, TEXTURE_AMBIANT, &error);
 		scanSeedError(error);
 		cube2->setMaterialRecur(material);
 		cube2->getMaterial()->translate(glm::vec3(0.0, 2.0, 0.0));

@@ -40,11 +40,20 @@ Material::Material(Scene *sce, const std::string n, const std::string pathShader
 
 Material::~Material()
 {
+	unsigned int i = 0;
 	glDeleteProgram(programID);
 	delete this->camera;
-	for (int i = 0; i < textures.size(); i++)
+	for (i = 0; i < textures_ambiant.size(); i++)
 	{
-		delete textures[i];
+		delete textures_ambiant[i];
+	}
+	for (i = 0; i < textures_diffuse.size(); i++)
+	{
+		delete textures_diffuse[i];
+	}
+	for (i = 0; i < textures_specular.size(); i++)
+	{
+		delete textures_specular[i];
 	}
 }
 
@@ -68,7 +77,17 @@ bool Material::addShaders(const std::string pathDir)
 
 void Material::pushTexture(Texture *t)
 {
-	this->textures.push_back(t);
+	switch(t->getType())
+	{
+		case TEXTURE_AMBIANT:
+			this->textures_ambiant.push_back(t);
+			break;
+		case TEXTURE_DIFFUSE:
+			this->textures_diffuse.push_back(t);
+			break;
+		case TEXTURE_SPECULAR:
+			this->textures_specular.push_back(t);
+	}
 }
 void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
 {
@@ -108,6 +127,48 @@ void Material::setLight(float a, float d, float s)
 }
 
 void Material::translate(glm::vec3 T)
+
 {
 	this->M = glm::translate(this->M, T);
+}
+
+void Material::activeTextures()
+{
+	unsigned int i = 0, j = 0;
+	//active and bind textures
+	for (i = 0; i < textures_ambiant.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		this->textures_ambiant[i]->bind();
+		j++;
+	}
+	for (i = 0; i < textures_diffuse.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i + j);
+		this->textures_diffuse[i]->bind();
+		j++;
+	}
+	for (i = 0; i < this->textures_specular.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i + j);
+		this->textures_specular[i]->bind();
+	}
+}
+
+void Material::releaseTextures()
+{
+	unsigned int i = 0;
+	//release textures
+	for (i = 0; i < textures_ambiant.size(); i++)
+	{
+		this->textures_ambiant[i]->bind();
+	}
+	for (i = 0; i < textures_diffuse.size(); i++)
+	{
+		this->textures_diffuse[i]->bind();
+	}
+	for (i = 0; i < this->textures_specular.size(); i++)
+	{
+		this->textures_specular[i]->bind();
+	}
 }

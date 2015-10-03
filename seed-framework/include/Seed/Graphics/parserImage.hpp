@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <Seed/Graphics/BMPParser.hpp>
+#include <SOIL.h>
 
 //! CLASSNAME parserImage
  /*!

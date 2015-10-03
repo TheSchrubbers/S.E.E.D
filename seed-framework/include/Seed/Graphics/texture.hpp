@@ -38,6 +38,7 @@
 #include <Seed/Graphics/parserImage.hpp>
 #include <iostream>
 #include <Seed/Graphics/Constant.hpp>
+#include <SOIL.h>
 
 /*! \class Texture
  * \brief Loads and generate an IDTexture in GPU
@@ -85,6 +86,11 @@ public:
 	* \return path of the texture
 	*/
 	std::string getPath();
+	/*!
+	* \brief get the type of the texture
+	* \return the type of the texture
+	*/
+	unsigned int getType();
 
 
 private:

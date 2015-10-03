@@ -98,11 +98,21 @@ class Material
 		* \param T: Vector of translation
 		*/
 		void translate(glm::vec3 T);
+		/*!
+		* \brief Active textures
+		*/
+		void activeTextures();
+		/*!
+		* \brief Release textures
+		*/
+		void releaseTextures();
 
 	protected:
 
 		GLuint programID;
-		std::vector<Texture*> textures;
+		std::vector<Texture*> textures_ambiant;
+		std::vector<Texture*> textures_diffuse;
+		std::vector<Texture*> textures_specular;
 		Scene *scene;
 		Camera *camera;
 		std::string name;

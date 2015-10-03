@@ -3,9 +3,20 @@
 Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsigned int *flag)
 {
 	parserImage image;
-	//init class
-	this->width = 0;
-	this->height = 0; 
+	/* load an image file directly as a new OpenGL texture */
+	/*GLuint tex_2d = SOIL_load_OGL_texture
+		(
+		pathT.c_str(),
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		);
+
+	if (0 != tex_2d)
+	{
+		//init class
+		this->width = 0;
+		this->height = 0; */
 
 	//load image
 	if (image.readImage(pathT.c_str()))
@@ -16,16 +27,17 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		//format of image
 		//int format = image->getType();
 		//format of colours -> RGB RGBA BRG ...
-		int t = image.getDepth();
+		int t =  image.getDepth();
 		//width
 		int width = image.getWidth();
 		//height
-		int height = image.getHeight();
+		int height =  image.getHeight();
 
+		//this->textureID = tex_2d;
 		//create a new openGL texture
 		glGenTextures(1, &textureID);
 		//bind texture to modify this -> typetexture2D
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		glBindTexture(GL_TEXTURE_2D, this->textureID);
 
 		//put texture to GPU
 		glTexImage2D(GL_TEXTURE_2D, 0, t, width, height, 0, t, GL_UNSIGNED_BYTE, image.getPixels());
@@ -68,4 +80,9 @@ void Texture::release()
 std::string Texture::getPath()
 {
 	return this->path;
+}
+
+unsigned int Texture::getType()
+{
+	return this->type;
 }
