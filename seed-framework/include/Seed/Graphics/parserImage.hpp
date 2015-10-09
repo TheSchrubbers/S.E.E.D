@@ -9,11 +9,14 @@
 
 #include <GL/glew.h>
 #include <fstream>
+#include <vector>
+#include <iostream>
 #include <cstdlib>
 #include <stdexcept>
 #include <Seed/Graphics/BMPParser.hpp>
-#include <SOIL.h>
-
+#include <Seed/Graphics/Constant.hpp>
+#include <Seed/Graphics/imageLoading/png.hpp>
+#include <Seed/Graphics/imageLoading/tga.hpp>
 //! CLASSNAME parserImage
  /*!
   * \brief
@@ -45,7 +48,7 @@ class parserImage
 		 * \param path : the path of the image
 		 * \return an boolean if the image load correctly
 		 */
-		bool readImage(const char* path);
+		bool readImage(const std::string path);
 
 		//setters
 		void setWidth(unsigned int);
@@ -59,6 +62,14 @@ class parserImage
 		unsigned short getDepth();
 		unsigned short getCompression();
 		void* getPixels();
+
+
+		int getFormat(const std::string path);
+
+		//parsers
+		bool BMP_parser(const std::string path);
+		bool PNG_parser(const std::string path);
+		bool TGA_parser(const std::string path);
 };
 
 #endif

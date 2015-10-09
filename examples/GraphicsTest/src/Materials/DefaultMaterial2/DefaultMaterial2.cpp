@@ -1,4 +1,5 @@
 #include "DefaultMaterial2.hpp"
+#include <Seed/Graphics/UBOBuffer.hpp>
 
 DefaultMaterial2::DefaultMaterial2(Scene *sce, const std::string n, unsigned int *flag) : Material(sce, n, "C:/Users/jeremy/Documents/Seed-Graphics/Release/ressources/Materials/DefaultMaterial2/Shaders", flag)
 {

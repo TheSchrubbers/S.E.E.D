@@ -32,7 +32,9 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+#include <glm/glm.hpp>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <stack>
 #include <queue>
@@ -40,17 +42,15 @@
 #include <assimp/scene.h>
 #include <assimp/ai_assert.h>
 
-#include <Seed/Graphics/node.hpp>
-#include <Seed/Graphics/light.hpp>
-#include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/UBOBuffer.hpp>
-
 class Texture;
 class Model;
 class Material;
-class Node;
 class Camera;
 class Collector;
+class Node;
+class ObjectNode;
+class PointLightNode;
+class UBOBuffer;
 
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
@@ -71,11 +71,11 @@ class Scene
 		* \param path: path to the file imported
 		* \param name: name of the node
 		*/
-		Node* importModelFromFile(const std::string path, const std::string name);
+		ObjectNode* importModelFromFile(const std::string path, const std::string name);
 		/*!
 		* \brief Get the rootnode of the scene
 		*/
-		Node* getRootNode();
+		ObjectNode* getRootObjectNode();
 		/*!
 		* \brief Get camera of the scene
 		* \return camera of the scene
@@ -87,16 +87,11 @@ class Scene
 		*/
 		void setCamera(Camera *camera);
 		/*!
-		* \brief Get the node in the tree of nodes of the scene
+		* \brief Get the objectnode in the tree of objectnodes of the scene
 		* \param: name of the node
 		* \return the node searched
 		*/
-		Node* getNode(const std::string name);
-		/*!
-		* \brief Get the UBO lights
-		* \return UBO lights
-		*/
-		UBOBuffer* getLightUBO();
+		ObjectNode* getObjectNode(const std::string name);
 		/*!
 		* \brief Get the UBO camera
 		* \return UBO camera
@@ -106,15 +101,41 @@ class Scene
 		* \brief add node to the scene
 		* \param node: node or hierarchy of node
 		*/
-		void addNode(Node *node);
+		void addNode(ObjectNode *node);
 		/*!
-		* \brief Adding light to the scene
-		* \param position: position of the light in the scene
-		* \param color: color of the light
-		* \param name of the light
+		* \brief Adding pointLight to the scene
+		* \param position: position of the pointlight in the scene
+		* \param color: color of the pointlight
+		* \param distance: distance of the field of light
+		* \param name of the pointlight
 		*/
-		void addLight(const glm::vec3 position, const glm::vec3 color, const std::string name);
-
+		void addPointLight(const glm::vec3 &position, const glm::vec3 &color, int distance = 50, std::string name = "PointLight");
+		/*!
+		* \brief Adding spotLight to the scene
+		* \param position: position of the spotlight in the scene
+		* \param direction: direction of the spotLight
+		* \param color: color of the spotlight
+		* \param angle: opening angle of the spotlight
+		* \param distance: distance of the field of light
+		* \param name of the spotlight
+		*/
+		void addSpotLight(const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color, int angle = 30,  int distance = 50, std::string name = "SpotLight");
+		/*!
+		* \brief Adding directionnalLight to the scene
+		* \param color: color of the directionnallight
+		* \param direction: direction of the light
+		* \param name of the directionnallight
+		*/
+		void addDirectionnalLight(const glm::vec3 &color, const glm::vec3 &direction, std::string name = "DirectionnalLight");
+		/*!
+		* \brief Adding flashLight to the scene
+		* \param position: position of the flashlight in the scene
+		* \param direction: direction of the flashLight
+		* \param color: color of the flashlight
+		* \param distance: distance of the field of light
+		* \param name of the flashlight
+		*/
+		void addFlashLight(const glm::vec3 &position, const glm::vec3 &direction, glm::vec3 &color, int distance = 50, std::string name = "FlashLight");
 		/*!
 		* \brief Put the lights in the UBO BUffer
 		*/
@@ -143,24 +164,25 @@ class Scene
 
 	private:
 		
-		Node *rootNode;
+		ObjectNode *rootObjectNode;
+		Node *rootLightNode;
 		Camera *camera;
 		Collector *collector;
-		UBOBuffer *lightBuf, *camBuf;
+		UBOBuffer *camBuf;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes
 		* \param pScene: The assimp scene object
 		* \param path : The path to the model file
 		*/
-		Node* loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name);
+		ObjectNode* loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name);
 		/*!
 		* \brief Build tree of nodes of the model added
 		* \param nodeFather: an ainode object of the tree of nodes
-		* \param node: an node object of the tree of nodes
+		* \param node: an objectNode object of the tree of objectnodes
 		*/
-		void insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Node *father);
-		/*!
+		void insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father);
+		/*! 
 		* \brief Load meshes in an array and push its in the GPU memory
 		* \param pScene: Address of scene of Assimp structure
 		* \param path: path name of the mesh importing

@@ -21,7 +21,7 @@
 */
 
 /*!
-* \file node.hpp
+* \file pointLightNode.hpp
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -29,82 +29,73 @@
 * \license Zlib License.
 */
 
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef POINTLIGHTNODE_HPP
+#define POINTLIGHTNODE_HPP
 
 #include <vector>
 #include <iostream>
 #include <exception>
+#include <Seed/Graphics/node.hpp>
 
-#include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/model.hpp>
-#include <Seed/Graphics/scene.hpp>
-#include <Seed/Graphics/light.hpp>
 
 class Scene;
-class Model;
-class Material;
+class PointLight;
 
-/*! \class Node
-* \brief Nodes who contains differents things of the scene like meshes, lights, cameras...
+/*! \class PointLightNode
+* \brief PointLightNodes who contains point light nodes
 */
-class Node
+class PointLightNode : public Node
 {
 	public:
 
 		/*!
-		* \brief Constructor of class Node
+		* \brief Constructor of class PointLightNode
 		* \param scene: address of the scene
 		* \param name: name of the node
 		*/
-		Node(Scene *scene, const std::string name = "node");
-		Node(){};
+		PointLightNode(Scene *scene, const std::string name = "pointLightNode");
 		/*!
 		* \brief Destructor of class Node
 		*/
-		~Node();
-
-		void afficher();
+		~PointLightNode();
 
 		//SETTERS & GETTERS
-
+		/*!
+		* \brief setting a light to the node
+		* \param light: It's the address to the light
+		*/
+		void setLight(PointLight *light);
+		/*!
+		* \brief get the light of the node
+		* \return light of the node
+		*/
+		PointLight* getLight();
+		/*!
+		* \brief has light ?
+		* \return boolean if the node has light
+		*/
+		bool hasLight();
+		/*!
+		* \brief return children
+		* \return children		
+		*/
+		std::vector<PointLightNode*> * getChildren();
 		/*!
 		* \brief Adding a child's node
 		* \param child: Address of the child's node added
 		*/
-		virtual void addChild(Node* child);
+		void addChild(PointLightNode* child);
 		/*!
 		* \brief Set the father's node to the node;
 		* \param father: Address of the father's node added
 		*/
-		virtual void setFather(Node* father);
+		void setFather(Node* father);
 
-		/*!
-		* \brief get the name of the node
-		* \return the name of the node
-		*/
-		std::string getName();
-		/*!
-		* \brief get node with its name
-		* \param the name of the searched node
-		* \return the node
-		*/
-		virtual Node* getNode(const std::string name);
-		/*!
-		* \brief is rendering?
-		* \return boolean if the node must be rendered
-		*/
-		bool isRendered();
+
 
 	private:
-		std::vector<Node*> m_children;
-
-	protected:
-
-		std::string name;
-		Node* father;
-		Scene* scene;
-		bool rendered;
+		std::vector<PointLightNode*> m_children;
+		PointLight* pointLight;
 };
 
 #endif

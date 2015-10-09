@@ -1,4 +1,8 @@
 #include <Seed/Graphics/material.hpp>
+#include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/collector.hpp>
+#include <Seed/Graphics/texture.hpp>
+
 
 Material::Material(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag)
 {
@@ -91,14 +95,20 @@ void Material::pushTexture(Texture *t)
 }
 void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
 {
+
+	if (flag == NULL)
+	{
+		flag = new unsigned int;
+	}
 	std::string p = pathToTextures + path;
 	//we verify if the texture is already present
 	Texture *t = scene->getCollector()->getTexture(p);
+
 	//if not true
 	if (t == NULL)
 	{
 		//we get a new Texture
-		Texture *t = new Texture(p, type, flag);
+		t = new Texture(p, type, flag);
 		//verify if the texture is correct
 		if (*flag == SEED_SUCCESS)
 		{
@@ -140,18 +150,22 @@ void Material::activeTextures()
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		this->textures_ambiant[i]->bind();
+		glUniform1i(glGetUniformLocation(programID, ("samplerAmbiantTexture" + std::to_string(i)).c_str()), i);
 		j++;
 	}
 	for (i = 0; i < textures_diffuse.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i + j);
 		this->textures_diffuse[i]->bind();
+		glUniform1i(glGetUniformLocation(programID, ("samplerDiffuseTexture0" + std::to_string(i)).c_str()), i + j);
+		//glUniform1i(glGetUniformLocation(programID, "samplerDiffuseTexture0"), i + j);
 		j++;
 	}
 	for (i = 0; i < this->textures_specular.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i + j);
 		this->textures_specular[i]->bind();
+		glUniform1i(glGetUniformLocation(programID, ("samplerSpecularTexture" + std::to_string(i)).c_str()), i + j);
 	}
 }
 
@@ -171,4 +185,24 @@ void Material::releaseTextures()
 	{
 		this->textures_specular[i]->bind();
 	}
+}
+
+void Material::printTextures()
+{
+	std::cout << "Texture ambiant" << std::endl;
+	for (int i = 0; i < textures_ambiant.size(); i++)
+	{
+		std::cout << textures_ambiant[i]->getTextureID() << ", ";
+	}
+	std::cout << "Texture diffuse" << std::endl;
+	for (int i = 0; i < textures_diffuse.size(); i++)
+	{
+		std::cout << textures_diffuse[i]->getTextureID() << ", ";
+	}
+	std::cout << "Texture specular" << std::endl;
+	for (int i = 0; i < textures_specular.size(); i++)
+	{
+		std::cout << textures_specular[i]->getTextureID() << ", ";
+	}
+	std::cout << std::endl;
 }

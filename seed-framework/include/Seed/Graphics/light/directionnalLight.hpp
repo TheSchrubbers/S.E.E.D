@@ -21,7 +21,8 @@
 */
 
 /*!
-* \file engine.hpp
+* \file directionnalLight.hpp
+* \brief Directionnallights of the scene
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -29,55 +30,49 @@
 * \license Zlib License.
 */
 
-#ifndef ENGINE_HPP
-#define ENGINE_HPP
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#ifndef DIRECTIONNALLIGHT_HPP
+#define DIRECTIONNALLIGHT_HPP
+
 #include <glm/glm.hpp>
 #include <iostream>
+#include <Seed/Graphics/light.hpp>
 
-#include <Seed/Graphics/control.hpp>
-#include <Seed/Graphics/scene.hpp>
-#include <DefaultMaterial/DefaultMaterial.hpp>
-#include <Seed/Graphics/node/objectNode.hpp>
-#define GLFW_INCLUDE_GLCOREARB
-
-
-/*! \class Engine
-* \brief class Engine, init the system and the scene
+/*! \class DirectionnalLight
+* \brief DirectionnalLight of the scene
 */
-class Engine
+class DirectionnalLight : public Light
 {
-	public:
-		/*!
-		* \brief Constructor of class Scene
-		*/
-		Engine();
-		/*!
-		* \brief Destructor of class Node
-		*/
-		~Engine();
+public:
+	/*!
+	* \brief Constructor of class DirectionnalLight
+	* \param name: name of the light
+	* \param color: color of the light
+	* \param direction: direction of the light
+	*/
+	DirectionnalLight(const std::string &name, const glm::vec3 &direction, const glm::vec3 &color = glm::vec3(1.0));
+	/*!
+	* \brief Destructor of class DirectionnalLight
+	*/
+	~DirectionnalLight();
+	void afficher(){}
 
-		void mainRender(Scene *scene);
+	/*!
+	* \brief get the direction of the light
+	* \return the direction of the light
+	*/
+	glm::vec3 getDirection();
 
-		bool initSystem();
-
-		bool initController();
-
-		/*!
-		* \brief init bar antWeakbar
-		* \param name: nale of the interface antWeakBar
-		*/
-		void initAntWeakBar(std::string name);
-		
-		GLFWwindow* window;
-		Controller *controller;
-
-	private:
-
+private:
+	glm::vec3 direction;
 };
 
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
+//structure for UBO of light
+struct directionnalLightStruct
+{
+	glm::vec4 direction;
+	glm::vec4 color;
+	glm::ivec4 size;
+};
 
 #endif

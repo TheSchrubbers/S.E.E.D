@@ -30,35 +30,49 @@ int main()
 	//adding camera to the scene
 	scene.setCamera(&camera);
 
-	scene.addLight(glm::vec3(0.0,0.0,5.0), glm::vec3(1.0), "light_1");
-
+	//scene.addPointLight(glm::vec3(3.0,8.0,5.0), glm::vec3(1.0), 50, "light_1");
+	scene.addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)));
+	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);
 	//import model
-	Node *cube1 = scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
+	/*ObjectNode *cube1 = scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
 
 	if (cube1)
 	{
 		DefaultMaterial *material = new DefaultMaterial(&scene, "cube1_material", &error);
 		scanSeedError(error);
-		material->addTexture("bois.bmp", &scene, TEXTURE_AMBIANT, &error);
+		material->addTexture("bois.png", &scene, TEXTURE_AMBIANT, &error);
 		scanSeedError(error);
 		cube1->setMaterialRecur(material);
 	}
 
-	scene.addNode(cube1);
+	scene.addNode(cube1);*/
 	
-	Node *cube2 = scene.importModelFromFile(pathToModels + "cube.obj", "cube2");
+	/*ObjectNode *cube2 = scene.importModelFromFile(pathToModels + "cube.obj", "cube2");
 
 	if (cube2)
 	{
 		DefaultMaterial *material = new DefaultMaterial(&scene, "cube2_material", &error);
 		scanSeedError(error);
-		material->addTexture("texture1.bmp", &scene, TEXTURE_AMBIANT, &error);
+		material->addTexture("texture1.png", &scene, TEXTURE_AMBIANT, &error);
 		scanSeedError(error);
 		cube2->setMaterialRecur(material);
 		cube2->getMaterial()->translate(glm::vec3(0.0, 2.0, 0.0));
 	}
 
-	scene.addNode(cube2);
+	scene.addNode(cube2);*/
+
+	//import model
+	ObjectNode *lara = scene.importModelFromFile(pathToModels + "Lara_Croft.obj", "lara");
+
+	ObjectNode *l = lara->getNode("LaraClothes");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "lara_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_Clothes_D.png", &scene, TEXTURE_AMBIANT);
+		l->setMaterialRecur(material);
+	}
+	scene.addNode(lara);
 
 	scene.afficher();
 

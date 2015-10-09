@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file light.hpp
-* \brief Lights of the scene
+* \file flashLight.hpp
+* \brief Flashslights of the scene
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -31,46 +31,63 @@
 */
 
 
-#ifndef LIGHT_HPP
-#define LIGHT_HPP
+#ifndef FLASHLIGHT_HPP
+#define FLASHLIGHT_HPP
 
 #include <glm/glm.hpp>
-#include <GL/glew.h>
 #include <iostream>
-#include <map>
+#include <Seed/Graphics/light.hpp>
 
-/*! \class Light
-* \brief Light of the scene
+/*! \class FlashLight
+* \brief FlashLight of the scene
 */
-class Light
+class FlashLight : public Light
 {
 public:
 	/*!
-	* \brief Constructor of class Light
+	* \brief Constructor of class FlashLight
 	* \param name: name of the light
 	* \param color: color of the light
+	* \param position: position of the light
 	*/
-	Light(const std::string &name, const glm::vec3 &color);
+	FlashLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color = glm::vec3(1.0), const float &angle = 30.0f, const int &distance = 50);
 	/*!
-	* \brief Destructor of class Light
+	* \brief Destructor of class FlashLight
 	*/
-	~Light();
+	~FlashLight();
+
 	/*!
-	* \brief Get color of the light
-	* \return Color of the light
+	* \brief get the position of the light
+	* \return the position of the light
 	*/
-	glm::vec3 getColor();
+	glm::vec3 getPosition();
 	/*!
-	* \brief get the name of the light
-	* \return the name of hte light
+	* \brief get the direction of the light
+	* \return the direction of the light
 	*/
-	std::string getName();
-	virtual void afficher() = 0;
+	glm::vec3 getDirection();
+	/*!
+	* \brief get the attenuation of the light
+	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
+	*/
+	glm::vec3 getAttenuation();
+
+	void afficher(){}
 
 private:
-	std::string name;
-	glm::vec3 color;
-	
+	glm::vec3 position;
+	glm::vec3 direction;
+	float constant, quadratic, linear, angle;
+};
+
+//structure for UBO of light
+struct flashLightStruct
+{
+	glm::vec4 position;
+	glm::vec4 direction;
+	glm::vec4 color;
+	glm::vec4 attenuation;
+	glm::ivec4 size;
 };
 
 #endif

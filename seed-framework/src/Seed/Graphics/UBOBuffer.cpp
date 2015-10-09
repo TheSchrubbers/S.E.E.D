@@ -29,6 +29,11 @@ void UBOBuffer::updateBuffer(void* data, int s)
 		printErrorOpenGL();
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
+	else
+	{
+		this->createBuffer(s);
+		this->updateBuffer(data, s);
+	}
 }
 
 

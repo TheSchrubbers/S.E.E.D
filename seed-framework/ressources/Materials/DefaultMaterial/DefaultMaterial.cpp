@@ -1,5 +1,6 @@
 #include <DefaultMaterial/DefaultMaterial.hpp>
-
+#include <Seed/Graphics/collector.hpp>
+#include <Seed/Graphics/UBOBuffer.hpp>
 DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag) : Material(material, sce, n, flag)
 {
 	this->init();
@@ -25,7 +26,10 @@ void DefaultMaterial::init()
 	this->compl.diffuseID = glGetUniformLocation(programID, "light.diffuse");
 	this->compl.specularID = glGetUniformLocation(programID, "light.specular");
 
-	this->block_index_lights = glGetUniformBlockIndex(programID, "LightsBuffer");
+	this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
+	this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
+	this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
+	this->block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
 	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 }
 
@@ -37,7 +41,7 @@ void DefaultMaterial::render(Model *model)
 {
 
 	//UNIFORMS
-	this->M *= glm::rotate(0.005f, glm::vec3(0, 1, 0));
+	//this->M *= glm::rotate(0.005f, glm::vec3(0, 1, 0));
 	this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
 	//set the uniform variable MVP
 	glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
@@ -56,15 +60,18 @@ void DefaultMaterial::render(Model *model)
 	this->activeTextures();
 
 	//BUFFERS
-	//bind UBO buffer light
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getLightUBO()->getID());
-	//bind UBO lighting with program shader
-	glUniformBlockBinding(this->programID, this->block_index_lights, 0);
+	for (int i = 0; i < 4; i++)
+	{
+		//bind UBO buffer light
+		glBindBufferBase(GL_UNIFORM_BUFFER, i, this->scene->getCollector()->getLightUBO(i)->getID());
+		//bind UBO lighting with program shader
+		glUniformBlockBinding(this->programID, this->block_index_lights[i], i);
+	}
 
 	//bind UBO buffer camera
-	glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->scene->getCamUBO()->getID());
+	glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
 	//bind UBO camera with program shader
-	glUniformBlockBinding(this->programID, this->block_index_camera, 1);
+	glUniformBlockBinding(this->programID, this->block_index_camera, 4);
 
 	//RENDER
 	//render model

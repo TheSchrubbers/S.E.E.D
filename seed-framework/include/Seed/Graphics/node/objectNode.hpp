@@ -21,7 +21,7 @@
 */
 
 /*!
-* \file node.hpp
+* \file objectNode.hpp
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -29,82 +29,102 @@
 * \license Zlib License.
 */
 
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef OBJECTNODE_HPP
+#define OBJECTNODE_HPP
 
-#include <vector>
-#include <iostream>
-#include <exception>
-
-#include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/model.hpp>
-#include <Seed/Graphics/scene.hpp>
-#include <Seed/Graphics/light.hpp>
+#include <Seed/Graphics/node.hpp>
 
 class Scene;
 class Model;
 class Material;
 
-/*! \class Node
-* \brief Nodes who contains differents things of the scene like meshes, lights, cameras...
+/*! \class ObjectNode
+* \brief Nodes who contains differents things of the scene like meshes, cameras...
 */
-class Node
+class ObjectNode : public Node
 {
 	public:
-
 		/*!
-		* \brief Constructor of class Node
+		* \brief Constructor of class ObjectNode
 		* \param scene: address of the scene
 		* \param name: name of the node
 		*/
-		Node(Scene *scene, const std::string name = "node");
-		Node(){};
+		ObjectNode(Scene *scene, const std::string name = "objectNode");
 		/*!
 		* \brief Destructor of class Node
 		*/
-		~Node();
+		~ObjectNode();
 
 		void afficher();
+		/*!
+		* \brief render the Objectnode
+		*/
+		void render();
 
 		//SETTERS & GETTERS
 
 		/*!
+		* \brief setting a model to the node
+		* \param model: It's the address to the model
+		*/
+		void setModel(Model *model);
+		/*!
+		* \brief Setting a material to the node
+		* \param material: Address of the material
+		*/
+		void setMaterial(Material* material);
+
+		/*!
+		* \brief Setting a material to the node and its children
+		* \param material: Address of the material
+		*/
+		void setMaterialRecur(Material* material);
+		/*!
+		* \brief get the model of the node
+		* \return model of the node
+		*/
+		Model* getModel();
+		/*!
+		* \brief get the material of the node
+		* \return material of the node
+		*/
+		Material* getMaterial();
+		/*!
+		* \brief has material?
+		* \return boolean if the node has material
+		*/
+		bool hasMaterial();
+		/*!
+		* \brief has model ?
+		* \return boolean if the node has model
+		*/
+		bool hasModel();
+		/*!
+		* \brief get children
+		* \return children
+		*/
+		std::vector<ObjectNode*>* getChildren();
+		/*!
 		* \brief Adding a child's node
 		* \param child: Address of the child's node added
 		*/
-		virtual void addChild(Node* child);
+		void addChild(ObjectNode* child);
 		/*!
 		* \brief Set the father's node to the node;
 		* \param father: Address of the father's node added
 		*/
-		virtual void setFather(Node* father);
-
-		/*!
-		* \brief get the name of the node
-		* \return the name of the node
-		*/
-		std::string getName();
+		void setFather(Node* father);
 		/*!
 		* \brief get node with its name
 		* \param the name of the searched node
 		* \return the node
 		*/
-		virtual Node* getNode(const std::string name);
-		/*!
-		* \brief is rendering?
-		* \return boolean if the node must be rendered
-		*/
-		bool isRendered();
-
+		ObjectNode* getNode(const std::string name);
+	
 	private:
-		std::vector<Node*> m_children;
-
-	protected:
-
-		std::string name;
-		Node* father;
-		Scene* scene;
-		bool rendered;
+		std::vector<ObjectNode*> m_children;
+		Model *model;
+		Material *material;
 };
 
 #endif

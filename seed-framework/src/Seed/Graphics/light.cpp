@@ -1,18 +1,13 @@
 #include <Seed/Graphics/light.hpp>
 
-Light::Light( glm::vec3 c, glm::vec3 p)
+Light::Light(const std::string &n, const glm::vec3 &c)
 {
+	this->name = n;
 	this->color = c;
-	this->position = p;
 }
 
 Light::~Light()
 {
-}
-
-void Light::render()
-{
-
 }
 
 glm::vec3 Light::getColor()
@@ -20,7 +15,7 @@ glm::vec3 Light::getColor()
 	return this->color;
 }
 
-glm::vec3 Light::getPosition()
+std::string Light::getName()
 {
-	return this->position;
+	return this->name;
 }

@@ -64,7 +64,8 @@ class DefaultMaterial : public Material
 	private:
 
 		void init();
-		unsigned int block_index_lights, block_index_camera;
+		unsigned int block_index_lights[4];
+		unsigned int block_index_camera;
 };
 
 #endif

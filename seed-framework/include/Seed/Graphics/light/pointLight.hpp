@@ -21,7 +21,8 @@
 */
 
 /*!
-* \file engine.hpp
+* \file pointLight.hpp
+* \brief Pointslights of the scene
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -29,55 +30,56 @@
 * \license Zlib License.
 */
 
-#ifndef ENGINE_HPP
-#define ENGINE_HPP
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#ifndef POINTLIGHT_HPP
+#define POINTLIGHT_HPP
+
 #include <glm/glm.hpp>
 #include <iostream>
+#include <Seed/Graphics/light.hpp>
 
-#include <Seed/Graphics/control.hpp>
-#include <Seed/Graphics/scene.hpp>
-#include <DefaultMaterial/DefaultMaterial.hpp>
-#include <Seed/Graphics/node/objectNode.hpp>
-#define GLFW_INCLUDE_GLCOREARB
-
-
-/*! \class Engine
-* \brief class Engine, init the system and the scene
+/*! \class PointLight
+* \brief PointLight of the scene
 */
-class Engine
+class PointLight : public Light
 {
-	public:
-		/*!
-		* \brief Constructor of class Scene
-		*/
-		Engine();
-		/*!
-		* \brief Destructor of class Node
-		*/
-		~Engine();
+public:
+	/*!
+	* \brief Constructor of class PointLight
+	* \param name: name of the light
+	* \param color: color of the light
+	* \param position: position of the light
+	*/
+	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &color = glm::vec3(1.0), const int &distance = 50);
+	/*!
+	* \brief Destructor of class PointLight
+	*/
+	~PointLight();
+	/*!
+	* \brief Get position of the light
+	* \return Position of the light
+	*/
+	glm::vec3 getPosition();
+	/*!
+	* \brief get the attenuation of the light
+	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
+	*/
+	glm::vec3 getAttenuation();
 
-		void mainRender(Scene *scene);
+	virtual void afficher(){};
 
-		bool initSystem();
-
-		bool initController();
-
-		/*!
-		* \brief init bar antWeakbar
-		* \param name: nale of the interface antWeakBar
-		*/
-		void initAntWeakBar(std::string name);
-		
-		GLFWwindow* window;
-		Controller *controller;
-
-	private:
-
+private:
+	glm::vec3 position;
+	float constant, quadratic, linear;
 };
 
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
+//structure for UBO of light
+struct pointLightStruct
+{
+	glm::vec4 position;
+	glm::vec4 color;
+	glm::vec4 attenuation;
+	glm::ivec4 size;
+};
 
 #endif

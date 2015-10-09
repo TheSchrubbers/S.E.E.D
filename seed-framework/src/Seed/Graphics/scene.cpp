@@ -1,10 +1,21 @@
 #include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/node.hpp>
+#include <Seed/Graphics/node/objectNode.hpp>
+#include <Seed/Graphics/node/pointLightNode.hpp>
+#include <Seed/Graphics/node/spotLightNode.hpp>
+#include <Seed/Graphics/node/directionalLightNode.hpp>
+#include <Seed/Graphics/node/flashLightNode.hpp>
+#include <Seed/Graphics/light/directionnalLight.hpp>
+#include <Seed/Graphics/light/flashLight.hpp>
+#include <Seed/Graphics/light/pointLight.hpp>
+#include <Seed/Graphics/light/spotLight.hpp>
+#include <Seed/Graphics/collector.hpp>
+#include <Seed/Graphics/UBOBuffer.hpp>
 
 Scene::Scene()
 {
-	this->rootNode = new Node(this, "RootNode");
-	this->rootNode->addChild(new Node(this, "RootModelNode"));
-	this->rootNode->addChild(new Node(this, "RootLightNode"));
+	this->rootObjectNode = new ObjectNode(this, "RootObjectNode");
+	this->rootLightNode = new Node(this, "RootLightNode");
 	this->collector = new Collector();
 	//create a UBObuffer
 	this->camBuf = new UBOBuffer();
@@ -13,11 +24,11 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	delete rootNode;
+	delete rootObjectNode;
 	delete collector;
 }
 
-Node* Scene::importModelFromFile(const std::string path, const std::string name)
+ObjectNode* Scene::importModelFromFile(const std::string path, const std::string name)
 {
 	Assimp::Importer importer;
 	bool exist = false;
@@ -34,7 +45,7 @@ Node* Scene::importModelFromFile(const std::string path, const std::string name)
 		return NULL;
 	}
 
-	Node* node = NULL;
+	ObjectNode* node = NULL;
 
 	//if file exists
 	if (exist)
@@ -60,12 +71,12 @@ Node* Scene::importModelFromFile(const std::string path, const std::string name)
 	return node;
 }
 
-Node* Scene::loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name)
+ObjectNode* Scene::loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name)
 {
 	int i = 0;
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
-	//adding child's node to the root node
-	Node *node = new Node(this, name);
+	//adding child's objectnode to the root objectnode
+	ObjectNode *objectNode = new ObjectNode(this, name);
 	//set the root node like father node
 	//node->setFather(this->rootNode);
 	//set this node like son's node to the root node
@@ -78,13 +89,13 @@ Node* Scene::loadObjectInScene(const aiScene *pScene, const std::string path, co
 	//this->loadMaterials(pScene, name);
 
 	//insert nodes
-	this->insertRecurNode(pScene, pScene->mRootNode, node);
+	this->insertRecurNode(pScene, pScene->mRootNode, objectNode);
 	
-	return node;
+	return objectNode;
 }
 
 //build the child's tree of nodes of the scene 
-void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Node *father)
+void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father)
 {
 	int i = 0;
 	//attribute address's meshe to the node if this is a leaf
@@ -100,7 +111,15 @@ void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, Nod
 	//recursive method for exploring children's nodes and do the same thing
 	for (int i = 0; i < nodeFather->mNumChildren; i++)
 	{
-		Node *n = new Node(this, father->getName() + "_" + std::to_string(i));
+		ObjectNode *n;
+		if (nodeFather->mChildren[i]->mName.C_Str() != "")
+		{
+			n = new ObjectNode(this, nodeFather->mChildren[i]->mName.C_Str());
+		}
+		else
+		{
+			n = new ObjectNode(this, father->getName() + "_" + std::to_string(i));
+		}
 		father->addChild(n);
 		n->setFather(father);
 		this->insertRecurNode(pScene, nodeFather->mChildren[i], n);
@@ -123,9 +142,9 @@ void Scene::setCamera(Camera *cam)
 }
 
 //getters
-Node* Scene::getRootNode()
+ObjectNode* Scene::getRootObjectNode()
 {
-	return this->rootNode;
+	return this->rootObjectNode;
 }
 
 Camera* Scene::getCamera()
@@ -133,16 +152,16 @@ Camera* Scene::getCamera()
 	return this->camera;
 }
 
-Node* Scene::getNode(const std::string name)
+ObjectNode* Scene::getObjectNode(const std::string name)
 {
 	//we use an queue to scan the tree of nodes
-	std::queue<Node*> nodes;
+	std::queue<ObjectNode*> nodes;
 	//push the root node
-	nodes.push(this->rootNode);
+	nodes.push(this->rootObjectNode);
 	//we scan all the nodes
 	while (!nodes.empty())
 	{
-		Node *n = nodes.front();
+		ObjectNode *n = nodes.front();
 		nodes.pop();
 		if (n->getName() == name)
 		{
@@ -150,18 +169,13 @@ Node* Scene::getNode(const std::string name)
 		}
 		else
 		{
-			for (int i = 0; i < n->m_children.size(); i++)
+			for (int i = 0; i < n->getChildren()->size(); i++)
 			{
-				nodes.push(n->m_children[i]);
+				nodes.push(n->getChildren()->at(i));
 			}
 		}
 	}
 	return NULL;
-}
-
-UBOBuffer* Scene::getLightUBO()
-{
-	return this->lightBuf;
 }
 
 UBOBuffer* Scene::getCamUBO()
@@ -171,73 +185,114 @@ UBOBuffer* Scene::getCamUBO()
 
 void Scene::afficher()
 {
-	std::stack<Node*> nodes;
-	nodes.push(this->rootNode);
+	std::stack<ObjectNode*> nodes;
+	nodes.push(this->rootObjectNode);
 	while (!nodes.empty())
 	{
-		Node* n = nodes.top();
+		ObjectNode* n = nodes.top();
 		nodes.pop();
-		std::cout << n->getName() << " : Model : " << (n->getModel()? 1:0) << ", Material : " << (n->getMaterial()? 1:0) << ", Light : " << (n->getLight()?1:0) << std::endl;
-		for (int i = 0; i < n->m_children.size(); i++)
+		std::cout << n->getName() << " : Model : " << (n->getModel() ? 1 : 0) << ", Material : " << (n->getMaterial() ? 1 : 0) << std::endl;
+		for (int i = 0; i < n->getChildren()->size(); i++)
 		{
-			nodes.push(n->m_children[i]);
+			nodes.push(n->getChildren()->at(i));
 		}
 	}
 }
 
-void Scene::addLight(const glm::vec3 pos, const glm::vec3 c, std::string n)
+void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, int dist, std::string n)
 {
-	//search the node root for lights
-	Node *light = this->getNode("RootLightNode");
-	//if doesn't exists, so we create it
-	if (!light)
-	{
-		light = new Node(this, "RootLightNode");
-		this->rootNode->addChild(light);
-	}
+	int j = 0;
 	//search if the given name is the same of a light in the list of lights
-	for (int i = 0; i < light->m_children.size(); i++)
+	for (int i = 0; i < this->collector->m_pointLightNodes.size(); i++)
 	{
+		j++;
 		//if it's true we modify the given name
-		if (n == light->m_children[i]->getName())
+		if (n == this->collector->m_pointLightNodes[i]->getName())
 		{
-			n += "_2";
-			break;
+			n += ("_" + std::to_string(j));
+			i = 0;
 		}
 	}
 	//create a new node and push it like the children of node lights
-	Node *node = new Node(this, n);
-	node->setLight(new Light(c, pos));
-	light->addChild(node);
-	node->setFather(light);
+	PointLightNode *node = new PointLightNode(this, n);
+	this->collector->m_pointLightNodes.push_back(node);
+	node->setLight(new PointLight(n, pos, c, dist));
+	this->rootLightNode->addChild((Node*)node);
+	node->setFather(this->rootLightNode);
+}
+
+void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, int a, int dist, std::string n)
+{
+	int j = 0;
+	//search if the given name is the same of a light in the list of lights
+	for (int i = 0; i < this->collector->m_spotLightNodes.size(); i++)
+	{
+		j++;
+		//if it's true we modify the given name
+		if (n == this->collector->m_spotLightNodes[i]->getName())
+		{
+			n += ("_" + std::to_string(j));  
+			i = 0;
+		}
+	}
+	//create a new node and push it like the children of node lights
+	SpotLightNode *node = new SpotLightNode(this, n);
+	this->collector->m_spotLightNodes.push_back(node);
+	node->setLight(new SpotLight(n, pos, dir, c, a, dist));
+	this->rootLightNode->addChild((Node*)node);
+	node->setFather(this->rootLightNode);
+}
+
+void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, std::string n)
+{
+	int j = 0;
+	//search if the given name is the same of a light in the list of lights
+	for (int i = 0; i < this->collector->m_directionnalLightNodes.size(); i++)
+	{
+		j++;
+		//if it's true we modify the given name
+		if (n == this->collector->m_directionnalLightNodes[i]->getName())
+		{
+			n += ("_" + std::to_string(j));
+			i = 0;
+		}
+	}
+	//create a new node and push it like the children of node lights
+	DirectionnalLightNode *node = new DirectionnalLightNode(this, n);
+	this->collector->m_directionnalLightNodes.push_back(node);
+	node->setLight(new DirectionnalLight(n, dir, c));
+	this->rootLightNode->addChild((Node*)node);
+	node->setFather(this->rootLightNode);
+}
+
+void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 &c, int dist, std::string n)
+{
+	int j = 0;
+	//search if the given name is the same of a light in the list of lights
+	for (int i = 0; i < this->collector->m_flashLightNodes.size(); i++)
+	{
+		j++;
+		//if it's true we modify the given name
+		if (n == this->collector->m_flashLightNodes[i]->getName())
+		{
+			n += ("_" + std::to_string(j));
+			i = 0;
+		}
+	}
+	//create a new node and push it like the children of node lights
+	FlashLightNode *node = new FlashLightNode(this, n);
+	this->collector->m_flashLightNodes.push_back(node);
+	node->setLight(new FlashLight(n, pos, dir, c, dist));
+	this->rootLightNode->addChild((Node*)node);
+	node->setFather(this->rootLightNode);
 }
 
 void Scene::lightsRender()
 {
-	//array of structures of light
-	lightStruct *lights;
-	//vec3 of colors and positions of light
-	glm::vec3 c, p;
-	//we get the lights nodes rendering
-	std::vector<Node*> *l = this->collector->getLightingRenderedCollectedNodes();
-	//number of nodes
-	int t = l->size();
-	lights = new lightStruct[t];
-
-	//we set the light rendered to the structures of light
-	for (int i = 0; i < t; i++)
-	{
-		c = l->at(i)->getLight()->getColor();
-		p = l->at(i)->getLight()->getPosition();
-		lights[i].color = glm::vec4(c.x, c.y, c.z, 1.0);
-		lights[i].position = glm::vec4(p.x, p.y, p.z, 1.0);
-		lights[i].size = glm::ivec4(t);
-	}
-	//create a UBObuffer
-	this->lightBuf = new UBOBuffer();
-	this->lightBuf->createBuffer(t * sizeof(lightStruct));
-	//send data of lights
-	this->lightBuf->updateBuffer(lights, t * sizeof(lightStruct));
+	this->collector->pushPointLights();
+	this->collector->pushDirectionnalLights();
+	this->collector->pushFlashLights();
+	this->collector->pushSpotLights();
 }
 
 void Scene::cameraUpdate()
@@ -257,7 +312,7 @@ void Scene::cameraUpdate()
 void Scene::collectRenderedNodes()
 {
 	this->cameraUpdate();
-	this->collector->collectRenderedNodes(this->rootNode);
+	this->collector->collectRenderedObjectNodes(this->rootObjectNode);
 	this->lightsRender();
 }
 
@@ -270,24 +325,19 @@ void Scene::render()
 {
 	cameraUpdate();
 	//we get all the rendered nodes(models, materials...)
-	std::vector<Node*> *renderedNodes = this->collector->getRenderedCollectedNodes();
+	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
 		renderedNodes->at(i)->render();
 	}
-	//this->lightsRender();
+	this->lightsRender();
 }
 
-void Scene::addNode(Node* node)
+void Scene::addNode(ObjectNode* node)
 {
-	Node *n = this->getNode("RootModelNode");
-	if (!n)
-	{
-		this->rootNode->addChild(new Node(this, "RootModelNode"));
-	}
-	n->addChild(node);
-	node->setFather(n);
+	this->rootObjectNode->addChild(node);
+	node->setFather((Node*)this->rootObjectNode);
 }
 
 void Scene::loadMaterials(const aiScene *pScene, const std::string name)

@@ -1,13 +1,5 @@
 #version 440
 
-#define MAX_NUM_TOTAL_LIGHTS 20
-
-struct Light
-{
-	vec4 position;
-	vec4 color;
-	ivec4 size;
-};
 struct Camera
 {
 	mat4 V;
@@ -15,12 +7,7 @@ struct Camera
 	mat4 V_inverse;
 };
 
-layout(std140, binding = 0) uniform LightsBuffer
-{
-	Light lights[MAX_NUM_TOTAL_LIGHTS];
-};
-
-layout(std140, binding = 1) uniform CameraBuffer
+layout(std140, binding = 4) uniform CameraBuffer
 {
 	Camera cam;
 };
@@ -33,28 +20,18 @@ layout(location = 3) in vec2 UVcoord;
 
 uniform mat4 M;
 uniform mat4 Normal_Matrix;
-
-out vec3 L[MAX_NUM_TOTAL_LIGHTS];
 out vec3 C;
 out vec3 N;
 out vec2 UV;
-out uint sizeLights;
+out vec3 P;
 
 void main()
 {
-	sizeLights = lights[0].size.x;
 	vec3 Ptmp = (M * vec4(Position, 1.0)).xyz;
-	vec3 Ltmp;
-	for (int i = 0; i < lights[0].size.x; i++)
-	{
-		Ltmp = lights[i].position.xyz;
-		L[i] = normalize(Ltmp - Ptmp);
-	}
 	vec3 Ctmp = (cam.V_inverse * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 	C = normalize(Ptmp - Ctmp);
 	N = normalize(mat3(Normal_Matrix) * Normal);
 	UV = UVcoord;
-
-
+	P = Ptmp;
 	gl_Position = cam.P * cam.V * M * vec4(Position, 1.0);
 }

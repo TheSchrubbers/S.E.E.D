@@ -3,23 +3,13 @@
 Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsigned int *flag)
 {
 	parserImage image;
-	/* load an image file directly as a new OpenGL texture */
-	/*GLuint tex_2d = SOIL_load_OGL_texture
-		(
-		pathT.c_str(),
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-		);
 
-	if (0 != tex_2d)
-	{
-		//init class
-		this->width = 0;
-		this->height = 0; */
+	//init class
+	this->width = 0;
+	this->height = 0;
 
 	//load image
-	if (image.readImage(pathT.c_str()))
+	if (image.readImage(pathT))
 	{
 		std::cout << "Loading texture " << pathT.c_str() << std::endl;
 		this->path = pathT;
@@ -33,7 +23,6 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		//height
 		int height =  image.getHeight();
 
-		//this->textureID = tex_2d;
 		//create a new openGL texture
 		glGenTextures(1, &textureID);
 		//bind texture to modify this -> typetexture2D
@@ -44,12 +33,15 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		//texture functions
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		*flag = true;
+		*flag = SEED_SUCCESS;
 	}
 	else
 	{
 		*flag = SEED_ERROR_FILE_LOCATION;
+		std::cout << "Error opening file " << pathT << std::endl;
 	}
 }
 

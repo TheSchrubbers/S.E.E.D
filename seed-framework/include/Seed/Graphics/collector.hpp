@@ -34,12 +34,18 @@
 
 #include <iostream>
 #include <vector>
-#include <Seed/Graphics/node.hpp>
+
 class Texture;
-class Light;
+class PointLightNode;
+class SpotLightNode;
+class DirectionnalLightNode;
+class FlashLightNode;
 class Model;
 class Material;
 class Node;
+class ObjectNode;
+class UBOBuffer;
+
 /*! \class Collector
 * \brief Collector class collects nodes in vectors
 */
@@ -59,12 +65,12 @@ public:
 	* \brief Collects rendered nodes without lights
 	* \param rootNode: root node of the scene
 	*/
-	void collectRenderedNodes(Node* rootNode);
+	void collectRenderedObjectNodes(ObjectNode* rootNode);
 	/*!
 	* \brief Collects rendered nodes
 	* \param rootNode: root node of the scene
 	*/
-	void collectRenderedLightingNodes(Node* rootNode);
+	//void collectRenderedLightingNodes(Node* rootNode);
 
 	/*!
 	* \brief Collect material
@@ -100,12 +106,12 @@ public:
 	* \brief Collect light
 	* \param light to collect
 	*/
-	void collectLights(Light *light);
+	//void collectLights(Light *light);
 	/*!
 	* \brief Collect lights
 	* \param lights to collect
 	*/
-	void collectLights(std::vector<Light*> lights);
+	//void collectLights(std::vector<Light*> lights);
 
 	/*!
 	* \brief return model assigned of the index
@@ -129,7 +135,7 @@ public:
 	* \brief get the rendered collected nodes
 	* \return the rendered collected nodes
 	*/
-	std::vector<Node*> * getRenderedCollectedNodes();
+	std::vector<ObjectNode*> * getRenderedCollectedNodes();
 	/*!
 	* \brief get the lighting rendered collected nodes
 	* \return the lighting rendered collected nodes
@@ -141,13 +147,40 @@ public:
 	* \return true if the mesh already exists
 	*/
 	bool meshExists(std::string path);
+	/*!
+	* \brief Push activated PointLights in a UBOBuffer
+	*/
+	void pushPointLights();
+	/*!
+	* \brief Push activated spotLights in a UBOBuffer
+	*/
+	void pushSpotLights();
+	/*!
+	* \brief Push activated directionnalLights in a UBOBuffer
+	*/
+	void pushDirectionnalLights();
+	/*!
+	* \brief Push activated flashLights in a UBOBuffer
+	*/
+	void pushFlashLights();
+	/*!
+	* \brief get pontlightUBO
+	* \return pointLightUBO
+	*/
+	UBOBuffer* getLightUBO(int i);;
 
-	std::vector<Node*> nodesRenderer;
+
+	std::vector<ObjectNode*> nodesObjectRenderer;
 	std::vector<Node*> nodesLightRenderer;
 	std::vector<Model*> m_models;
 	std::vector<Material*> m_materials;
 	std::vector<Texture*> m_textures;
-	std::vector<Light*> m_lights;
+	std::vector<PointLightNode*> m_pointLightNodes;
+	std::vector<SpotLightNode*> m_spotLightNodes;
+	std::vector<DirectionnalLightNode*> m_directionnalLightNodes;
+	std::vector<FlashLightNode*> m_flashLightNodes;
+
+	UBOBuffer *lightBuf[4];
 };
 
 #endif

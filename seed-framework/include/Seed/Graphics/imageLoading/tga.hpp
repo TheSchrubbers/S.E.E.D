@@ -21,7 +21,7 @@
 */
 
 /*!
-* \file engine.hpp
+* \file tga.hpp
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -29,55 +29,39 @@
 * \license Zlib License.
 */
 
-#ifndef ENGINE_HPP
-#define ENGINE_HPP
+#ifndef TGA_HPP
+#define TGA_HPP
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <iostream>
+#include <fstream>
 
-#include <Seed/Graphics/control.hpp>
-#include <Seed/Graphics/scene.hpp>
-#include <DefaultMaterial/DefaultMaterial.hpp>
-#include <Seed/Graphics/node/objectNode.hpp>
-#define GLFW_INCLUDE_GLCOREARB
-
-
-/*! \class Engine
-* \brief class Engine, init the system and the scene
-*/
-class Engine
+struct tga_header
 {
-	public:
-		/*!
-		* \brief Constructor of class Scene
-		*/
-		Engine();
-		/*!
-		* \brief Destructor of class Node
-		*/
-		~Engine();
-
-		void mainRender(Scene *scene);
-
-		bool initSystem();
-
-		bool initController();
-
-		/*!
-		* \brief init bar antWeakbar
-		* \param name: nale of the interface antWeakBar
-		*/
-		void initAntWeakBar(std::string name);
-		
-		GLFWwindow* window;
-		Controller *controller;
-
-	private:
-
+	unsigned char idLength;
+	unsigned char colorMapType;
+	unsigned char imageTypeCode;
+	unsigned char colorMapSpec[5];
+	unsigned short xOrigin;
+	unsigned short yOrigin;
+	unsigned short width;
+	unsigned short height;
+	unsigned char bpp;
+	unsigned char imageDesc;
 };
 
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
+
+/*! \class TGA
+* \brief Loading TGA image
+*/
+class TGA
+{
+public:
+
+	bool Load(const char *filename);
+	void release();
+
+	char *imageData;
+	tga_header tgaheader;
+};
 
 #endif

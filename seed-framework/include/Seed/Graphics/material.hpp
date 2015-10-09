@@ -107,6 +107,11 @@ class Material
 		*/
 		void releaseTextures();
 
+		/*!
+		* \brief Print textures
+		*/
+		void printTextures();
+
 	protected:
 
 		GLuint programID;
