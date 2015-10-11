@@ -22,8 +22,7 @@ void Engine::mainRender(Scene *scene)
 		// Clear the depthbuffer and the colourbuffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Black background
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		//get events glfw
 		glfwPollEvents();

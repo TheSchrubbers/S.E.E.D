@@ -67,11 +67,113 @@ int main()
 	ObjectNode *l = lara->getNode("LaraClothes");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "lara_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraClothes_material", &error);
 		scanSeedError(error);
-		material->addTexture("Lara_Clothes_D.png", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Clothes_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Clothes_S.tga", &scene, TEXTURE_SPECULAR);
 		l->setMaterialRecur(material);
 	}
+
+	l = lara->getNode("LaraSkin");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraSkin_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Skin_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Skin_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("LaraHead");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHead_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Head_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Head_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("LaraEquipment");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraEquipment_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Equipment_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Equipment_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("LaraEye");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraEye_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Eye_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Eye_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("PistolLegs");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraPistol_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Pistol_D.tga", &scene, TEXTURE_AMBIANT);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("PistolHands");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraPistol_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Pistol_D.tga", &scene, TEXTURE_AMBIANT);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("LaraHairTie");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHairTie_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Hair_Tie_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Hair_Tie_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("LaraHair_1_Mesh_2_0");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHair_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Hair_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Hair_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	l = lara->getNode("LaraHair_2");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHair2_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Hair_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Hair_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}
+
+	/*l = lara->getNode("LaraEyebrowEyelash");
+	if (l)
+	{
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraBrownEyeLash_material", &error);
+		scanSeedError(error);
+		material->addTexture("Lara_croft/Lara_Eyebrows_Eyelashes_D.tga", &scene, TEXTURE_AMBIANT);
+		material->addTexture("Lara_croft/Lara_Eyebrows_Eyelashes_S.tga", &scene, TEXTURE_SPECULAR);
+		l->setMaterialRecur(material);
+	}*/
+
+
+
 	scene.addNode(lara);
 
 	scene.afficher();

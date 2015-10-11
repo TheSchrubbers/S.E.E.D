@@ -130,6 +130,8 @@ int parserImage::getFormat(const std::string path)
 		i++;
 	}
 
+	//std::cout << type << std::endl;
+
 	//BMP
 	if ((type[0] == 'p' || type[0] == 'P') && (type[1] == 'm' || type[1] == 'M') && (type[2] == 'b' || type[2] == 'B'))
 	{
@@ -236,12 +238,15 @@ bool parserImage::TGA_parser(const std::string path)
 		this->pixels = (void*)malloc(sizeof(char) * size);
 		//copy data from img to pixels
 		memcpy(this->pixels, &img.imageData[0], size);
-		switch (t.bpp)
+		this->height = t.height;
+		this->width = t.width;
+		//this->compression = 0;
+		switch ((int)t.bpp)
 		{
 		case 24:
 			this->depth = GL_RGB;
 			break;
-		case 32:
+		case 32: 
 			this->depth = GL_RGBA;
 			break;
 		}

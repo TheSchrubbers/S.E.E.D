@@ -329,8 +329,10 @@ void Scene::render()
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
+		//std::cout << renderedNodes->at(i)->getName() << std::endl;
 		renderedNodes->at(i)->render();
 	}
+	//system("pause");
 	this->lightsRender();
 }
 
