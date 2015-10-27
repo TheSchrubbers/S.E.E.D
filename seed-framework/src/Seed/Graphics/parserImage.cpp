@@ -6,6 +6,7 @@ parserImage::parserImage()
 bool parserImage::readImage(const std::string path)
 {
 	int format = this->getFormat(path);
+	std::cout << path << std::endl;
 	switch (format)
 	{
 	case JPEG_FORMAT:
@@ -127,6 +128,7 @@ int parserImage::getFormat(const std::string path)
 	while (path[path.size() - i - 1] != '.' && i < path.size())
 	{
 		type[i] = path[path.size() - i - 1];
+		//std::cout << type[i];
 		i++;
 	}
 

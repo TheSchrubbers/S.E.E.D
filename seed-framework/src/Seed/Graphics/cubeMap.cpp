@@ -1,80 +1,267 @@
+#include <Seed/Graphics/cubeMap.hpp>
 #include <Seed/Graphics/texture.hpp>
+#include <Seed/Graphics/geometry.hpp>
+#include <Seed/Graphics/shader.hpp>
+#include <boost/filesystem.hpp>
+#include <Seed/Graphics/parserImage.hpp>
+#include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/UBOBuffer.hpp>
 
-Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsigned int *flag)
+CubeMap::CubeMap(const std::string path, Scene* sce, unsigned int *flag)
 {
-	parserImage image;
+	//init variable
+	this->VAO = 0;
+	this->block_index_camera = 0;
+	this->programID = 0;
+	this->textureID = 0;
+	this->VBOVertices = 0;
 
-	//init class
-	this->width = 0;
-	this->height = 0;
-
-	//load image
-	if (image.readImage(pathT))
+	this->createCube();
+	this->scene = sce;
+	if (!flag)
 	{
-		std::cout << "Loading texture " << pathT.c_str() << std::endl;
-		this->path = pathT;
-		this->type = typeTexture;
-		//format of image
-		//int format = image->getType();
-		//format of colours -> RGB RGBA BRG ...
-		int t =  image.getDepth();
-		//width
-		int width = image.getWidth();
-		//height
-		int height =  image.getHeight();
+		flag = new unsigned int;
+	}
+	if (!this->loadTextures(path))
+	{
+		*flag = SEED_ERROR_FILE_LOCATION;
+	}
+	if (!this->createShader())
+	{
+		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
+	}
+}
 
-		//create a new openGL texture
-		glGenTextures(1, &textureID);
-		//bind texture to modify this -> typetexture2D
-		glBindTexture(GL_TEXTURE_2D, this->textureID);
+CubeMap::~CubeMap()
+{
+	glDeleteProgram(this->programID);
+}
 
-		//put texture to GPU
-		glTexImage2D(GL_TEXTURE_2D, 0, t, width, height, 0, t, GL_UNSIGNED_BYTE, image.getPixels());
-		//texture functions
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
-		glBindTexture(GL_TEXTURE_2D, 0);
-		*flag = SEED_SUCCESS;
+bool CubeMap::loadTextures(const std::string pathDirectory)
+{
+	int width, height, t;
+	parserImage *img = new parserImage();
+	//we want all the filenames in the directory
+	boost::filesystem::path p(pathDirectory);
+	bool done[6] = { false };
+	std::string s, n;
+	//create a new openGL texture
+	glGenTextures(1, &textureID);
+
+	//bind texture to modify this -> typetexture2D
+	glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);
+
+	if (boost::filesystem::exists(p))
+	{
+		if (boost::filesystem::is_directory(p))
+		{
+			std::vector<boost::filesystem::path> paths;
+			std::copy(boost::filesystem::directory_iterator(p), boost::filesystem::directory_iterator(), std::back_inserter(paths));
+			sort(paths.begin(), paths.end());
+			//check all the filenames
+			for (std::vector<boost::filesystem::path>::const_iterator it(paths.begin()); it != paths.end(); it++)
+			{
+				s = it->relative_path().string();
+				n = it->filename().stem().string();
+				if (n == "back" && !done[1])
+				{
+					this->loadFace(1, &s, img);
+					done[1] = true;
+				}
+				else if (n == "bottom" && !done[4])
+				{
+					this->loadFace(4, &s, img);
+					done[4] = true;
+				}
+				else if (n == "front" && !done[0])
+				{
+					this->loadFace(0, &s, img);
+					done[0] = true;
+				}
+				else if (n == "left" && !done[3])
+				{
+					this->loadFace(3, &s, img);
+					done[3] = true;
+				}
+				else if (n == "right" && !done[2])
+				{
+					this->loadFace(2, &s, img);
+					done[2] = true;
+				}
+				else if (n == "top" && !done[5])
+				{
+					this->loadFace(5, &s, img);
+					done[5] = true;
+				}
+			}
+
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+			return true;
+		}
 	}
 	else
 	{
-		*flag = SEED_ERROR_FILE_LOCATION;
-		std::cout << "Error opening file " << pathT << std::endl;
+		std::cout << "File " << pathDirectory << " not found." << std::endl;
+	}
+	return false;
+
+}
+
+bool CubeMap::loadFace(int type, const std::string *path, parserImage *img)
+{
+	//load image
+	if (img->readImage(*path))
+	{
+		std::cout << "Loading texture " << *path << std::endl;
+		switch (type)
+		{
+			case 0:
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, img->getDepth(), img->getWidth(), img->getHeight(), 0, img->getDepth(), GL_UNSIGNED_BYTE, img->getPixels());
+				break;
+			case 1:
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, img->getDepth(), img->getWidth(), img->getHeight(), 0, img->getDepth(), GL_UNSIGNED_BYTE, img->getPixels());
+				break;
+			case 2:
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, img->getDepth(), img->getWidth(), img->getHeight(), 0, img->getDepth(), GL_UNSIGNED_BYTE, img->getPixels());
+				break;
+			case 3:
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, img->getDepth(), img->getWidth(), img->getHeight(), 0, img->getDepth(), GL_UNSIGNED_BYTE, img->getPixels());
+				break;
+			case 4:
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, img->getDepth(), img->getWidth(), img->getHeight(), 0, img->getDepth(), GL_UNSIGNED_BYTE, img->getPixels());
+				break;
+			case 5:
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, img->getDepth(), img->getWidth(), img->getHeight(), 0, img->getDepth(), GL_UNSIGNED_BYTE, img->getPixels());
+				break;
+		}
+		return true;
+	}
+	else
+	{
+		std::cout << "Error opening file " << *path << std::endl;
+		return false;
 	}
 }
 
-//getters
-int Texture::getWidth()
+void CubeMap::createCube()
 {
-	return this->width;
-}
-int Texture::getHeight()
-{
-	return this->height;
-}
-GLuint Texture::getTextureID()
-{
-	return this->textureID;
+	GLfloat cubeVertices[] = {
+         
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+
+		-1.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f
+	};
+	//VAO generation
+	glGenVertexArrays(1, &(this->VAO));
+	glGenBuffers(1, &VBOVertices);
+	//bind VAO
+	glBindVertexArray(this->VAO);
+	//bind buffer
+	glBindBuffer(GL_ARRAY_BUFFER, VBOVertices);
+	//allocate memory for the faces
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), 0, GL_STATIC_DRAW);
+	//put the faces in the buffer
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cubeVertices), cubeVertices);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 3, 0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//free VAO
+	glBindVertexArray(0);
 }
 
-void Texture::bind()
+void CubeMap::draw()
 {
-	//bind texture to modify this -> typetexture2D
-	glBindTexture(GL_TEXTURE_2D, textureID);
-}
-void Texture::release()
-{
-	//bind texture to modify this -> typetexture2D
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-std::string Texture::getPath()
-{
-	return this->path;
+	if (this->programID != 0)
+	{
+		//load shaders in memory
+		glUseProgram(this->programID);
+		glDepthFunc(GL_LEQUAL);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamUBO()->getID());
+		//bind UBO camera with program shader
+		glUniformBlockBinding(this->programID, this->block_index_camera, 0);
+		glActiveTexture(GL_TEXTURE0);
+		this->bind();
+		glBindVertexArray(this->VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		this->release();
+		glDepthMask(GL_TRUE);
+	}
 }
 
-unsigned int Texture::getType()
+bool CubeMap::createShader()
 {
-	return this->type;
+	//load shaders
+	this->programID = loadShaders(pathToCubeMapMaterial + "Shaders/VertexShader.hlsl", pathToCubeMapMaterial + "Shaders/FragmentShader.hlsl");
+	//if shaders not loading return false
+	if (!this->programID)
+	{
+		return false;
+	}
+	//bind UBO camera
+	this->block_index_camera = glGetUniformBlockIndex(this->programID, "CameraBuffer");
+	return true;
+}
+
+void CubeMap::bind()
+{
+	if (this->textureID != 0)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);
+	}
+}
+void CubeMap::release()
+{
+	if (this->textureID != 0)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
 }

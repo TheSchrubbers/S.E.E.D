@@ -48,7 +48,7 @@ public:
 	* \param name: name of the material
 	* \param pathShaders: path to the directory who contains shaders' files
 	*/
-	DefaultMaterial2(Scene *scene, const std::string name, unsigned int *flag = NULL);
+	DefaultMaterial2(Scene *scene, const std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
 
 	~DefaultMaterial2();
 

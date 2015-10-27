@@ -47,15 +47,20 @@ class DefaultMaterial : public Material
 		* \param material: address of the aimaterial
 		* \param scene : adress of the scene
 		* \param name: name of the material
+		* \param reflection: weight of the reflective coefficient
+		* \param refraction: weight of the refractive coefficient
+		* \param flag: pointer of an int to get any errors
 		*/
-		DefaultMaterial(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = NULL);
+		DefaultMaterial(const aiMaterial *material, Scene *scene, std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
 		/*!
 		* \brief Constructor of class DefaultMaterial
 		* \param scene: address of the scene
 		* \param name: name of the material
-		* \param pathShaders: path to the directory who contains shaders' files
+		* \param reflection: weight of the reflective coefficient
+		* \param refraction: weight of the refractive coefficient
+		* \param flag: pointer of an int to get any errors
 		*/
-		DefaultMaterial(Scene *scene, const std::string name, unsigned int *flag = NULL);
+		DefaultMaterial(Scene *scene, const std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
 
 		~DefaultMaterial();
 

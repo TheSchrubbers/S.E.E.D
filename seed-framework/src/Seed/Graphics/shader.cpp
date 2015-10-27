@@ -1,5 +1,21 @@
 #include <Seed/Graphics/shader.hpp>
 
+
+/*Shader::Shader(const std::string shader_dir_path, const std::string name)
+{
+	if (shader_dir_path.at(shader_dir_path.size - 1) != '/')
+	{
+		this->loadShaders(shader_dir_path + "/VertexShader.hlsl", shader_dir_path + "/FragmentShader.hlsl");
+	}
+	else
+	{
+		this->loadShaders(shader_dir_path + "VertexShader.hlsl", shader_dir_path + "FragmentShader.hlsl");
+	}
+}
+Shader::~Shader()
+{
+
+}*/
 /*void createNameARB(std::string name, std::string path)
 {
 	name = "/" + name;
@@ -13,16 +29,16 @@
 		ShaderStream.close();
 	}
 	glNamedStringARB(GL_SHADER_INCLUDE_ARB, -1, name.c_str(), -1, ShaderCode.c_str());
-}
+}*/
 
-void createShader(const std::string path, const std::string name)
+/*void createShader(const std::string path, const std::string name)
 {
 	GLuint shader;
 	createNameARB(name, path);
 	glCompileShaderIncludeARB(shader, 1, path.c_str(), -1);
 }*/
-GLuint loadShaders(const std::string vertex_file_path, const std::string fragment_file_path){
-
+GLuint loadShaders(const std::string vertex_file_path, const std::string fragment_file_path)
+{
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);

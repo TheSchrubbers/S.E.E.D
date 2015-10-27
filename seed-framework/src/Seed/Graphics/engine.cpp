@@ -11,6 +11,7 @@ Engine::~Engine()
 	TwTerminate();
 }
 
+
 void Engine::mainRender(Scene *scene)
 {
 	double currentTime = 0, lastTime = 0;
@@ -90,7 +91,9 @@ void Engine::initAntWeakBar(std::string name)
 	this->controller->initAntWeakBar(name);
 
 	float a = 0.1f, d = 0.5f, s = 0.4f;
-	TwAddVarRW(this->controller->getBar(), "Ambiant composant", TW_TYPE_FLOAT, &a, " min=0.0 max=1.0 step=0.01 group=Engine label='Ambiant composant' ");
+	/*TwAddVarRW(this->controller->getBar(), "Ambiant composant", TW_TYPE_FLOAT, &a, " min=0.0 max=1.0 step=0.01 group=Engine label='Ambiant composant' ");
 	TwAddVarRW(this->controller->getBar(), "Diffuse composant", TW_TYPE_FLOAT, &d, " min=0.0 max=1.0 step=0.01 group=Engine label='Diffuse composant' ");
-	TwAddVarRW(this->controller->getBar(), "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");
+	TwAddVarRW(this->controller->getBar(), "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");*/
+	// Add callback to toggle auto-rotate mode (callback functions are defined above).
+	TwAddVarRW(this->controller->getBar(), "Wireframe", TW_TYPE_BOOL32, &(Scene::wireframe), " label='WireFrame' key=w help='Active/Desactive mode wireframe' ");
 }

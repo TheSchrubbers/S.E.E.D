@@ -21,8 +21,7 @@
 */
 
 /*!
- * \file Texture.hpp
- * \brief Loader Textures from format PNG, BMP, TGA, JPEG, ...
+ * \file cubeMap.hpp
  * \author Jérémy RIFFET
  * \version 0.1
  * \copyright Copyright (c) 2015,
@@ -30,74 +29,76 @@
  * \license Zlib License.
  */
 
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#ifndef CUBEMAP_HPP
+#define CUBEMAP_HPP
 
 #include <glm/glm.hpp>
 #include <GL/glew.h>
-#include <Seed/Graphics/parserImage.hpp>
 #include <iostream>
 #include <Seed/Graphics/Constant.hpp>
 
-/*! \class Texture
- * \brief Loads and generate an IDTexture in GPU
+class Texture;
+class Model;
+class parserImage;
+class Scene;
+/*! \class CubeMap
+ * \brief Generate a cubemap
  */
-class Texture
+class CubeMap
 {
 public:
 	/*!
 	 * \brief Constructor of class Texture
 	 * \param path : path to the image file
-	 * \param typeTexture: type of the texture (TEXTURE_AMBIANT, TEXTURE_DIFFUSE, TEXTURE_SPECULAR)
+	 * \param scene : scene of the current context
 	 * \param flag: if the constructor is a success
 	 */
-	Texture(const std::string path, const unsigned int typeTexture, unsigned int *flag);
+	CubeMap(const std::string path, Scene* scene , unsigned int *flag);
 	/*!
 	* \brief Destructor of class Texture
 	*/
-	~Texture(){};
-
+	~CubeMap();
 	/*!
-	 * \brief Get width of image
-	 * \return int : Value of width of image
-	 */
-	int getWidth();
+	* \brief Draw the cubemap
+	*/
+	void draw();
 	/*!
-	 * \brief Get height of image
-	 * \return int : Value of height of image
-	 */
-	int getHeight();
-	/*!
-	 * \brief Get texture ID
-	 * \return int : The GLuint ID of texture
-	 */
-	GLuint getTextureID();
-	/*!
-	 * \brief GLuint : Bind texture from GPU
-	 */
+	* \brief Bind texture of cubemap
+	*/
 	void bind();
 	/*!
-	 * \brief Release texture from GPU
-	 */
+	* \brief Release texture of cubemap
+	*/
 	void release();
-	/*!
-	* \brief get the path of the texture;
-	* \return path of the texture
-	*/
-	std::string getPath();
-	/*!
-	* \brief get the type of the texture
-	* \return the type of the texture
-	*/
-	unsigned int getType();
-
 
 private:
-	int width;
-	int height;
 	GLuint textureID;
-	unsigned int type;
-	std::string path;
+	GLuint programID;
+	GLuint VBOVertices;
+	GLuint VAO;
+	Scene *scene;
+	unsigned int block_index_camera;
+	/*!
+	* \brief load all the textures face of the cubemap
+	* \param pathDir: path to the dir which contains the pictures
+	* \return true if all the pictures were loading
+	*/
+	bool loadTextures(const std::string path);
+	/*!
+	* \brief Creat shader for the cubemap
+	*/
+	bool createShader();
+	/*!
+	* \brief create a geometric model for the cube map
+	*/
+	void createCube();
+	/*!
+	* \brief Load face's pictures
+	* \param type It's the face of the cube (0 = front, 1 = back, 2 = right, 3 = left, 4 = bottom, 5 = top)
+	* \param path Path to the picture
+	* \param img ParserImage (Optimization)
+	*/
+	bool CubeMap::loadFace(int type, const std::string *path, parserImage *img);
 };
 
 #endif

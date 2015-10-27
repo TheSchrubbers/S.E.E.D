@@ -11,6 +11,9 @@
 #include <Seed/Graphics/light/spotLight.hpp>
 #include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/UBOBuffer.hpp>
+#include <Seed/Graphics/cubeMap.hpp>
+
+bool Scene::wireframe = false;
 
 Scene::Scene()
 {
@@ -20,6 +23,7 @@ Scene::Scene()
 	//create a UBObuffer
 	this->camBuf = new UBOBuffer();
 	this->camBuf->createBuffer(sizeof(cameraStruct));
+	this->cubemap = NULL;
 }
 
 Scene::~Scene()
@@ -304,6 +308,8 @@ void Scene::cameraUpdate()
 	cam->V = this->camera->getViewMatrix();
 	cam->P = this->camera->getProjectionMatrix();
 	cam->V_inverse = glm::inverse(this->camera->getViewMatrix());
+
+	//std::cout << cam->V[0][0] << std::endl;
 	
 	//send data of lights
 	camBuf->updateBuffer(cam, sizeof(cameraStruct));
@@ -326,14 +332,18 @@ void Scene::render()
 	cameraUpdate();
 	//we get all the rendered nodes(models, materials...)
 	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+	if (Scene::wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
 		//std::cout << renderedNodes->at(i)->getName() << std::endl;
 		renderedNodes->at(i)->render();
 	}
-	//system("pause");
 	this->lightsRender();
+	this->cubemap->draw();
 }
 
 void Scene::addNode(ObjectNode* node)
@@ -375,4 +385,20 @@ void Scene::loadMaterials(const aiScene *pScene, const std::string name)
 
 	this->m_materials.push_back(m);
 	}*/
+}
+
+bool Scene::setCubeMap(std::string pathDir)
+{
+	unsigned int flag;
+	this->cubemap = new CubeMap(pathDir, this, &flag);
+	if (flag == SEED_SUCCESS)
+	{
+		return true;
+	}
+	return false;
+}
+
+CubeMap* Scene::getCubeMap()
+{
+	return this->cubemap;
 }

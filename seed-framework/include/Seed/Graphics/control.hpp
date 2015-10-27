@@ -17,8 +17,9 @@ public:
 	void updateControl(GLFWwindow* window, Camera* camera, float deltaTime);
 	void initAntWeakBar(std::string name);
 	TwBar* getBar();
+	static int context;
 private:
-	int context;
+	
 	TwBar *bar;
 };
 

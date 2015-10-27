@@ -30,15 +30,17 @@ int main()
 	//adding camera to the scene
 	scene.setCamera(&camera);
 
-	//scene.addPointLight(glm::vec3(3.0,8.0,5.0), glm::vec3(1.0), 50, "light_1");
-	scene.addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)));
+	scene.setCubeMap(pathToTextures + "CubeMap/Skybox");
+
+	scene.addPointLight(glm::vec3(3.0,8.0,5.0), glm::vec3(1.0), 50, "light_1");
+	//scene.addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)));
 	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);
 	//import model
 	/*ObjectNode *cube1 = scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
 
 	if (cube1)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "cube1_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "cube1_material", 0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("bois.png", &scene, TEXTURE_AMBIANT, &error);
 		scanSeedError(error);
@@ -67,7 +69,7 @@ int main()
 	ObjectNode *l = lara->getNode("LaraClothes");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraClothes_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraClothes_material", 0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Clothes_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Clothes_S.tga", &scene, TEXTURE_SPECULAR);
@@ -77,7 +79,7 @@ int main()
 	l = lara->getNode("LaraSkin");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraSkin_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraSkin_material", 0.1, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Skin_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Skin_S.tga", &scene, TEXTURE_SPECULAR);
@@ -87,7 +89,7 @@ int main()
 	l = lara->getNode("LaraHead");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHead_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHead_material", 0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Head_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Head_S.tga", &scene, TEXTURE_SPECULAR);
@@ -97,7 +99,7 @@ int main()
 	l = lara->getNode("LaraEquipment");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraEquipment_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraEquipment_material",0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Equipment_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Equipment_S.tga", &scene, TEXTURE_SPECULAR);
@@ -107,7 +109,7 @@ int main()
 	l = lara->getNode("LaraEye");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraEye_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraEye_material",0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Eye_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Eye_S.tga", &scene, TEXTURE_SPECULAR);
@@ -117,7 +119,7 @@ int main()
 	l = lara->getNode("PistolLegs");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraPistol_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraPistol_material", 0.2, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Pistol_D.tga", &scene, TEXTURE_AMBIANT);
 		l->setMaterialRecur(material);
@@ -126,7 +128,7 @@ int main()
 	l = lara->getNode("PistolHands");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraPistol_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraPistol_material", 0.2, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Pistol_D.tga", &scene, TEXTURE_AMBIANT);
 		l->setMaterialRecur(material);
@@ -135,7 +137,7 @@ int main()
 	l = lara->getNode("LaraHairTie");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHairTie_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHairTie_material", 0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Hair_Tie_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Hair_Tie_S.tga", &scene, TEXTURE_SPECULAR);
@@ -145,7 +147,7 @@ int main()
 	l = lara->getNode("LaraHair_1_Mesh_2_0");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHair_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHair_material", 0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Hair_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Hair_S.tga", &scene, TEXTURE_SPECULAR);
@@ -155,7 +157,7 @@ int main()
 	l = lara->getNode("LaraHair_2");
 	if (l)
 	{
-		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHair2_material", &error);
+		DefaultMaterial *material = new DefaultMaterial(&scene, "laraHair2_material", 0.0, 0.0, &error);
 		scanSeedError(error);
 		material->addTexture("Lara_croft/Lara_Hair_D.tga", &scene, TEXTURE_AMBIANT);
 		material->addTexture("Lara_croft/Lara_Hair_S.tga", &scene, TEXTURE_SPECULAR);

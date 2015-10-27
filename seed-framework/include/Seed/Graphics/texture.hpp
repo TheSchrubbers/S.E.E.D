@@ -52,6 +52,7 @@ public:
 	 * \param flag: if the constructor is a success
 	 */
 	Texture(const std::string path, const unsigned int typeTexture, unsigned int *flag);
+	Texture(){};
 	/*!
 	* \brief Destructor of class Texture
 	*/

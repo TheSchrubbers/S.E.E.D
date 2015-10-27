@@ -1,7 +1,7 @@
 #include "DefaultMaterial2.hpp"
 #include <Seed/Graphics/UBOBuffer.hpp>
 
-DefaultMaterial2::DefaultMaterial2(Scene *sce, const std::string n, unsigned int *flag) : Material(sce, n, "C:/Users/jeremy/Documents/Seed-Graphics/Release/ressources/Materials/DefaultMaterial2/Shaders", flag)
+DefaultMaterial2::DefaultMaterial2(Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(sce, n, reflec, refrac,  "ressources/Materials/DefaultMaterial2/Shaders", flag)
 {
 	this->M = glm::mat4(1.0);
 

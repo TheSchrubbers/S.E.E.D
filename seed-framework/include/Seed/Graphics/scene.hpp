@@ -51,6 +51,7 @@ class Node;
 class ObjectNode;
 class PointLightNode;
 class UBOBuffer;
+class CubeMap;
 
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
@@ -154,12 +155,25 @@ class Scene
 		*/
 		Collector* getCollector();
 
+		/*
+		* \brief construct cubemap for the scene
+		* \param pathDir : path the the dir which contains images top, bottom, right, left, front, back
+		*/
+		bool setCubeMap(std::string pathDir);
+
+		/*!
+		* \brief get the cubemap
+		*/
+		CubeMap* getCubeMap();
+
 		/*!
 		*\brief Render nodes who be must rendered
 		*/
 		void render();
 
 		void afficher();
+
+		static bool wireframe;
 		
 
 	private:
@@ -169,6 +183,7 @@ class Scene
 		Camera *camera;
 		Collector *collector;
 		UBOBuffer *camBuf;
+		CubeMap * cubemap;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

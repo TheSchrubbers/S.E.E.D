@@ -2,14 +2,17 @@
 #include <Seed/Graphics/scene.hpp>
 #include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/texture.hpp>
+#include <Seed/Graphics/cubeMap.hpp>
 
 
-Material::Material(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag)
+Material::Material(const aiMaterial *material, Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag)
 {
 	this->scene = sce;
 	this->camera = sce->getCamera();
 	this->name = n;
-	if (!this->addShaders(pathToDefaultShadersDir))
+	this->mat.Ks = reflec;
+	this->mat.Kr = refrac;
+	if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
 	{
 		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
 	}
@@ -18,16 +21,18 @@ Material::Material(const aiMaterial *material, Scene *sce, const std::string n, 
 		*flag = SEED_SUCCESS;
 	}
 }
-Material::Material(Scene *sce, const std::string n, const std::string pathShaders, unsigned int *flag)
+Material::Material(Scene *sce, const std::string n, const float reflec, const float refrac, const std::string pathShaders, unsigned int *flag)
 {
 	this->scene = sce;
 	this->camera = sce->getCamera();
 	this->name = n;
+	this->mat.Ks = reflec;
+	this->mat.Kr = refrac;
 	//if user doesn't give path to the shaders, we take the default shaders
 	if (pathShaders == "")
 	{
 		// if default shaders not found, error in the flag else success
-		if (!this->addShaders(pathToDefaultShadersDir))
+		if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
 		{
 			*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
 		}
@@ -68,13 +73,11 @@ bool Material::addShaders(const std::string pathDir)
 	//if shaders not loading we try with default shaders
 	if (!this->programID)
 	{
-		this->programID = loadShaders(pathToShaders + "default/VertexShader.hlsl", pathToShaders + "default/FragmentShader.hlsl");
+		this->programID = loadShaders(pathToDefaultMaterial + "Shaders/VertexShader.hlsl", pathToDefaultMaterial + "Shaders/FragmentShader.hlsl");
 		//if default shaders not found return false
 		if (!this->programID)
 			return false;
 	}
-	//load shaders in memory
-	glUseProgram(programID);
 
 	return true;
 }
@@ -148,25 +151,33 @@ void Material::activeTextures()
 	//active and bind textures
 	for (i = 0; i < textures_ambiant.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i);
+		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_ambiant[i]->bind();
 		glUniform1i(glGetUniformLocation(programID, ("samplerAmbiantTexture" + std::to_string(i)).c_str()), i);
 		j++;
 	}
 	for (i = 0; i < textures_diffuse.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i + j);
+		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_diffuse[i]->bind();
 		glUniform1i(glGetUniformLocation(programID, ("samplerDiffuseTexture0" + std::to_string(i)).c_str()), i + j);
-		//glUniform1i(glGetUniformLocation(programID, "samplerDiffuseTexture0"), i + j);
 		j++;
 	}
 	for (i = 0; i < this->textures_specular.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i + j);
+		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_specular[i]->bind();
 		glUniform1i(glGetUniformLocation(programID, ("samplerSpecularTexture" + std::to_string(i)).c_str()), i + j);
+		j++;
 	}
+	CubeMap *c;
+	if (c = this->scene->getCubeMap())
+	{
+		glActiveTexture(GL_TEXTURE0 + j);
+		c->bind();
+		glUniform1i(glGetUniformLocation(programID, "skybox"), j);
+	}
+	c = NULL;
 }
 
 void Material::releaseTextures()
@@ -184,6 +195,11 @@ void Material::releaseTextures()
 	for (i = 0; i < this->textures_specular.size(); i++)
 	{
 		this->textures_specular[i]->bind();
+	}
+	CubeMap *c;
+	if (c = this->scene->getCubeMap())
+	{
+		c->release();
 	}
 }
 
@@ -205,4 +221,14 @@ void Material::printTextures()
 		std::cout << textures_specular[i]->getTextureID() << ", ";
 	}
 	std::cout << std::endl;
+}
+
+bool Material::activateShader()
+{
+	if (this->programID != 0)
+	{
+		glUseProgram(this->programID);
+		return true;
+	}
+	return false;
 }

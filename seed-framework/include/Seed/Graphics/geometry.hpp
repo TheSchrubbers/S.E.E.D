@@ -54,6 +54,18 @@ public:
 	*/
 	Geometry(const aiMesh *mesh);
 	/*!
+	* \brief Constructor of class Geometry
+	* \param vertices: vector of vertices
+	* \param normals: vector of normals
+	* \param tangents: vector of tangents
+	* \param coord : vector of texture coordinates
+	*/
+	Geometry(std::vector<glm::vec3> vert, std::vector<glm::vec3> norm, std::vector<glm::vec3> tang, std::vector<glm::vec2> tex);
+	Geometry(std::vector<glm::vec3> vert, std::vector<glm::vec3> norm, std::vector<glm::vec3> tang);
+	Geometry(std::vector<glm::vec3> vert, std::vector<glm::vec3> norm, std::vector<glm::vec2> tex);
+	Geometry(std::vector<glm::vec3> vert, std::vector<glm::vec3> norm);
+	Geometry(std::vector<glm::vec3> vert );
+	/*!
 	* \brief Destructor of class Geometry
 	*/
 	~Geometry();	

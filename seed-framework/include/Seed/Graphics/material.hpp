@@ -54,16 +54,22 @@ class Material
 		* \brief Constructor of class Material
 		* \param material: address of the aimaterial
 		* \param scene: address of the scene
+		* \param reflection: weight of the reflective coefficient
+		* \param rafraction: weight of the refractive coefficient
 		* \param name: name of the material
+		* \param flag: pointer of an int to get any errors
 		*/
-		Material(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = NULL);
+		Material(const aiMaterial *material, Scene *scene, std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
 		/*!
 		* \brief Constructor of class Material
 		* \param scene: address of the scene
 		* \param name: name of the material
+		* \param reflection: weight of the reflective coefficient
+		* \param rafraction: weight of the refractive coefficient
 		* \param pathShaders: path to the directory who contains shaders' files
+		* \param flag: pointer of an int to get any errors
 		*/
-		Material(Scene *scene, const std::string name, const std::string pathShaders = "", unsigned int *flag = NULL);
+		Material(Scene *scene, const std::string name, const float reflec = 0.0, const float refrac = 0.0, const std::string pathShaders = "", unsigned int *flag = NULL);
 
 		~Material();
 
@@ -122,15 +128,28 @@ class Material
 		Camera *camera;
 		std::string name;
 
+		/*!
+		* \brief activate shaders
+		* \return true if the shader is activated
+		*/
+		bool activateShader();
+
 		struct compLight
 		{
 			float ambiant, diffuse, specular;
 			GLuint ambiantID, diffuseID, specularID;
 		};
 
+		struct Mat
+		{
+			float Ks;
+			float Kr;
+		};
+
 		glm::mat4 M, Normal_Matrix;
-		GLuint MID, NMID;
+		GLuint MID, NMID, matID;
 		compLight compl;
+		Mat mat;
 };
 
 #endif

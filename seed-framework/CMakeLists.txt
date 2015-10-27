@@ -26,6 +26,8 @@ include_directories(lib-required/clmg)
 include_directories(ressources/Materials)
 # AntTweakBar include directories
 include_directories(lib-required/antTweakBar/include)
+# Boost include directories
+include_directories(lib-required/boost_win32)
 
 if(WIN32)
 
@@ -83,6 +85,7 @@ if(WIN32)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3dll.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-gd-1_59.lib)
 	target_link_libraries(Seed-Graphics ${OPENGL_INCLUDE_DIRS})
 
 else(WIN32)

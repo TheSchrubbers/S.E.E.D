@@ -1,4 +1,7 @@
 #include <Seed/Graphics/control.hpp>
+#include <Seed/Graphics/scene.hpp>
+
+int Controller::context = 0;
 
 Controller::Controller(GLFWwindow *window)
 {
@@ -16,15 +19,15 @@ void Controller::updateControl(GLFWwindow* window, float &WAngle, float &HAngle,
 {
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
-		this->context += 1;
-		this->context %= 2;
+		Controller::context += 1;
+		Controller::context %= 2;
 	}
 
 	double xpos, ypos;
 	//get mouse position on the screen
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-	if (context == 0)
+	if (Controller::context == 0)
 	{
 		//reset position of mouse
 		glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
@@ -63,6 +66,10 @@ void Controller::updateControl(GLFWwindow* window, float &WAngle, float &HAngle,
 		{
 			position -= up * deltaTime * speed;
 		}
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			Scene::wireframe = !Scene::wireframe;
+		}
 	}
 	else
 	{
@@ -94,15 +101,15 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
-		this->context += 1;
-		this->context %= 2;
+		Controller::context += 1;
+		Controller::context %= 2;
 	}
 
 	double xpos, ypos;
 	//get mouse position on the screen
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-	if (context == 0)
+	if (Controller::context == 0)
 	{
 		//reset position of mouse
 		glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
@@ -141,20 +148,19 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 		{
 			position -= up * deltaTime * speed;
 		}
+		//set the angle of the direction vector of the camera
+		cam->setHAngle(HAngle);
+		cam->setWAngle(WAngle);
+		//update ViewMatrix
+		cam->setViewMatrix(position, direction, up);
+		//update Projection Matrix
+		cam->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
 	}
 	else
 	{
 		//send position of the mouse to anttweakbar
 		TwMouseMotion(xpos, ypos);
 	}
-
-	//set the angle of the direction vector of the camera
-	cam->setHAngle(HAngle);
-	cam->setWAngle(WAngle);
-	//update ViewMatrix
-	cam->setViewMatrix(position, direction, up);
-	//update Projection Matrix
-	cam->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
 }
 
 
@@ -170,6 +176,8 @@ void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mod
 			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
 			break;
 		case GLFW_MOUSE_BUTTON_RIGHT:
+			Controller::context += 1;
+			Controller::context %= 2;
 			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
 			break;
 		}
