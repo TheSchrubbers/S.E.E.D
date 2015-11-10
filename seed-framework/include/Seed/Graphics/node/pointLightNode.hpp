@@ -90,7 +90,11 @@ class PointLightNode : public Node
 		* \param father: Address of the father's node added
 		*/
 		void setFather(Node* father);
-
+		/*!
+		* \brief node has children?
+		* \return boolean if the node has children
+		*/
+		bool hasChildren();
 
 
 	private:

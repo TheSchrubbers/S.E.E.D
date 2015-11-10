@@ -41,6 +41,7 @@
 #include <Seed/Graphics/scene.hpp>
 #include <DefaultMaterial/DefaultMaterial.hpp>
 #include <Seed/Graphics/node/objectNode.hpp>
+#include <ImplicitMaterial/ImplicitMaterial.hpp>
 #define GLFW_INCLUDE_GLCOREARB
 
 
@@ -69,7 +70,7 @@ class Engine
 		* \brief init bar antWeakbar
 		* \param name: nale of the interface antWeakBar
 		*/
-		void initAntWeakBar(std::string name);
+		void initAntWeakBar(std::string name, const Camera *camera);
 		
 		GLFWwindow* window;
 		Controller *controller;

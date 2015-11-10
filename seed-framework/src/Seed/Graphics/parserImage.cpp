@@ -9,15 +9,15 @@ bool parserImage::readImage(const std::string path)
 	std::cout << path << std::endl;
 	switch (format)
 	{
-	case JPEG_FORMAT:
+	case SEED_JPEG_FORMAT:
 		break;
-	case PNG_FORMAT:
+	case SEED_PNG_FORMAT:
 		return PNG_parser(path);
 		break;
-	case BMP_FORMAT:
+	case SEED_BMP_FORMAT:
 		return BMP_parser(path);
 		break;
-	case TGA_FORMAT:
+	case SEED_TGA_FORMAT:
 		return TGA_parser(path);
 		break;
 	}
@@ -137,19 +137,19 @@ int parserImage::getFormat(const std::string path)
 	//BMP
 	if ((type[0] == 'p' || type[0] == 'P') && (type[1] == 'm' || type[1] == 'M') && (type[2] == 'b' || type[2] == 'B'))
 	{
-		return BMP_FORMAT;
+		return SEED_BMP_FORMAT;
 	}
 	else if ((type[0] == 'g' || type[0] == 'G') && (type[1] == 'n' || type[1] == 'N') && (type[2] == 'p' || type[2] == 'P'))
 	{
-		return PNG_FORMAT;
+		return SEED_PNG_FORMAT;
 	}
 	else if ((type[0] == 'g' || type[0] == 'G') && ((type[1] == 'p' || type[1] == 'P') && (type[2] == 'j' || type[2] == 'J')) || ((type[1] == 'e' || type[1] == 'E') && (type[2] == 'p' || type[2] == 'P') && (type[3] == 'j' || type[2] == 'J')))
 	{
-		return JPEG_FORMAT;
+		return SEED_JPEG_FORMAT;
 	}
 	else if ((type[0] == 'a' || type[0] == 'A') && (type[1] == 'g' || type[1] == 'G') && (type[2] == 't' || type[2] == 'T'))
 	{
-		return TGA_FORMAT;
+		return SEED_TGA_FORMAT;
 	}
 	return 0;
 }

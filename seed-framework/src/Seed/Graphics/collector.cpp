@@ -8,7 +8,7 @@
 #include <Seed/Graphics/light/directionnalLight.hpp>
 #include <Seed/Graphics/light/flashLight.hpp>
 #include <Seed/Graphics/light/spotLight.hpp>
-#include <Seed/Graphics/UBOBuffer.hpp>
+#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
 
 Collector::Collector()
 {
@@ -61,15 +61,19 @@ void Collector::collectRenderedObjectNodes(ObjectNode* node)
 		if (node->getName() != "RootLightNode")
 		{
 			//recursiv method to parse all the nodes
-			for (int i = 0; i < node->getChildren()->size(); i++)
+			for (int i = 0; i < children->size(); i++)
 			{
 				this->collectRenderedObjectNodes(children->at(i));
 			}
 			//if the node has material and model
-			if (node->hasMaterial())
+			/*if (node->hasMaterial())
 			{
 				if (node->hasModel())
-					this->nodesObjectRenderer.push_back(node);
+				this->nodesObjectRenderer.push_back(node);
+			}*/
+			if (!node->hasChildren())
+			{
+				this->nodesObjectRenderer.push_back(node);
 			}
 		}
 		/*else

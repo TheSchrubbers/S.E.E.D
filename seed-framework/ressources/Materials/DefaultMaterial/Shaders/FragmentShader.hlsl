@@ -3,6 +3,7 @@
 #define MAX_NUM_TOTAL_LIGHTS 20
 #define M_PI 3.1415926535897932384626433832795
 
+//Structs
 struct PointLight
 {
 	vec4 position;
@@ -33,6 +34,14 @@ struct FlashLight
 	ivec4 size;
 };
 
+struct Light
+{
+	float ambiant;
+	float diffuse;
+	float specular;
+};
+
+//IN
 layout(std140, binding = 0) uniform PointLightsBuffer
 {
 	PointLight pointLights[MAX_NUM_TOTAL_LIGHTS];
@@ -51,48 +60,102 @@ layout(std140, binding = 3) uniform FlashLightsBuffer
 };
 
 in vec3 C;
+in vec3 P;
+
 in vec3 N;
 in vec2 UV;
-in vec3 P;
+
+in mat3 TBN;
 flat in uint sizeLights;
 
+//OUT
 out vec4 Color;
 
-struct Light
-{
-	float ambiant;
-	float diffuse;
-	float specular;
-};
+//UNIFORM
 uniform Light light;
 uniform sampler2D samplerAmbiantTexture0;
 uniform sampler2D samplerSpecularTexture0;
+uniform sampler2D samplerNormalTexture;
+uniform samplerCube skybox;
+uniform vec2 mat;
+uniform bool NormalMappingActive, SpecularMappingActive, SpecularMappingView;
 
+//FUNCTIONS
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec);
 vec3 computeContributingDirectionnalLights(DirectionnalLight pl, vec3 No, vec3 Ca, vec3 diff, vec3 spec);
 vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec);
+vec3 Phong(vec3 LColor, float Ka, float Kd, float Ks, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation);
 
 void main()
 {
+	vec3 Reflect;
+	vec4 skyboxColor;
+	if (mat.x > 0.0)
+	{
+		//reflection color
+		Reflect = reflect(C, N);
+		skyboxColor = texture(skybox, Reflect);
+	}
+	//refraction Color
+
+	//diffusion map
 	vec4 texDifColor = texture(samplerAmbiantTexture0, UV);
-	vec3 texSpecColor = vec3(texture(samplerSpecularTexture0, UV));
+	vec3 texSpecColor;
+	if (SpecularMappingActive)
+	{
+		//specular map
+		texSpecColor = texture(samplerSpecularTexture0, UV).rgb;
+	}
+	else
+	{
+		texSpecColor = vec3(1.0);
+	}
+	//normal map
+	vec3 texNormal = texture(samplerNormalTexture, UV).rgb;
+	//clamping normal from [0,1] to [-1,1]
+	texNormal = normalize(texNormal * 2.0 - 1.0);
+	//set the normal vector in world space
+	texNormal = normalize(TBN * texNormal);
 	vec3 PLContributing = vec3(0.0);
-	//int sizeLights = pointLights[0].size.x + directionnalLights[0].size.x + spotLights[0].size.x + flashLights[0].size.x;
+
+	vec3 Normal;
+	if (NormalMappingActive)
+		Normal = texNormal;
+	else
+		Normal = N;
+
+	//process pointLights contributions
 	for (int i = 0; i < pointLights[0].size.x; i++)
 	{
-		PLContributing += computeContributingPointLights(pointLights[i], N, C, P, texDifColor.xyz, texSpecColor);
+		PLContributing += computeContributingPointLights(pointLights[i], Normal, C, P, texDifColor.xyz, texSpecColor);
 	}
+	//process directionnalLights contributions
 	for (int i = 0; i < directionnalLights[0].size.x; i++)
 	{
-		PLContributing += computeContributingDirectionnalLights(directionnalLights[i], N, C, texDifColor.xyz, texSpecColor);
+		PLContributing += computeContributingDirectionnalLights(directionnalLights[i], Normal, C, texDifColor.xyz, texSpecColor);
 	}
+	//process spotLights contributions
 	for (int i = 0; i < spotLights[0].size.x; i++)
 	{
-		PLContributing += computeContributingSpotLights(spotLights[i], N, C, P, texDifColor.xyz, texSpecColor);
+		PLContributing += computeContributingSpotLights(spotLights[i], Normal, C, P, texDifColor.xyz, texSpecColor);
 	}
-	Color = vec4(PLContributing, texDifColor.w);
-	//Color = vec4((1 / sizeLights) * computeContributingSpotLights(spotLights[0], N, C, P, texcolor) + (1 / sizeLights) * computeContributingDirectionnalLights(directionnalLights[0], N, C, texcolor), 1.0);
-	//Color = vec4(texSpecColor, 1.0);
+	//if the object has a positive reflective coefficient, it contributes
+	if (mat.x > 0.0)
+	{
+		PLContributing = mat.x * skyboxColor.xyz + (1.0 - mat.x) * PLContributing;
+	}
+
+	//if specular map is viewing
+	if (SpecularMappingView)
+	{
+		Color = vec4(texSpecColor, 1.0);
+	}
+	else
+	{
+		//final color
+		Color = vec4(PLContributing, 1.0);
+	}
+	//Color = vec4(mat.x, mat.x, mat.x, 1.0);
 }
 
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec)
@@ -100,51 +163,57 @@ vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, ve
 	// Compute attenuation
 	//compute the lenght of the vector
 	float distance = length(pl.position.xyz - Po);
+	//compute the attenuation of the light
 	float attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance +
 		pl.attenuation.z * (distance * distance));
+	//vector light
 	vec3 L = normalize(pl.position.xyz - Po);
-	vec3 Ia = attenuation * light.ambiant * diff;
-	vec3 Id = pl.color.xyz * attenuation * light.diffuse * diff * max(dot(L, No), 0);
-	vec3 R = normalize(reflect(L, No));
-	vec3 Is = pl.color.xyz * attenuation * light.specular * spec * pow(max(dot(R, Ca), 0), 10.0);
 
-	return Ia + Id + Is;
+	return Phong(vec3(pl.color.xyz), light.ambiant, light.diffuse, light.specular, L, No, Ca, diff, spec, attenuation);
 }
 
 vec3 computeContributingDirectionnalLights(DirectionnalLight pl, vec3 No, vec3 Ca, vec3 diff, vec3 spec)
 {
 	vec3 L = normalize(-pl.direction.xyz);
-	vec3 Ia = light.ambiant * diff;
-	vec3 Id = pl.color.xyz * light.diffuse * diff * max(dot(L, No), 0);
-	vec3 R = normalize(reflect(L, No));
-	vec3 Is = pl.color.xyz * light.specular * spec * pow(max(dot(R, Ca), 0), 10.0);
-
-	return Ia + Id + Is;
+	return Phong(vec3(pl.color.xyz), light.ambiant, light.diffuse, light.specular, L, No, Ca, diff, spec, 1.0);
 }
 
 vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec)
 {
 	float a = acos(dot(normalize(pl.direction.xyz), normalize(Po - pl.position.xyz))) * (180.0 / M_PI);
 	float attenuation = 0, distance = 0;
-
+	vec3 Ia;
 	distance = length(pl.position.xyz - Po);
-	attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance +
-		pl.attenuation.z * (distance * distance));
-	vec3 Ia = attenuation * light.ambiant * diff;
+	attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
 	if (a < pl.attenuation.w)
 	{
 		// Compute attenuation
 		//compute the lenght of the vector
 		vec3 L = normalize(pl.position.xyz - Po);
-		vec3 Id = pl.color.xyz * attenuation * light.diffuse * diff * max(dot(L, No), 0);
-		vec3 R = normalize(reflect(L, No));
-		vec3 Is = attenuation * light.specular * spec * pow(max(dot(R, Ca), 0), 10.0);
-		return Ia + Id + Is;
+		return Phong(vec3(pl.color.xyz), light.ambiant, light.diffuse, light.specular, L, No, Ca, diff, spec, attenuation);
 	}
+	Ia = attenuation * light.ambiant * diff;
 	return vec3(Ia);
 }
-/*Phong(vec3 P, vec3 L, vec3 V, vec3 color, float is, float id)
+
+//Phong : 
+//vec3 color of the light -> LColor
+//float coefficient ambiant -> Ka,
+//float coefficient diffusion -> Kd,
+//float coefficient specular -> Ks, 
+//vec3 light -> L,
+//vec3 Normal -> No,
+//vec3 Camera -> Ca,
+//vec3 diffMap -> diffMap,
+//vec3 specMap -> specMap
+vec3 Phong(vec3 LColor, float Ka, float Kd, float Ks, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation)
 {
-	vec3 vecL = normalize(L - P);
-	return id * 
-}*/
+	//compute ambiant contributing
+	vec3 Ia = attenuation * Ka * diffMap;
+	//compute diffuse contributing
+	vec3 Id = LColor.xyz * Kd * diffMap * max(dot(L, No), 0);
+	vec3 R = normalize(reflect(L, No));
+	//compute specular contributing
+	vec3 Is = LColor.xyz * Ks * specMap * pow(max(dot(R, Ca), 0), 10.0);
+	return Ia + Id + Is;
+}

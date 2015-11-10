@@ -37,7 +37,7 @@
 #include <exception>
 
 #include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/model.hpp>
+#include <Seed/Graphics/model/model.hpp>
 #include <Seed/Graphics/scene.hpp>
 #include <Seed/Graphics/light.hpp>
 
@@ -95,6 +95,11 @@ class Node
 		* \return boolean if the node must be rendered
 		*/
 		bool isRendered();
+		/*!
+		* \brief node has children?
+		* \return boolean if the node has children
+		*/
+		bool hasChildren();
 
 	private:
 		std::vector<Node*> m_children;

@@ -11,7 +11,6 @@ Engine::~Engine()
 	TwTerminate();
 }
 
-
 void Engine::mainRender(Scene *scene)
 {
 	double currentTime = 0, lastTime = 0;
@@ -86,7 +85,7 @@ bool Engine::initController()
 	return true;
 }
 
-void Engine::initAntWeakBar(std::string name)
+void Engine::initAntWeakBar(std::string name, const Camera* camera)
 {
 	this->controller->initAntWeakBar(name);
 
@@ -95,5 +94,10 @@ void Engine::initAntWeakBar(std::string name)
 	TwAddVarRW(this->controller->getBar(), "Diffuse composant", TW_TYPE_FLOAT, &d, " min=0.0 max=1.0 step=0.01 group=Engine label='Diffuse composant' ");
 	TwAddVarRW(this->controller->getBar(), "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");*/
 	// Add callback to toggle auto-rotate mode (callback functions are defined above).
-	TwAddVarRW(this->controller->getBar(), "Wireframe", TW_TYPE_BOOL32, &(Scene::wireframe), " label='WireFrame' key=w help='Active/Desactive mode wireframe' ");
+	TwAddVarRW(this->controller->getBar(), "Wireframe", TW_TYPE_BOOL8, &(Scene::wireframe), " label='WireFrame' key=w help='Active/Desactive mode wireframe' ");
+	TwAddVarRW(this->controller->getBar(), "SpecularMapView", TW_TYPE_BOOL8, &(Scene::specularMapView), "label='Specular Mapping View' help='View Specular Mapping'");
+	TwAddVarRW(this->controller->getBar(), "SpecularMapActive", TW_TYPE_BOOL8, &(Scene::specularMapActive), "label='Specular Mapping Active' help='Active/Desactive Specular Mapping'");
+	TwAddVarRW(this->controller->getBar(), "NormalMapping", TW_TYPE_BOOL8, &(Scene::normalMappingActive), "label='Normal mapping' help='Active/Desactive mode Normal mapping'");
+	//TwAddVarCB(this->controller->getBar(), "MouseSpeed", TW_TYPE_FLOAT, Camera::SetSpeedMouseCallback, Camera::GetSpeedMouseCallback, &camera, "label='Speed camera' help='Set the speed of the orientation of the camera' min=10");
+
 }

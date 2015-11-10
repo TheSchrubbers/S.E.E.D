@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(SEED CXX)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -10,9 +10,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 file(
     GLOB_RECURSE
     GRAPHICS_SRC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/Seed/Graphics/*
-    ${CMAKE_CURRENT_SOURCE_DIR}/ressources/*
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Seed/Graphics/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ressources/*.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Seed/Graphics/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ressources/*.hpp
 )
 
 

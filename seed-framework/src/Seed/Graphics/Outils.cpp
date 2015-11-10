@@ -42,5 +42,8 @@ void scanSeedError(unsigned int flag)
 	case 51:
 		std::cout << "Error, default shaders not founding" << std::endl;
 		break;
+	case 52:
+		std::cout << "Error, loading shader" << std::endl;
+		break;
 	}
 }

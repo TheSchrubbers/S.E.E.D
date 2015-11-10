@@ -65,12 +65,15 @@ class DefaultMaterial : public Material
 		~DefaultMaterial();
 
 		void render(Model *model);
+		void render(){};
+		void print(){};
 
 	private:
 
 		void init();
-		unsigned int block_index_lights[4];
-		unsigned int block_index_camera;
+		GLuint block_index_lights[4];
+		GLuint block_index_camera;
+		glm::mat4 M;
 };
 
 #endif

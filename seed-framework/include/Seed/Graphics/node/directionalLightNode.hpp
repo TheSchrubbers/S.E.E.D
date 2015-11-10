@@ -69,18 +69,22 @@ public:
 	* \return light of the node
 	*/
 	DirectionnalLight* getLight();
-
 	/*!
 	* \brief has light ?
 	* \return boolean if the node has light
 	*/
 	bool hasLight();
-
+	/*!
+	* \brief node has children?
+	* \return boolean if the node has children
+	*/
+	bool hasChildren();
 	/*!
 	* \brief return children
 	* \return children
 	*/
 	std::vector<DirectionnalLightNode*> * getChildren();
+
 
 private:
 	std::vector<DirectionnalLightNode*> m_children;

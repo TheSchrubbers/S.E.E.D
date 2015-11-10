@@ -38,11 +38,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <Seed/Graphics/texture.hpp>
-#include <Seed/Graphics/model.hpp>
+#include <Seed/Graphics/model/model.hpp>
 #include <Seed/Graphics/scene.hpp>
 #include <Seed/Graphics/camera.hpp>
 
 class Scene;
+class Shader;
 /*! \class Material
 * \brief Material of a node
 */
@@ -79,7 +80,8 @@ class Material
 		*/
 		bool addShaders(const std::string pathDir);
 
-		virtual void render(Model *model) = 0;
+		//virtual void render(Model *model) = 0;
+		//virtual void render();
 		/*!
 		* \brief Push texture in the textures' array
 		* \param t: Address of texture to push
@@ -102,8 +104,9 @@ class Material
 		/*!
 		* \brief Transform the model matrix
 		* \param T: Vector of translation
+		* \param M: Matrix to transform
 		*/
-		void translate(glm::vec3 T);
+		void translate(glm::vec3 &T, glm::mat4 &M);
 		/*!
 		* \brief Active textures
 		*/
@@ -118,12 +121,18 @@ class Material
 		*/
 		void printTextures();
 
+		virtual void render(){};
+		virtual void render(Model *m){};
+
+		virtual void print() = 0;
+
 	protected:
 
-		GLuint programID;
+		Shader *shader;
 		std::vector<Texture*> textures_ambiant;
 		std::vector<Texture*> textures_diffuse;
 		std::vector<Texture*> textures_specular;
+		Texture* texture_normal;
 		Scene *scene;
 		Camera *camera;
 		std::string name;
@@ -146,8 +155,8 @@ class Material
 			float Kr;
 		};
 
-		glm::mat4 M, Normal_Matrix;
-		GLuint MID, NMID, matID;
+		glm::mat4 Normal_Matrix;
+		GLuint MID, NMID, matID, NMACTIVEID,SMACTIVEID, SMVIEWID;
 		compLight compl;
 		Mat mat;
 };

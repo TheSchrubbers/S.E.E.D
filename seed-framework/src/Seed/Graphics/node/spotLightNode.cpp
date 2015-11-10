@@ -32,4 +32,12 @@ void SpotLightNode::setLight(SpotLight *l)
 	this->spotLight = l;
 }
 
+bool SpotLightNode::hasChildren()
+{
+	if (this->m_children.size())
+	{
+		return true;
+	}
+	return false;
+}
 

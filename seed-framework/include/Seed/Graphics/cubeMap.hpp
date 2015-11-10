@@ -41,6 +41,7 @@ class Texture;
 class Model;
 class parserImage;
 class Scene;
+class Shader;
 /*! \class CubeMap
  * \brief Generate a cubemap
  */
@@ -73,7 +74,7 @@ public:
 
 private:
 	GLuint textureID;
-	GLuint programID;
+	Shader *shader;
 	GLuint VBOVertices;
 	GLuint VAO;
 	Scene *scene;

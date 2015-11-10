@@ -40,6 +40,15 @@ void PointLightNode::setFather(Node* f)
 {
 	this->father = f;
 }
+bool PointLightNode::hasChildren()
+{
+	if (this->m_children.size())
+	{
+		return true;
+	}
+	return false;
+}
+
 
 
 

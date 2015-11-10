@@ -35,6 +35,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <Seed/Graphics/Constant.hpp>
+#include <AntTweakBar.h>
+
 /*! \class Camera
 * \brief Camera class with matrix transformation attributes
 */
@@ -56,7 +58,7 @@ public:
 	* \param speed : speed of the translation of the camera
 	* \param mouseSpeed : the speed of the mouse for the rotation
 	*/
-	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector = glm::vec3(0.0,1.0,0.0), float FOV = 45, float width = WIDTH, float height = HEIGHT, float near = 0.1f, float far = 100.0f, float WAngle = 3.14f, float HAngle = 0.0f, float speed = 3.0f, float mouseSpeed = 0.05f);
+	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector = glm::vec3(0.0,1.0,0.0), float FOV = 45, float width = WIDTH, float height = HEIGHT, float near = 0.1f, float far = 100.0f, float WAngle = 3.14f, float HAngle = 0.0f, float speed = (1.0f/30.0f), float mouseSpeed = (1.0f/200.0f));
 	/*!
 	* \brief Destructor of class Texture
 	*/
@@ -152,7 +154,20 @@ public:
 	* \param far : reference to the max distance of field of view
 	*/
 	void setProjectionMatrix(const float &Fov, const int width, const int height, const float &near, const float &far);
+	/*!
+	* \brief set the mouse speed moving
+	* \param speed : speed of the mouse's move
+	*/
+	void setMouseSpeed(const float speed);
 
+	static void TW_CALL SetSpeedMouseCallback(const void *value, void *clientData)
+	{
+		static_cast<Camera *>(clientData)->setMouseSpeed(1.0/(*static_cast<const float *>(value)));
+	}
+	static void TW_CALL GetSpeedMouseCallback(void *value, void *clientData)
+	{
+		*static_cast<float *>(value) = static_cast<Camera *>(clientData)->getMouseSpeed();
+	}
 
 private:
 	/*!
@@ -166,7 +181,8 @@ private:
 
 	glm::vec3 position, direction, up;
 	//horizontal and vertical angle
-	float WAngle, HAngle, near, far, speed, mouseSpeed, FoV;
+	float WAngle, HAngle, near, far, FoV;
+	float mouseSpeed, speed;
 	//field of view
 	float initFoV = 45.0;
 };

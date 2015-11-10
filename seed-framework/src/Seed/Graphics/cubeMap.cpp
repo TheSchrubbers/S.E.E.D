@@ -1,18 +1,19 @@
 #include <Seed/Graphics/cubeMap.hpp>
 #include <Seed/Graphics/texture.hpp>
-#include <Seed/Graphics/geometry.hpp>
+#include <Seed/Graphics/model/geometry.hpp>
 #include <Seed/Graphics/shader.hpp>
 #include <boost/filesystem.hpp>
 #include <Seed/Graphics/parserImage.hpp>
 #include <Seed/Graphics/scene.hpp>
-#include <Seed/Graphics/UBOBuffer.hpp>
+#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/shader.hpp>
 
 CubeMap::CubeMap(const std::string path, Scene* sce, unsigned int *flag)
 {
 	//init variable
 	this->VAO = 0;
 	this->block_index_camera = 0;
-	this->programID = 0;
+	this->shader = NULL;
 	this->textureID = 0;
 	this->VBOVertices = 0;
 
@@ -34,7 +35,7 @@ CubeMap::CubeMap(const std::string path, Scene* sce, unsigned int *flag)
 
 CubeMap::~CubeMap()
 {
-	glDeleteProgram(this->programID);
+	delete this-> shader;
 }
 
 bool CubeMap::loadTextures(const std::string pathDirectory)
@@ -219,14 +220,14 @@ void CubeMap::createCube()
 
 void CubeMap::draw()
 {
-	if (this->programID != 0)
+	if (this->shader)
 	{
 		//load shaders in memory
-		glUseProgram(this->programID);
+		this->shader->useProgram();
 		glDepthFunc(GL_LEQUAL);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamUBO()->getID());
 		//bind UBO camera with program shader
-		glUniformBlockBinding(this->programID, this->block_index_camera, 0);
+		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 0);
 		glActiveTexture(GL_TEXTURE0);
 		this->bind();
 		glBindVertexArray(this->VAO);
@@ -239,15 +240,16 @@ void CubeMap::draw()
 
 bool CubeMap::createShader()
 {
+	unsigned int *flag = new unsigned int;
 	//load shaders
-	this->programID = loadShaders(pathToCubeMapMaterial + "Shaders/VertexShader.hlsl", pathToCubeMapMaterial + "Shaders/FragmentShader.hlsl");
+	this->shader = new Shader(pathToCubeMapMaterial + "Shaders", flag);
 	//if shaders not loading return false
-	if (!this->programID)
+	if (*flag != SEED_SUCCESS)
 	{
 		return false;
 	}
 	//bind UBO camera
-	this->block_index_camera = glGetUniformBlockIndex(this->programID, "CameraBuffer");
+	this->block_index_camera = glGetUniformBlockIndex(this->shader->getID(), "CameraBuffer");
 	return true;
 }
 

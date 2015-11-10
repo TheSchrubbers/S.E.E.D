@@ -114,3 +114,8 @@ void Camera::setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &u)
 	this->up = u;
 	viewMatrix = glm::lookAt(pos, pos + dir, u);
 }
+
+void Camera::setMouseSpeed(const float speed)
+{
+	this->mouseSpeed = speed;
+}

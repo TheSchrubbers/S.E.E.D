@@ -138,6 +138,13 @@ class Scene
 		*/
 		void addFlashLight(const glm::vec3 &position, const glm::vec3 &direction, glm::vec3 &color, int distance = 50, std::string name = "FlashLight");
 		/*!
+		* \brief Adding a Water system particles
+		* \param position: position of starter of the particles
+		* \param typeShape: shape of the system of particles (CIRCLE, POINT, SPHERE...)
+		* \param name of the system of particles
+		*/
+		void addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, std::string name = "WaterSystemParticles", unsigned int *flag = NULL);
+		/*!
 		* \brief Put the lights in the UBO BUffer
 		*/
 		void lightsRender();
@@ -173,7 +180,7 @@ class Scene
 
 		void afficher();
 
-		static bool wireframe;
+		static bool wireframe, specularMapActive, specularMapView, normalMappingActive;
 		
 
 	private:

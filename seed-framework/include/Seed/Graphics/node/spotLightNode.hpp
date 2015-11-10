@@ -81,6 +81,11 @@ public:
 	* \return children
 	*/
 	std::vector<SpotLightNode*> * getChildren();
+	/*!
+	* \brief node has children?
+	* \return boolean if the node has children
+	*/
+	bool hasChildren();
 
 private:
 	std::vector<SpotLightNode*> m_children;

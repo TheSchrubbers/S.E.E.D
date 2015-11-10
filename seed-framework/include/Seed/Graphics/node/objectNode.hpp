@@ -120,6 +120,11 @@ class ObjectNode : public Node
 		* \return the node
 		*/
 		ObjectNode* getNode(const std::string name);
+		/*!
+		* \brief node has children?
+		* \return boolean if the node has children
+		*/
+		bool hasChildren();
 	
 	private:
 		std::vector<ObjectNode*> m_children;

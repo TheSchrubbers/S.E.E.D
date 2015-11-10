@@ -1,6 +1,6 @@
 #include <Seed/Graphics/node/objectNode.hpp>
 #include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/model.hpp>
+#include <Seed/Graphics/model/model.hpp>
 #include <Seed/Graphics/scene.hpp>
 #include <vector>
 #include <iostream>
@@ -54,13 +54,12 @@ void ObjectNode::render()
 		{
 			this->m_children[i]->render();
 		}
-
 		if (this->material)
 		{
 			if (this->model)
-				material->render(this->model);
-			/*else
-				material->render();*/
+				this->material->render(this->model);
+			else
+				material->render();
 		}
 	}
 }
@@ -127,4 +126,13 @@ ObjectNode* ObjectNode::getNode(const std::string name)
 		}
 	}
 	return NULL;
+}
+
+bool ObjectNode::hasChildren()
+{
+	if (this->m_children.size())
+	{
+		return true;
+	}
+	return false;
 }

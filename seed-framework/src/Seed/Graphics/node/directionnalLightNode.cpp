@@ -30,3 +30,12 @@ void DirectionnalLightNode::setLight(DirectionnalLight *l)
 {
 	this->directionnalLight = l;
 }
+
+bool DirectionnalLightNode::hasChildren()
+{
+	if (this->m_children.size())
+	{
+		return true;
+	}
+	return false;
+}

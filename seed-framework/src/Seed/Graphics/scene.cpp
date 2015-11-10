@@ -10,10 +10,15 @@
 #include <Seed/Graphics/light/pointLight.hpp>
 #include <Seed/Graphics/light/spotLight.hpp>
 #include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/UBOBuffer.hpp>
+#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/cubeMap.hpp>
+#include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
+#include <Seed/Graphics/model/instancedModel.hpp>
 
 bool Scene::wireframe = false;
+bool Scene::normalMappingActive = true;
+bool Scene::specularMapActive = true;
+bool Scene::specularMapView = false;
 
 Scene::Scene()
 {
@@ -135,7 +140,7 @@ void Scene::loadMeshes(const aiScene *pScene, std::string path)
 	//insert meshes
 	for (int i = 0; i < pScene->mNumMeshes; i++)
 	{
-		Model *m = new Model(pScene->mMeshes[i], path);
+		Model *m = new Model(pScene->mMeshes[i], GL_STATIC_DRAW, path);
 		this->collector->collectModels(m);
 	}
 }
@@ -339,11 +344,12 @@ void Scene::render()
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
-		//std::cout << renderedNodes->at(i)->getName() << std::endl;
 		renderedNodes->at(i)->render();
 	}
 	this->lightsRender();
-	this->cubemap->draw();
+	if (this->cubemap)
+		this->cubemap->draw();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Scene::addNode(ObjectNode* node)
@@ -401,4 +407,35 @@ bool Scene::setCubeMap(std::string pathDir)
 CubeMap* Scene::getCubeMap()
 {
 	return this->cubemap;
+}
+
+void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, std::string name, unsigned int *flag)
+{
+	GLfloat square[12];
+	GLuint indices[6];
+	if (flag == NULL)
+	{
+		flag = new unsigned int;
+	}
+	ObjectNode *n = new ObjectNode(this, name);
+	ParticlesWaterSystemMaterial *m = new ParticlesWaterSystemMaterial(this, nb, name + "_Material", flag);
+	if (flag != NULL)
+	{
+		if (*flag == SEED_SUCCESS)
+		{
+			n->setMaterial(m);
+			Geometry *g = new Geometry();
+			square[0] = 0.0f; square[1] = 1.0f; square[2] = 0.0f;
+			square[3] = 1.0f; square[4] = 1.0f; square[5] = 0.0f;
+			square[6] = 1.0f; square[7] = 0.0f; square[8] = 0.0f;
+			square[9] = 0.0f; square[10] = 0.0f; square[11] = 0.0f;
+			indices[0] = 0; indices[1] = 1; indices[2] = 2;
+			indices[3] = 0; indices[4] = 2; indices[5] = 3;
+			g->setVertices(square, 12);
+			g->setFaces(GL_TRIANGLES, indices, 6);
+			InstancedModel *mo = new InstancedModel(g);
+			n->setModel(mo);
+			this->addNode(n);
+		}
+	}
 }

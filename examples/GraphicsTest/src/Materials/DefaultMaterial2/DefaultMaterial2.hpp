@@ -53,6 +53,7 @@ public:
 	~DefaultMaterial2();
 
 	void render(Model *model);
+	void render(){};
 
 private:
 	glm::mat4 M;

@@ -60,3 +60,12 @@ Node* Node::getNode(const std::string name)
 	}
 	return NULL;
 }
+
+bool Node::hasChildren()
+{
+	if (this->m_children.size())
+	{
+		return true;
+	}
+	return false;
+}

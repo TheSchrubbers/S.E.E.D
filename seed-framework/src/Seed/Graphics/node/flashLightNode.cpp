@@ -31,5 +31,14 @@ void FlashLightNode::setLight(FlashLight *l)
 	this->flashLight = l;
 }
 
+bool FlashLightNode::hasChildren()
+{
+	if (this->m_children.size())
+	{
+		return true;
+	}
+	return false;
+}
+
 
 

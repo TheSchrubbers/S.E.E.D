@@ -7,11 +7,17 @@
 
 Material::Material(const aiMaterial *material, Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag)
 {
+	if (flag == NULL)
+	{
+		flag = new unsigned int;
+	}
 	this->scene = sce;
 	this->camera = sce->getCamera();
 	this->name = n;
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
+	this->texture_normal = NULL;
+	this->shader = NULL;
 	if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
 	{
 		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
@@ -50,7 +56,7 @@ Material::Material(Scene *sce, const std::string n, const float reflec, const fl
 Material::~Material()
 {
 	unsigned int i = 0;
-	glDeleteProgram(programID);
+	delete this->shader;
 	delete this->camera;
 	for (i = 0; i < textures_ambiant.size(); i++)
 	{
@@ -68,17 +74,18 @@ Material::~Material()
 
 bool Material::addShaders(const std::string pathDir)
 {
+	unsigned int *flag = new unsigned int;
 	//load shaders
-	this->programID = loadShaders(pathDir + "/VertexShader.hlsl", pathDir + "/FragmentShader.hlsl");
+	this->shader = new Shader(pathDir, flag);
 	//if shaders not loading we try with default shaders
-	if (!this->programID)
+	if (*flag != SEED_SUCCESS)
 	{
-		this->programID = loadShaders(pathToDefaultMaterial + "Shaders/VertexShader.hlsl", pathToDefaultMaterial + "Shaders/FragmentShader.hlsl");
+		delete shader;
+		shader = new Shader(pathToDefaultMaterial + "Shader", flag);
 		//if default shaders not found return false
-		if (!this->programID)
+		if (*flag != SEED_SUCCESS)
 			return false;
 	}
-
 	return true;
 }
 
@@ -86,14 +93,17 @@ void Material::pushTexture(Texture *t)
 {
 	switch(t->getType())
 	{
-		case TEXTURE_AMBIANT:
+		case SEED_TEXTURE_AMBIANT:
 			this->textures_ambiant.push_back(t);
 			break;
-		case TEXTURE_DIFFUSE:
+		case SEED_TEXTURE_DIFFUSE:
 			this->textures_diffuse.push_back(t);
 			break;
-		case TEXTURE_SPECULAR:
+		case SEED_TEXTURE_SPECULAR:
 			this->textures_specular.push_back(t);
+			break;
+		case SEED_TEXTURE_NORMAL:
+			this->texture_normal = t;
 	}
 }
 void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
@@ -139,14 +149,15 @@ void Material::setLight(float a, float d, float s)
 	this->compl.specular = s;
 }
 
-void Material::translate(glm::vec3 T)
+void Material::translate(glm::vec3 &T, glm::mat4 &M)
 
 {
-	this->M = glm::translate(this->M, T);
+	M = glm::translate(M, T);
 }
 
 void Material::activeTextures()
 {
+	GLuint programID = this->shader->getID();
 	unsigned int i = 0, j = 0;
 	//active and bind textures
 	for (i = 0; i < textures_ambiant.size(); i++)
@@ -168,6 +179,13 @@ void Material::activeTextures()
 		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_specular[i]->bind();
 		glUniform1i(glGetUniformLocation(programID, ("samplerSpecularTexture" + std::to_string(i)).c_str()), i + j);
+		j++;
+	}
+	if (this->texture_normal)
+	{
+		glActiveTexture(GL_TEXTURE0 + j);
+		this->texture_normal->bind();
+		glUniform1i(glGetUniformLocation(programID, "samplerNormalTexture"), j);
 		j++;
 	}
 	CubeMap *c;
@@ -225,9 +243,9 @@ void Material::printTextures()
 
 bool Material::activateShader()
 {
-	if (this->programID != 0)
+	if (this->shader->getID() != 0)
 	{
-		glUseProgram(this->programID);
+		glUseProgram(this->shader->getID());
 		return true;
 	}
 	return false;

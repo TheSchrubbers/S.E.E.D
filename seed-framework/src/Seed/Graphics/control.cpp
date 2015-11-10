@@ -114,8 +114,8 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 		//reset position of mouse
 		glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
 		//compute angles
-		WAngle += mouseSpeed * deltaTime * float(WIDTH / 2 - xpos);
-		HAngle += mouseSpeed * deltaTime * float(HEIGHT / 2 - ypos);
+		WAngle += mouseSpeed * float(WIDTH / 2 - xpos);
+		HAngle += mouseSpeed * float(HEIGHT / 2 - ypos);
 
 		//get direction of the camera
 		direction = glm::vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
@@ -126,27 +126,27 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 
 		if (glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS)
 		{
-			position += direction * deltaTime * speed;
+			position += direction * speed;
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS)
 		{
-			position -= direction * deltaTime * speed;
+			position -= direction * speed;
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_6) == GLFW_PRESS)
 		{
-			position += right * deltaTime * speed;
+			position += right * speed;
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
 		{
-			position -= right * deltaTime * speed;
+			position -= right * speed;
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_8) == GLFW_PRESS)
 		{
-			position += up * deltaTime * speed;
+			position += up * speed;
 		}
 		if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS)
 		{
-			position -= up * deltaTime * speed;
+			position -= up * speed;
 		}
 		//set the angle of the direction vector of the camera
 		cam->setHAngle(HAngle);

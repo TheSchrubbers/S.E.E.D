@@ -1,14 +1,14 @@
 #include "DefaultMaterial2.hpp"
-#include <Seed/Graphics/UBOBuffer.hpp>
+#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
 
 DefaultMaterial2::DefaultMaterial2(Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(sce, n, reflec, refrac,  "ressources/Materials/DefaultMaterial2/Shaders", flag)
 {
 	this->M = glm::mat4(1.0);
 
-	this->MID = glGetUniformLocation(programID, "M");
-	this->NMID = glGetUniformLocation(programID, "Normal_Matrix");
+	this->MID = glGetUniformLocation(this->shader->getID(), "M");
+	this->NMID = glGetUniformLocation(this->shader->getID(), "Normal_Matrix");
 
-	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
+	this->block_index_camera = glGetUniformBlockIndex(this->shader->getID(), "CameraBuffer");
 }
 
 DefaultMaterial2::~DefaultMaterial2()
@@ -30,7 +30,7 @@ void DefaultMaterial2::render(Model *model)
 	//bind UBO buffer camera
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, this->scene->getCamUBO()->getID());
 	//bind UBO camera with program shader
-	glUniformBlockBinding(this->programID, this->block_index_camera, 1);
+	glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 1);
 
 	//render model
 	model->render();

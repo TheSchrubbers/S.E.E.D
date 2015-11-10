@@ -47,8 +47,8 @@ class Light
 public:
 	/*!
 	* \brief Constructor of class Light
-	* \param name: name of the light
-	* \param color: color of the light
+	* \param name name of the light
+	* \param color color of the light
 	*/
 	Light(const std::string &name, const glm::vec3 &color);
 	/*!

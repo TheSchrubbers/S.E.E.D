@@ -75,6 +75,11 @@ public:
 	* \return boolean if the node has light
 	*/
 	bool hasLight();
+	/*!
+	* \brief node has children?
+	* \return boolean if the node has children
+	*/
+	bool hasChildren();
 
 	/*!
 	* \brief return children
