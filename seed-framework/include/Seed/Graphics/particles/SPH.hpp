@@ -50,6 +50,11 @@ struct ParticleSPH
 	glm::mat4 M;
 	glm::mat4 inverseM;
 	glm::vec4 color;
+	//param 1 : level
+	//param 2 : radius
+	//param 3 : AS (adaptative sampling)
+	//param 4 : effect radius surface
+	glm::vec4 parameters;
 };
 
 /*! \class SPH
@@ -58,10 +63,13 @@ struct ParticleSPH
 class SPH : public ParticlesSystem
 {
 	public:
-		SPH();
+		SPH(float radius, float Raffect);
 		~SPH();
 		void print();
-		void render(Scene *scene);
+		//void render(Scene *scene);
+
+		int getNbParticles();
+		GLuint getSSBOID();
 	
 	protected:
 
@@ -69,7 +77,7 @@ class SPH : public ParticlesSystem
 		Starter *starter;
 
 		void loadSystem();
-		void createSystem(float r);
+		void createSystem(float r, float rA);
 		void updateSystem();
 		//float isolevel();
 		int nbParticles, type;
@@ -78,11 +86,6 @@ class SPH : public ParticlesSystem
 		KDtree *kdtree;
 
 		glm::mat4 Normal_Matrix;
-
-		//model
-		InstancedModel *sphere;
-		Shader *shader;
-		GLuint block_index_camera, block_index_lights[4], NMID;
 };
 
 

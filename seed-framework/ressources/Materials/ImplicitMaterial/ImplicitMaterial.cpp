@@ -3,7 +3,7 @@
 #include <Seed/Graphics/Buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/implicitSurface/iSphere.hpp>
 
-ImplicitMaterial::ImplicitMaterial(Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(sce, n, reflec, refrac, pathToImplicitMaterial + "Shaders", flag)
+ImplicitMaterial::ImplicitMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToImplicitMaterial + "Shaders")
 {
 	this->init();
 }

@@ -15,8 +15,6 @@
 #include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
 
-#include <Seed/Graphics/particles/SPH.hpp>
-
 bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
@@ -31,8 +29,6 @@ Scene::Scene()
 	this->camBuf = new UBOBuffer();
 	this->camBuf->createBuffer(sizeof(cameraStruct));
 	this->cubemap = NULL;
-	//t = new KDtree();
-	sph = new SPH();
 }
 
 Scene::~Scene()
@@ -350,7 +346,6 @@ void Scene::render()
 	{
 		renderedNodes->at(i)->render();
 	}
-	sph->render(this);
 	this->lightsRender();
 	if (this->cubemap)
 		this->cubemap->draw();
@@ -414,17 +409,13 @@ CubeMap* Scene::getCubeMap()
 	return this->cubemap;
 }
 
-void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, std::string name, unsigned int *flag)
+void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, unsigned int *flag, std::string name)
 {
 	GLfloat square[12];
 	GLuint indices[6];
-	if (flag == NULL)
-	{
-		flag = new unsigned int;
-	}
 	ObjectNode *n = new ObjectNode(this, name);
 	ParticlesWaterSystemMaterial *m = new ParticlesWaterSystemMaterial(this, nb, name + "_Material", flag);
-	if (flag != NULL)
+	if (flag)
 	{
 		if (*flag == SEED_SUCCESS)
 		{

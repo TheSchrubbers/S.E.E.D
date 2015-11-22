@@ -1,11 +1,11 @@
 #include <DefaultMaterial/DefaultMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/Buffers/UBOBuffer.hpp>
-DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(material, sce, n, reflec, refrac, flag)
+DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	this->init();
 }
-DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(sce, n, reflec, refrac, pathToDefaultMaterial + "Shaders", flag)
+DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToDefaultMaterial + "Shaders")
 {
 	this->init();
 }

@@ -53,8 +53,6 @@ class PointLightNode;
 class UBOBuffer;
 class CubeMap;
 
-class SPH;
-
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
 */
@@ -145,7 +143,7 @@ class Scene
 		* \param typeShape: shape of the system of particles (CIRCLE, POINT, SPHERE...)
 		* \param name of the system of particles
 		*/
-		void addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, std::string name = "WaterSystemParticles", unsigned int *flag = NULL);
+		void addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, unsigned int *flag = __nullptr, std::string name = "WaterSystemParticles");
 		/*!
 		* \brief Put the lights in the UBO BUffer
 		*/
@@ -193,8 +191,6 @@ class Scene
 		Collector *collector;
 		UBOBuffer *camBuf;
 		CubeMap * cubemap;
-
-		SPH *sph;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

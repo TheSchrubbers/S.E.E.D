@@ -13,35 +13,33 @@
 #include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/data_structure/KDtree.hpp>
 
-SPH::SPH()
+SPH::SPH(float radius, float Raffect)
 {
 	//assimp load sphere
-	Assimp::Importer importer;
-	std::string path = pathToModels + "UVsphereLow.obj";
-	const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
+	//Assimp::Importer importer;
+	//std::string path = pathToModels + "UVsphereLow.obj";
+	//const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
 	this->nbParticles = 1000;
 	//set the starter of the particles
 	this->starter = new Starter();
 	//load sphare mesh
-	sphere = new InstancedModel(pScene->mMeshes[0], path);
-	unsigned int flag;
-	const std::string s = pathToMaterials + "SimpleMaterial/Shaders/";
+	//sphere = new InstancedModel(pScene->mMeshes[0], path);
+	//unsigned int flag;
+	//const std::string s = pathToMaterials + "SimpleMaterial/Shaders/";
 	//new shader -> simplematerial
-	this->shader = new Shader(s, &flag);
-	scanSeedError(flag);
+	//this->shader = new Shader(s, &flag);
+	//scanSeedError(flag);
 	//get the shader's camera
-	this->block_index_camera = glGetUniformBlockIndex(shader->getID(), "CameraBuffer");
+	//this->block_index_camera = glGetUniformBlockIndex(shader->getID(), "CameraBuffer");
 	//get the lights' shader
-	this->block_index_lights[0] = glGetUniformBlockIndex(this->shader->getID(), "PointLightsBuffer");
+	/*this->block_index_lights[0] = glGetUniformBlockIndex(this->shader->getID(), "PointLightsBuffer");
 	this->block_index_lights[1] = glGetUniformBlockIndex(this->shader->getID(), "SpotLightsBuffer");
 	this->block_index_lights[2] = glGetUniformBlockIndex(this->shader->getID(), "DirectionnalLightsBuffer");
 	this->block_index_lights[3] = glGetUniformBlockIndex(this->shader->getID(), "FlashLightsBuffer");
-	this->NMID = glGetUniformLocation(this->shader->getID(), "Normal_Matrix");
+	this->NMID = glGetUniformLocation(this->shader->getID(), "Normal_Matrix");*/
 	//get the shader's particles
-	this->SSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
-	glShaderStorageBlockBinding(this->shader->getID(), this->SSBOID, 0);
 	//create system
-	this->createSystem(0.01);
+	this->createSystem(radius, Raffect);
 }
 
 SPH::~SPH()
@@ -51,7 +49,6 @@ SPH::~SPH()
 
 void SPH::print()
 {
-
 }
 
 void SPH::loadSystem()
@@ -59,7 +56,7 @@ void SPH::loadSystem()
 	this->SSBOParticles->updateBuffer((void*)(&this->particles[0]), this->nbParticles * sizeof(ParticleSPH));
 }
 
-void SPH::createSystem(float r)
+void SPH::createSystem(float r, float rA)
 {
 	//starter of particles in sphere
 	std::vector<glm::vec3> pos = this->starter->addSphereStarter(glm::vec3(0.0), 0.5, this->nbParticles);
@@ -79,6 +76,8 @@ void SPH::createSystem(float r)
 		p->inverseM = glm::transpose(glm::inverse(p->M));
 		//color of the particle i
 		p->color = glm::vec4(1.0);
+		//parameters
+		p->parameters = glm::vec4(0.0, r, 0.0, rA);
 		//we push the particle i into the array of particles
 		particles.push_back(p);
 	}
@@ -103,7 +102,6 @@ void SPH::createSystem(float r)
 	this->particles[0]->color = glm::vec4(0.0, 1.0, 0.0, 1.0);
 	for (int i = 0; i < p.size(); i++)
 	{
-		//std::cout << p[i]->position.x << " " << p[i]->position.y << " " << p[i]->position.z << std::endl;
 		p[i]->color = glm::vec4(1.0, 0.0, 0.0, 1.0);
 	}
 	this->updateSystem();
@@ -120,13 +118,12 @@ void SPH::updateSystem()
 		for (int i = 0; i < this->nbParticles; i++)
 		{
 			p[i].color = this->particles[i]->color;
-			//std::cout << this->particles[i]->color.x << " " << this->particles[i]->color.y << " " << this->particles[i]->color.z << std::endl;
 		}
 	}
 	this->SSBOParticles->release();
 }
 
-void SPH::render(Scene *scene)
+/*void SPH::render(Scene *scene)
 {
 	this->shader->useProgram();
 	//Enable culling triangles which normal is not towards the camera
@@ -150,4 +147,14 @@ void SPH::render(Scene *scene)
 	sphere->render(this->nbParticles);
 	this->SSBOParticles->release();
 	//this->updateSystem();
+}*/
+
+int SPH::getNbParticles()
+{
+	return this->nbParticles;
+}
+
+GLuint SPH::getSSBOID()
+{
+	return this->SSBOParticles->getID();
 }

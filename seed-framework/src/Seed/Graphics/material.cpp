@@ -5,19 +5,19 @@
 #include <Seed/Graphics/cubeMap.hpp>
 
 
-Material::Material(const aiMaterial *material, Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag)
+Material::Material(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac)
 {
-	if (flag == NULL)
-	{
-		flag = new unsigned int;
-	}
 	this->scene = sce;
 	this->camera = sce->getCamera();
 	this->name = n;
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
-	this->texture_normal = NULL;
-	this->shader = NULL;
+	this->texture_normal = __nullptr;
+	this->shader = __nullptr;
+	if (flag)
+	{
+		flag = new unsigned int;
+	}
 	if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
 	{
 		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
@@ -27,7 +27,7 @@ Material::Material(const aiMaterial *material, Scene *sce, const std::string n, 
 		*flag = SEED_SUCCESS;
 	}
 }
-Material::Material(Scene *sce, const std::string n, const float reflec, const float refrac, const std::string pathShaders, unsigned int *flag)
+Material::Material(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac, const std::string pathShaders)
 {
 	this->scene = sce;
 	this->camera = sce->getCamera();
@@ -37,6 +37,10 @@ Material::Material(Scene *sce, const std::string n, const float reflec, const fl
 	//if user doesn't give path to the shaders, we take the default shaders
 	if (pathShaders == "")
 	{
+		if (flag)
+		{
+			flag = new unsigned int;
+		}
 		// if default shaders not found, error in the flag else success
 		if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
 		{
@@ -51,6 +55,7 @@ Material::Material(Scene *sce, const std::string n, const float reflec, const fl
 	{
 		this->addShaders(pathShaders);
 	}
+	std::cout << this->shader << std::endl;
 }
 
 Material::~Material()
@@ -77,6 +82,7 @@ bool Material::addShaders(const std::string pathDir)
 	unsigned int *flag = new unsigned int;
 	//load shaders
 	this->shader = new Shader(pathDir, flag);
+
 	//if shaders not loading we try with default shaders
 	if (*flag != SEED_SUCCESS)
 	{

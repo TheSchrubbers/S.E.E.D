@@ -80,6 +80,10 @@ public:
 	*/
 	virtual void render();
 	/*!
+	* \brief Render the instanced model
+	*/
+	virtual void render(int nb);
+	/*!
 	* \brief get the pathname of the mesh
 	* \return the path name
 	*/

@@ -12,6 +12,7 @@ const std::string pathToImplicitMaterial = "ressources/Materials/ImplicitMateria
 const std::string pathToTextures = "ressources/Textures/";
 const std::string pathToCubeMapMaterial = "ressources/Materials/CubeMapMaterial/";
 const std::string pathToParticlesWaterSystemMaterial = "ressources/Materials/ParticlesSystemMaterial/ParticlesWaterSystemMaterial/";
+const std::string pathToSPHMaterial = "ressources/Materials/ParticlesSystemMaterial/SPHMaterial/";
 const std::string pathToModels = "ressources/models/";
 const std::string pathToMaterials = "ressources/Materials/";
 
@@ -42,5 +43,7 @@ const int Attenuation[3][12] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.
 #define SEED_SUCCESS 1
 
 #define SEED_GRAVITY 9.81
+
+#define uniform GLuint
 
 #endif

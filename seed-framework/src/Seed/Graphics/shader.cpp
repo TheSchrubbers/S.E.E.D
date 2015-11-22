@@ -11,12 +11,13 @@
 Shader::Shader(const std::string shader_dir_path, unsigned int *flag)
 {
 	this->programID = loadShaders(shader_dir_path);
-	if (!this->programID)
-		if (flag)
+	if (flag)
+	{
+		if (!this->programID)
 			*flag = SEED_ERROR_LOAD_SHADER;
-	else
-		if (flag)
+		else
 			*flag = SEED_SUCCESS;
+	}
 }
 
 Shader::~Shader()
@@ -87,7 +88,6 @@ GLuint Shader::loadShaders(const std::string directory_file_path)
 			for (int i = 0; i < NBSHADERS; i++)
 				if (shaders[i])
 					glDeleteShader(shaders[i]);
-
 			return ProgramID;
 		}
 	}

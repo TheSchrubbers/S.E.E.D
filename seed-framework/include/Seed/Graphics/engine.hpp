@@ -42,6 +42,8 @@
 #include <DefaultMaterial/DefaultMaterial.hpp>
 #include <Seed/Graphics/node/objectNode.hpp>
 #include <ImplicitMaterial/ImplicitMaterial.hpp>
+#include <Seed/Graphics/particles/SPH.hpp>
+#include <ParticlesSystemMaterial\SPHMaterial\SPHMaterial.hpp>
 #define GLFW_INCLUDE_GLCOREARB
 
 

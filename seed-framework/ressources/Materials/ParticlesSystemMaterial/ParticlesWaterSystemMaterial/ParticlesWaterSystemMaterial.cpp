@@ -5,7 +5,7 @@
 #include <Seed/Graphics/particles/particlesWaterSystem.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
 
-ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(Scene *sce, const int &nb, const std::string n, unsigned int *flag) : Material(sce, n, 0.0, 0.0, pathToParticlesWaterSystemMaterial + "Shaders", flag)
+ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(Scene *sce, const int &nb, const std::string n, unsigned int *flag) : Material(sce, n, flag, 0.0, 0.0, pathToParticlesWaterSystemMaterial + "Shaders")
 {
 	this->nbParticles = nb;
 	this->init();

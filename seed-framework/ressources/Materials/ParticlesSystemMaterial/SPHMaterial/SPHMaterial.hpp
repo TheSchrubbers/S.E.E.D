@@ -21,7 +21,7 @@
 */
 
 /*!
-* \file DefaultMaterial.hpp
+* \file SPHMaterial.hpp
 * \brief Material of a node
 * \author Jérémy RIFFET
 * \version 0.1
@@ -30,39 +30,28 @@
 * \license Zlib License.
 */
 
-#ifndef DEFAULTMATERIAL_HPP
-#define DEFAULTMATERIAL_HPP
+#ifndef SPHMATERIAL_HPP
+#define SPHMATERIAL_HPP
 
 #include <Seed/Graphics/material.hpp>
 
-/*! \class DefaultMaterial
-* \brief Material
+/*! \class SPHMaterial
+* \brief SPH Material
 */
-class DefaultMaterial : public Material
+class SPHMaterial : public Material
 {
 	public:
 
 		/*!
 		* \brief Constructor of class DefaultMaterial
-		* \param material: address of the aimaterial
-		* \param scene : adress of the scene
-		* \param name: name of the material
-		* \param reflection: weight of the reflective coefficient
-		* \param refraction: weight of the refractive coefficient
-		* \param flag: pointer of an int to get any errors
-		*/
-		DefaultMaterial(const aiMaterial *material, Scene *scene, std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
-		/*!
-		* \brief Constructor of class DefaultMaterial
 		* \param scene: address of the scene
 		* \param name: name of the material
+		* \param flag: pointer of an int to get any errors
 		* \param reflection: weight of the reflective coefficient
 		* \param refraction: weight of the refractive coefficient
-		* \param flag: pointer of an int to get any errors
 		*/
-		DefaultMaterial(Scene *scene, const std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
-
-		~DefaultMaterial();
+		SPHMaterial(Scene *scene, const std::string name, unsigned int *flag, const float reflec = 0.0, const float refrac = 0.0);
+		~SPHMaterial();
 
 		void render(Model *model);
 		void render(){};
@@ -71,9 +60,8 @@ class DefaultMaterial : public Material
 	private:
 
 		void init();
-		GLuint block_index_lights[4];
-		GLuint block_index_camera;
-		glm::mat4 M;
+		uniform block_index_lights[4], block_index_camera, NMID, uniformSSBOID;
+		SPH *sph;
 };
 
 #endif

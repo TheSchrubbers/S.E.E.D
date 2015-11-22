@@ -60,6 +60,36 @@ void Model::render()
 	glBindVertexArray(0);
 }
 
+void Model::render(int nb)
+{
+	//bind VAO
+	glBindVertexArray(this->VAO);
+	//if the model has faces
+	if (this->geometry->hasFaces())
+	{
+		//process the size of a face
+		unsigned int sizeFaces = this->geometry->getNumFaces() * this->geometry->getNumIndicesPerFace();
+		//if the face has 3 vertices
+		if (this->geometry->getNumIndicesPerFace() == 3)
+			glDrawElementsInstanced(GL_TRIANGLES, sizeFaces, GL_UNSIGNED_INT, 0, nb);
+		//if the face has 4 vertices
+		else
+			glDrawElementsInstanced(GL_QUADS, sizeFaces, GL_UNSIGNED_INT, 0, nb);
+	}
+	//if the model has no face
+	else
+	{
+		//if the face has 3 vertices
+		if (this->geometry->getNumIndicesPerFace() == 3)
+			glDrawArraysInstanced(GL_TRIANGLES, 0, this->geometry->getNumVertices(), nb);
+		//if the face has 4 vertices
+		else
+			glDrawArraysInstanced(GL_QUADS, 0, this->geometry->getNumVertices(), nb);
+	}
+	//free VAO
+	glBindVertexArray(0);
+}
+
 
 
 std::string Model::getPathName()
