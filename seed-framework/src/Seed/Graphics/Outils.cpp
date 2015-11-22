@@ -1,4 +1,6 @@
 #include <Seed/Graphics/Outils.hpp>
+#include <glm/gtx/intersect.hpp>
+#include <iostream>
 
 void printMat4(glm::mat4 & mat)
 {
@@ -45,5 +47,36 @@ void scanSeedError(unsigned int flag)
 	case 52:
 		std::cout << "Error, loading shader" << std::endl;
 		break;
+	}
+}
+
+bool pointIntoSphere(glm::vec3 &p, glm::vec3 &center, float &radius)
+{
+	if (glm::distance(p, center) <= radius)
+		return true;
+	return false;
+}
+
+bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 N, glm::vec3 P)
+{
+	float d = -N.x * P.x - N.y * P.y - N.z * P.z;
+	float t = (-N.x * center.x - N.y * center.y - N.z * center.z - d) / (N.x * N.x + N.y * N.y + N.z * N.z);
+	if (glm::length(N * t) < r)
+		return true;
+	return false;
+}
+void translate(glm::mat4 &M, const glm::vec3 &T)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		M[3][i] += T[i];
+	}
+}
+
+void scale(glm::mat4 &M, const glm::vec3 &K)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		M[i][i] *= K[i];
 	}
 }

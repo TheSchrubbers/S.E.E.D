@@ -21,40 +21,68 @@
 */
 
 /*!
-* \file particlesSystem.hpp
+* \file SSH.hpp
 * \author Jérémy RIFFET
-* \version 0.1
+* \version 0.1 
 * \copyright Copyright (c) 2015,
 * Antoine "Avzgui" Richard and Jérémy "Chtimy" Riffet, S.E.E.D
 * \license Zlib License.
 */
 
-#ifndef PARTICLESSYSTEM_HPP
-#define PARTICLESSYSTEM_HPP
-
+#include <Seed/Graphics/particles/particlesSystem.hpp>
+#include <glm/glm.hpp>
+#include <vector>
 #include <GL/glew.h>
+#include <memory>
 
-class SSBOBuffer;
+#ifndef SPH_HPP
+#define SPH_HPP
 
-/*! \class ParticlesSystem
-*/
-class ParticlesSystem
+class Starter;
+class InstancedModel;
+class Scene;
+class Shader;
+class KDtree;
+
+struct ParticleSPH
 {
-public:
-	virtual void print() = 0;
+	glm::vec4 position;
+	glm::mat4 M;
+	glm::mat4 inverseM;
+	glm::vec4 color;
+};
 
-protected:
+/*! \class SPH
+*/
 
-	void loadSystem();
-	void createSystem();
-	void updateSystem();
-	void render();
+class SPH : public ParticlesSystem
+{
+	public:
+		SPH();
+		~SPH();
+		void print();
+		void render(Scene *scene);
+	
+	protected:
 
-	int nbParticles, type;
-	SSBOBuffer *SSBOParticles;
-	GLuint SSBOID;
+		std::vector<ParticleSPH*> particles;
+		Starter *starter;
 
-	float deltaT;
+		void loadSystem();
+		void createSystem(float r);
+		void updateSystem();
+		//float isolevel();
+		int nbParticles, type;
+		float deltaT;
+
+		KDtree *kdtree;
+
+		glm::mat4 Normal_Matrix;
+
+		//model
+		InstancedModel *sphere;
+		Shader *shader;
+		GLuint block_index_camera, block_index_lights[4], NMID;
 };
 
 

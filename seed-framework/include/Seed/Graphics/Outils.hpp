@@ -6,6 +6,7 @@
 #include <string>
 #include <GL/glew.h>
 #include <Seed/Graphics/Constant.hpp>
+#include <Seed/Graphics/particles/SPH.hpp>
 
 struct Point{
 	glm::vec3 p;
@@ -17,25 +18,31 @@ void printMat4(glm::mat4 & mat);
 void printVec4(glm::vec4 & vec);
 void printErrorOpenGL();
 void scanSeedError(unsigned int flag);
+bool pointIntoSphere(glm::vec3 &p, glm::vec3 &center, float &radius);
+bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 N, glm::vec3 P);
 
 //sort vector
 struct sortPointsX
 {
-	bool operator()(const Point* p1, const Point* p2) const {
-		return p1->p.x < p2->p.x;
+	bool operator()(const ParticleSPH* p1, const ParticleSPH* p2) const {
+		return p1->position.x < p2->position.x;
 	}
 };
 struct sortPointsY
 {
-	bool operator()(const Point* p1, const Point* p2) const {
-		return p1->p.y < p2->p.y;
+	bool operator()(const ParticleSPH* p1, const ParticleSPH* p2) const {
+		return p1->position.y < p2->position.y;
 	}
 };
 struct sortPointsZ
 {
-	bool operator()(const Point* p1, const Point* p2) const {
-		return p1->p.z < p2->p.z;
+	bool operator()(const ParticleSPH* p1, const ParticleSPH* p2) const {
+		return p1->position.z < p2->position.z;
 	}
 };
+
+void translate(glm::mat4 &M, const glm::vec3 &T);
+void scale(glm::mat4 &M, const glm::vec3 &K);
+
 
 #endif

@@ -62,11 +62,14 @@ private:
 	{
 		glm::vec4 position;
 		glm::vec4 velocity;
-		glm::vec4 life;
 		glm::mat4 M;
+		float mass;
+		int level;
+		float r;
 	};
-	std::vector<Particle> particles;
 
+	std::vector<Particle> particles;
+	float h;
 	Scene *scene;
 	glm::vec3 positionStarter;
 	unsigned int shapeStarter;

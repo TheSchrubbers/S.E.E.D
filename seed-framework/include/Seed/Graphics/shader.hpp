@@ -40,15 +40,16 @@
 class Shader
 {
 public:
-	Shader(const std::string shader_dir_path, unsigned int *flag);
+	Shader(const std::string shader_dir_path, unsigned int *flag = NULL);
 	~Shader();
-	GLuint loadShaders(const std::string vertex_file_path, const std::string fragment_file_path);
-	GLuint loadShaders(const std::string directory_file_path);
-	GLuint loadCompileShader(std::string s, GLuint type, GLint &Result, int &InfoLogLength, std::vector<char> *ShaderErrorMessage);
 	void useProgram();
 	GLuint getID();
 private:
 	GLuint programID;
+
+	GLuint loadShaders(const std::string vertex_file_path, const std::string fragment_file_path);
+	GLuint loadShaders(const std::string directory_file_path);
+	GLuint loadCompileShader(std::string s, GLuint type, GLint &Result, int &InfoLogLength, std::vector<char> *ShaderErrorMessage);
 };
 
 #endif

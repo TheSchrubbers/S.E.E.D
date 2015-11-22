@@ -21,7 +21,7 @@
 */
 
 /*!
-* \file particlesSystem.hpp
+* \file viscoelasticFluidSystem.hpp
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -29,32 +29,52 @@
 * \license Zlib License.
 */
 
-#ifndef PARTICLESSYSTEM_HPP
-#define PARTICLESSYSTEM_HPP
+#ifndef VISCOELASTICFLUIDSYSTEM_HPP
+#define VISCOELASTICFLUIDSYSTEM_HPP
 
+#include <Seed/Graphics/particles/particlesSystem.hpp>
+#include <glm/glm.hpp>
 #include <GL/glew.h>
+#include <vector>
 
-class SSBOBuffer;
+class Scene;
 
-/*! \class ParticlesSystem
+/*! \class ParticlesWaterSystem
 */
-class ParticlesSystem
+class ViscoElasticFluidSystem : public ParticlesSystem
 {
 public:
-	virtual void print() = 0;
+	/*
+	* \brief Constructor of ParticlesWaterSystem. Construct a particles system which simulates water
+	* \param scene : The current scene
+	* \param number : The number of particles
+	* \param shapeStarter : The shape of the starter : SEED_SPHERE, SEED_POINT, SEED_CIRCLE, SEED_SQUARE
+	*/
+	ViscoElasticFluidSystem(Scene *scene, const int number, const unsigned int shapeStarter, const glm::vec3 positionStarter);
+	~ViscoElasticFluidSystem();
+	void print();
+private:
 
-protected:
+	struct Particle
+	{
+		glm::vec4 position;
+		glm::vec4 velocity;
+		glm::vec4 life;
+		glm::mat4 M;
+	};
+
 
 	void loadSystem();
 	void createSystem();
 	void updateSystem();
-	void render();
+	void simulation();
+	void applyViscosity(Particle &p);
 
-	int nbParticles, type;
-	SSBOBuffer *SSBOParticles;
-	GLuint SSBOID;
+	std::vector<Particle> particles;
 
-	float deltaT;
+	Scene *scene;
+	glm::vec3 positionStarter;
+	unsigned int shapeStarter;
 };
 
 

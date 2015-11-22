@@ -64,7 +64,7 @@ public:
 	* \param data pointer to the datas
 	* \param size size of the datas
 	*/
-	void updateBuffer(void* data, int size);
+	void updateBuffer(void* data, int s);
 	/*!
 	* \brief delete SSBOBuffer
 	*/
@@ -77,7 +77,7 @@ public:
 	/*!
 	* \brief get the SSBO memory
 	*/
-	void* getData();
+	void* getData(float s);
 	/*!
 	* \brief bind SSBO buffer
 	*/

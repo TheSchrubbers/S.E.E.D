@@ -1,4 +1,4 @@
-#include <Seed/Graphics/particles/particlesWaterSystem.hpp>
+#include <Seed/Graphics/particles/ViscoElasticFluidSystem.hpp>
 #include <glm/gtc/random.hpp>
 #include <Seed/Graphics/buffers/SSBOBuffer.hpp>
 #include <Seed/Graphics/Constant.hpp>
@@ -6,8 +6,9 @@
 #include <Seed/Graphics/scene.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 
-ParticlesWaterSystem::ParticlesWaterSystem(Scene *sce, const int nb, const unsigned int sS, const glm::vec3 pS)
+ViscoElasticFluidSystem::ViscoElasticFluidSystem(Scene *sce, const int nb, const unsigned int sS, const glm::vec3 pS)
 {
+	this->deltaT;
 	this->nbParticles = nb;
 	this->positionStarter = pS;
 	this->shapeStarter = sS;
@@ -15,27 +16,25 @@ ParticlesWaterSystem::ParticlesWaterSystem(Scene *sce, const int nb, const unsig
 	this->createSystem();
 	this->loadSystem();
 }
-ParticlesWaterSystem::~ParticlesWaterSystem()
+ViscoElasticFluidSystem::~ViscoElasticFluidSystem()
 {
 	delete this->SSBOParticles;
 }
 
-void ParticlesWaterSystem::loadSystem()
+void ViscoElasticFluidSystem::loadSystem()
 {
 	this->SSBOParticles->updateBuffer((void*)(&this->particles[0]), this->nbParticles * sizeof(Particle));
 	
 }
-void ParticlesWaterSystem::createSystem()
+void ViscoElasticFluidSystem::createSystem()
 {
 	Particle p;
 	for (int i = 0; i < this->nbParticles; i++)
 	{
 		p.position = glm::vec4(positionStarter,0.0);
 		p.velocity = glm::vec4(0.0, 0.0, 0.0, 0.0);
+		p.life = glm::vec4(1.0, 0.0, 0.0, 0.0);
 		p.M = glm::mat4(1.0);
-
-		p.level = 0;
-		p.r = 0.1;
 		particles.push_back(p);
 	}
 	
@@ -47,7 +46,7 @@ void ParticlesWaterSystem::createSystem()
 
 }
 
-void ParticlesWaterSystem::updateSystem()
+void ViscoElasticFluidSystem::updateSystem()
 {
 	this->SSBOParticles->bind();
 	//get the SSBO data
@@ -57,13 +56,29 @@ void ParticlesWaterSystem::updateSystem()
 	{
 		p[i].position = glm::vec4(positionStarter, 0.0);
 		p[i].velocity = glm::vec4(0.0, 0.0, 0.0, 0.0);
+		p[i].life = glm::vec4(1.0, 0.0, 0.0, 0.0);
 		p[i].M = glm::mat4(1.0);
 	}
 	this->SSBOParticles->release();
 
 }
 
-void ParticlesWaterSystem::print()
+void ViscoElasticFluidSystem::simulation()
+{
+	for (Particle p : particles)
+	{
+		p.velocity += this->deltaT * SEED_GRAVITY;
+
+		this->applyViscosity(p);
+	}
+}
+
+void ViscoElasticFluidSystem::applyViscosity(Particle &p)
+{
+
+}
+
+void ViscoElasticFluidSystem::print()
 {
 
 }

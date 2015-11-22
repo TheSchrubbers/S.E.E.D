@@ -15,6 +15,8 @@
 #include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
 
+#include <Seed/Graphics/particles/SPH.hpp>
+
 bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
@@ -29,6 +31,8 @@ Scene::Scene()
 	this->camBuf = new UBOBuffer();
 	this->camBuf->createBuffer(sizeof(cameraStruct));
 	this->cubemap = NULL;
+	//t = new KDtree();
+	sph = new SPH();
 }
 
 Scene::~Scene()
@@ -346,6 +350,7 @@ void Scene::render()
 	{
 		renderedNodes->at(i)->render();
 	}
+	sph->render(this);
 	this->lightsRender();
 	if (this->cubemap)
 		this->cubemap->draw();

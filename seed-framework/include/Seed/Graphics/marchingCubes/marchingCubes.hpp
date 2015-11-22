@@ -54,6 +54,12 @@ public:
 	*/
 	MarchingCubes(ImplicitSphere *iSphere, const float resolution);
 	/*!
+	* \brief Constructor of the MarchingCubes class, algorithm of the marching cubes
+	* \param isolevel
+	* \param resolution the resolution the the grid of cubes -> 2^resolution
+	*/
+	MarchingCubes(float isolevel, const float resolution);
+	/*!
 	* \destructor of the MarchingCubes class
 	*/
 	~MarchingCubes();

@@ -1,46 +1,169 @@
 #include <Seed/Graphics/data_structure/KDtree.hpp>
 #include <Seed/Graphics/Outils.hpp>
 #include <iterator>
+#include <stack>
+
+
+#include <stdlib.h>
+#include <time.h>
+#include <Seed/Graphics/shader.hpp>
+#include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 
 #define DIMENSION 3
+KDtree::KDtree(std::vector<ParticleSPH*> pts, int depth)
+{
+	this->constructKDtree(pts, depth);
+}
 
-KDtree::KDtree(){}
+KDtree::~KDtree()
+{
+}
 
-KDtree::~KDtree(){}
-
-void KDtree::constructKDtree(std::vector<Point*> pts, int depth)
+void KDtree::constructKDtree(std::vector<ParticleSPH*> pts, int depth)
 {
 	this->root = this->addKDnode(pts, depth);
 }
 
-KDnode* KDtree::addKDnode(std::vector<Point*> pts, int depth)
+std::shared_ptr<KDnode> KDtree::addKDnode(std::vector<ParticleSPH*> pts, int depth)
 {
-	KDnode *node;
+	std::shared_ptr<KDnode> node(std::make_shared<KDnode>());
+	node->left = nullptr;
+	node->right = nullptr;
 	int k = depth % DIMENSION;
-	switch (k)
+	if (pts.size() > 1)
 	{
-	case 0:
-		std::sort(pts.begin(), pts.end(), sortPointsX());
-		break;
-	case 1:
-		std::sort(pts.begin(), pts.end(), sortPointsY());
-		break;
-	case 2:
-		std::sort(pts.begin(), pts.end(), sortPointsZ());
+		switch (k)
+		{
+		case 0:
+			std::sort(pts.begin(), pts.end(), sortPointsX());
+			break;
+		case 1:
+			std::sort(pts.begin(), pts.end(), sortPointsY());
+			break;
+		case 2:
+			std::sort(pts.begin(), pts.end(), sortPointsZ());
+		}
 	}
-
 	//root node
 	int mid = pts.size() / 2;
+	//position of the node
 	node->position = glm::vec3(0.0);
-	node->position[k] = (pts[mid]->p[k] + pts[mid + 1]->p[k]) / 2.0;
+	node->position[k] = (pts[mid]->position[k]);
+	//orientation of the vector of the node
 	node->orientation = glm::vec3(0.0);
 	node->orientation[k] = 1.0f;
-	std::vector<Point*> left(pts.begin(), pts.begin() + mid), right(pts.begin() + mid + 1, pts.end());
-	if (depth > 0)
+	if (pts.size() > 1)
 	{
-		node->left = this->addKDnode(left, depth - 1);
-		node->right = this->addKDnode(right, depth - 1);
+		node->list.push_back(pts[mid]);
+		//left and right part of the vector
+		std::vector<ParticleSPH*> left(pts.begin(), pts.begin() + mid), right(pts.begin() + mid + 1, pts.end());
+		//recursive algorithm for left and right child
+		if (left.size())
+			node->left = this->addKDnode(left, depth - 1);
+		if (right.size())
+			node->right = this->addKDnode(right, depth - 1);
+	}
+	else
+	{
+		for (ParticleSPH* pttmp : pts)
+		{
+			node->list.push_back(pttmp);
+		}
 	}
 	return node;
+}
+
+void KDtree::afficher()
+{
+	std::stack<std::shared_ptr<KDnode>> nodes;
+	nodes.push(this->root);
+	std::shared_ptr<KDnode> node;
+	int k = 0;
+	std::cout << "afficher" << std::endl;
+	while (!nodes.empty())
+	{
+		k++;
+		node = nodes.top();
+		nodes.pop();
+		if (node)
+		{
+			if (node->list.size())
+				std::cout << node->list.at(0)->position.x << " " << node->list.at(0)->position.y << " " << node->list.at(0)->position.z << std::endl;
+			if (node->left)
+				nodes.push(node->left);
+			if (node->right)
+				nodes.push(node->right);
+		}
+	}
+	std::cout << k << std::endl;
+}
+std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &radius)
+{
+	int step = 0;
+	std::vector<ParticleSPH*> pts;
+	std::shared_ptr<KDnode> node;
+	std::stack<std::shared_ptr<KDnode>> nodes;
+	nodes.push(root);
+	int k = 0;
+	while (!nodes.empty())
+	{
+		step++;
+		node = nodes.top();
+		nodes.pop();
+		//node is into the sphere?
+		for (ParticleSPH* pttmp : node->list)
+		{
+			//if point in the node into the sphere of the current point
+			if (pt->position != pttmp->position && glm::distance(pttmp->position, pt->position) <= radius)
+			{
+				pts.push_back(pttmp);
+			}
+		}
+
+		//if it's a leaf
+		if (node->left != nullptr || node->right != nullptr)
+		{
+			//look at if the median plan is intersecting by the sphere
+			k = this->getOrientation(node->orientation);
+			if (!intersectionSpherePlan(glm::vec3(pt->position.x, pt->position.y, pt->position.z), radius, node->orientation, node->position))
+			{
+				//if not intersecting, look at if the point is one or other side of the median plan
+				if (pt->position[k] <= node->position[k])
+				{
+					if (node->left)
+						nodes.push(node->left);
+				}
+				else
+				{
+					if (node->right)
+						nodes.push(node->right);
+				}
+			}
+			else
+			{
+				//intersecting, we don't know if a node from the both side can be into the sphere
+				//we get the both children
+				if (node->left)
+					nodes.push(node->left);
+				if (node->right)
+					nodes.push(node->right);
+			}
+		}
+	}
+	return pts;
+}
+
+
+int KDtree::getOrientation(glm::vec3 &orientation)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (orientation[i] == 1 || orientation[i] == -1)
+		{
+			return i;
+		}
+	}
+	return -1;
 }
 

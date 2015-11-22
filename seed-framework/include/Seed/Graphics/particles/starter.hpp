@@ -21,40 +21,30 @@
 */
 
 /*!
-* \file particlesSystem.hpp
+* \file starter.hpp
 * \author Jérémy RIFFET
-* \version 0.1
+* \version 0.1 
 * \copyright Copyright (c) 2015,
 * Antoine "Avzgui" Richard and Jérémy "Chtimy" Riffet, S.E.E.D
 * \license Zlib License.
 */
 
-#ifndef PARTICLESSYSTEM_HPP
-#define PARTICLESSYSTEM_HPP
+#include <glm/glm.hpp>
+#include <vector>
 
-#include <GL/glew.h>
+#ifndef STARTER_HPP
+#define STARTER_HPP
 
-class SSBOBuffer;
-
-/*! \class ParticlesSystem
+/*! \class Starter
 */
-class ParticlesSystem
+class Starter
 {
 public:
-	virtual void print() = 0;
-
+	Starter();
+	~Starter();
+	std::vector<glm::vec3> addSphereStarter(glm::vec3 pos, float r, int nb);
 protected:
 
-	void loadSystem();
-	void createSystem();
-	void updateSystem();
-	void render();
-
-	int nbParticles, type;
-	SSBOBuffer *SSBOParticles;
-	GLuint SSBOID;
-
-	float deltaT;
 };
 
 

@@ -1,23 +1,23 @@
-#include <ImplicitMaterial/ImplicitMaterial.hpp>
+#include <DefaultMaterial/DefaultMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/Buffers/UBOBuffer.hpp>
-#include <Seed/Graphics/implicitSurface/iSphere.hpp>
-
-ImplicitMaterial::ImplicitMaterial(Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(sce, n, reflec, refrac, pathToImplicitMaterial + "Shaders", flag)
+DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(material, sce, n, reflec, refrac, flag)
+{
+	this->init();
+}
+DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, const float reflec, const float refrac, unsigned int *flag) : Material(sce, n, reflec, refrac, pathToDefaultMaterial + "Shaders", flag)
 {
 	this->init();
 }
 
-void ImplicitMaterial::init()
+void DefaultMaterial::init()
 {
 	GLuint programID = this->shader->getID();
-
 	this->compl.ambiant = 0.1;
 	this->compl.diffuse = 0.8;
 	this->compl.specular = 0.1;
 
 	this->M = glm::mat4(1.0);
-	this->M = glm::translate(this->M, glm::vec3(1.0, 0.0, 0.0));
 
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
@@ -35,41 +35,13 @@ void ImplicitMaterial::init()
 	this->NMACTIVEID = glGetUniformLocation(programID, "NormalMappingActive");
 	this->SMACTIVEID = glGetUniformLocation(programID, "SpecularMappingActive");
 	this->SMVIEWID = glGetUniformLocation(programID, "SpecularMappingView");
-
-	//get the discret surface of the implicit surface ->marching cubes method
-	ImplicitSphere *isphere = new ImplicitSphere(1.0, glm::vec3(0.0));
-	MarchingCubes *MC = new MarchingCubes(isphere, 4);
-	this->pts = MC->construcMesh();
-	std::vector<glm::vec3> p, n;
-	for (int i = 0; i < pts.size(); i++)
-	{
-		//we get the vertices points of the implicit mesh
-		p.push_back(pts[i]->p);
-		n.push_back(pts[i]->n);
-	}
-
-	//put points like a suit of triangles in a VBO
-	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->VBOVertices);
-	glGenBuffers(1, &this->VBONormals);
-	glBindVertexArray(this->VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBOVertices);
-	glBufferData(GL_ARRAY_BUFFER, p.size() * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, pts.size() * sizeof(glm::vec3), &p[0]);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBONormals);
-	glBufferData(GL_ARRAY_BUFFER, n.size() * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, n.size() * sizeof(glm::vec3), &n[0]);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 }
 
-ImplicitMaterial::~ImplicitMaterial(){}
+DefaultMaterial::~DefaultMaterial()
+{
+}
 
-void ImplicitMaterial::render()
+void DefaultMaterial::render(Model *model)
 {
 	if (this->activateShader())
 	{
@@ -82,9 +54,9 @@ void ImplicitMaterial::render()
 		glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));
 		glUniform1fv(this->compl.diffuseID, 1, &(compl.diffuse));
 		glUniform1fv(this->compl.specularID, 1, &(compl.specular));
-		glUniform1i(this->NMACTIVEID, false);
-		glUniform1i(this->SMACTIVEID, false);
-		glUniform1i(this->SMVIEWID, false);
+		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
+		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
+		glUniform1i(this->SMVIEWID, Scene::specularMapView);
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera
@@ -106,18 +78,18 @@ void ImplicitMaterial::render()
 			//bind UBO lighting with program shader
 			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
 		}
+
 		//bind UBO buffer camera
 		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
-		glBindVertexArray(this->VAO);
-		//glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_TRIANGLES, 0, this->pts.size());
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+
+		//RENDER
+		//render model
+		model->render();
 
 		//RELEASE
 		this->releaseTextures();
+		//glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0);
 	}
 }

@@ -53,6 +53,8 @@ class PointLightNode;
 class UBOBuffer;
 class CubeMap;
 
+class SPH;
+
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
 */
@@ -191,6 +193,8 @@ class Scene
 		Collector *collector;
 		UBOBuffer *camBuf;
 		CubeMap * cubemap;
+
+		SPH *sph;
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

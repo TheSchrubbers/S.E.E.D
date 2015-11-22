@@ -35,32 +35,36 @@
 #include <Seed/Graphics/Outils.hpp>
 #include <glm/glm.hpp>
 #include <algorithm>
+#include <Seed/Graphics/particles/SPH.hpp>
+#include <memory>
 
 struct KDnode
 {
 	glm::vec3 orientation;
 	glm::vec3 position;
-	struct KDnode *left, *right;
-};
-
-struct KDleaf
-{
-	std::vector < Point* > list;
+	std::vector<ParticleSPH*> list;
+	std::shared_ptr<KDnode> left, right;
 };
 
 /*! \class KDtree
 * \brief KDtree class constructs KD-tree
 */
+class Scene;
+class Shader;
 class KDtree
 {
 	
 public:
-	KDtree();
+	KDtree(std::vector<ParticleSPH*> pts, int depth);
 	~KDtree();
-	KDnode* addKDnode(std::vector<Point*> pts, int depth); 
-	void constructKDtree(std::vector<Point*> pts, int depth);
+	std::shared_ptr<KDnode> addKDnode(std::vector<ParticleSPH*> pts, int depth); 
+	void constructKDtree(std::vector<ParticleSPH*> pts, int depth);
+	std::vector<ParticleSPH*> radiusNeighbouring(ParticleSPH* pt, float &radius);
+	int getOrientation(glm::vec3 &orientation);
+	void afficher();
+	void render(Scene* sce);
 private:
-	KDnode *root;
+	std::shared_ptr<KDnode> root;
 };
 
 

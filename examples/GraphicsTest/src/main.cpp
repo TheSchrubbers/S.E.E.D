@@ -2,6 +2,7 @@
 #include "Materials/DefaultMaterial2/DefaultMaterial2.hpp"
 #include <Seed/Graphics/engine.hpp>
 
+#include <Seed/Graphics/particles/SPH.hpp>
 void addLara(Scene *scene);
 
 int main()
@@ -25,7 +26,7 @@ int main()
 	//create scene
 	Scene scene;
 	//create camera
-	Camera camera(position, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	Camera camera(position, glm::vec3(0.0, 0.0, 0.0));
 
 	engine.initAntWeakBar("Outils", &camera);
 
@@ -42,11 +43,10 @@ int main()
 
 	//addLara(&scene); 
 
-	ObjectNode *n = new ObjectNode(&scene);
-	ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");
-	n->setMaterial(mat);
-	scene.addNode(n);
-	scene.afficher();
+	//ObjectNode *n = new ObjectNode(&scene);
+	//ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");
+	//n->setMaterial(mat);
+	//scene.addNode(n);
 
 	//collect all the rendered nodes
 	scene.collectRenderedNodes();

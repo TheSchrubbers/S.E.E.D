@@ -30,38 +30,49 @@
 * \license Zlib License.
 */
 
-#ifndef PARTICLESWATERSYSTEMMATERIAL_HPP
-#define PARTICLESWATERSYSTEMMATERIAL_HPP
+#ifndef DEFAULTMATERIAL_HPP
+#define DEFAULTMATERIAL_HPP
 
 #include <Seed/Graphics/material.hpp>
 
-/*! \class ParticlesWaterSystemMaterial
+/*! \class DefaultMaterial
 * \brief Material
 */
-class ParticlesWaterSystemMaterial : public Material
+class DefaultMaterial : public Material
 {
 	public:
 
 		/*!
-		* \brief Constructor of class ParticlesWaterSystemMaterial
-		* \param scene: address of the scene
+		* \brief Constructor of class DefaultMaterial
+		* \param material: address of the aimaterial
+		* \param scene : adress of the scene
 		* \param name: name of the material
+		* \param reflection: weight of the reflective coefficient
+		* \param refraction: weight of the refractive coefficient
 		* \param flag: pointer of an int to get any errors
 		*/
-		ParticlesWaterSystemMaterial(Scene *scene, const int &nb, const std::string name, unsigned int *flag = NULL);
+		DefaultMaterial(const aiMaterial *material, Scene *scene, std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
+		/*!
+		* \brief Constructor of class DefaultMaterial
+		* \param scene: address of the scene
+		* \param name: name of the material
+		* \param reflection: weight of the reflective coefficient
+		* \param refraction: weight of the refractive coefficient
+		* \param flag: pointer of an int to get any errors
+		*/
+		DefaultMaterial(Scene *scene, const std::string name, const float reflec = 0.0, const float refrac = 0.0, unsigned int *flag = NULL);
 
-		~ParticlesWaterSystemMaterial();
+		~DefaultMaterial();
 
 		void render(Model *model);
 		void render(){};
-
 		void print(){};
 
 	private:
+
 		void init();
-		//GLuint block_index_lights[4];
+		GLuint block_index_lights[4];
 		GLuint block_index_camera;
-		int nbParticles;
 		glm::mat4 M;
 };
 

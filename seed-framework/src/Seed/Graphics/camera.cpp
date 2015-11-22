@@ -5,7 +5,7 @@
 Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float n, float f , float WA, float HA, float s, float ms)
 {
 	this->position = pos;
-	this->direction = glm::normalize(look - pos);
+	this->direction = glm::normalize(pos - look);
 	this->up = glm::normalize(upVector);
 	this->WAngle = WA;
 	this->HAngle = HA;

@@ -15,7 +15,6 @@ struct array_deleter
 	}
 };
 
-
 MarchingCubes::MarchingCubes(ImplicitSphere *iS, const float resolution)
 {
 	this->iSphere = iS;

@@ -12,9 +12,11 @@ Shader::Shader(const std::string shader_dir_path, unsigned int *flag)
 {
 	this->programID = loadShaders(shader_dir_path);
 	if (!this->programID)
-		*flag = SEED_ERROR_LOAD_SHADER;
+		if (flag)
+			*flag = SEED_ERROR_LOAD_SHADER;
 	else
-		*flag = SEED_SUCCESS;
+		if (flag)
+			*flag = SEED_SUCCESS;
 }
 
 Shader::~Shader()
@@ -50,7 +52,6 @@ GLuint Shader::loadShaders(const std::string directory_file_path)
 			{
 				n = it->filename().stem().string();
 				s = it->relative_path().string();
-				std::cout << n << std::endl;
 				if (n == "GeometryShader")
 				{
 					shaders[0] = this->loadCompileShader(s, GL_GEOMETRY_SHADER, Result, InfoLogLength, ShaderErrorMessage);
@@ -124,7 +125,8 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		glGetShaderiv(ShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 		std::vector<char> SEM(InfoLogLength);
 		glGetShaderInfoLog(ShaderID, InfoLogLength, NULL, &SEM[0]);
-		fprintf(stdout, "%s\n", &SEM[0]);
+		if (&SEM[0])
+			fprintf(stdout, "%s\n", &SEM[0]);
 		ShaderErrorMessage = &SEM;
 		return ShaderID;
 	}

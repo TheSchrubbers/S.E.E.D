@@ -1,5 +1,7 @@
 #include <Seed/Graphics/Buffers/SSBOBuffer.hpp>
 
+#include<Seed/Graphics/particles/SPH.hpp>
+
 SSBOBuffer::SSBOBuffer()
 {
 	glGenBuffers(1, &(this->SSBOID));
@@ -22,11 +24,15 @@ void SSBOBuffer::updateBuffer(void* data, int s)
 {
 	if (s <= this->size)
 	{
+		//bind the SSBO buffer
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOID);
+		//get the SSBO buffer
 		GLvoid* pointer = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+		//write into the SSBO buffer with the data
 		memcpy(pointer, data, s);
+		//unbind the SSBO buffer
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 }
 
@@ -41,7 +47,7 @@ GLuint SSBOBuffer::getID()
 	return this->SSBOID;
 }
 
-GLvoid* SSBOBuffer::getData()
+GLvoid* SSBOBuffer::getData(float s)
 {
 	return glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 }

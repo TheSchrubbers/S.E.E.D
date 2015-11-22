@@ -122,7 +122,7 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 		//get right direction of the camera
 		glm::vec3 right(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
 		//get the up direction of the camera
-		up = glm::cross(right, direction);
+		up = glm::normalize(glm::cross(right, direction));
 
 		if (glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS)
 		{
