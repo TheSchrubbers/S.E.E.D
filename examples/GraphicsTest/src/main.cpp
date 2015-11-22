@@ -1,8 +1,6 @@
 ﻿
-#include "Materials/DefaultMaterial2/DefaultMaterial2.hpp"
 #include <Seed/Graphics/engine.hpp>
 
-#include <Seed/Graphics/particles/SPH.hpp>
 void addLara(Scene *scene);
 
 int main()
