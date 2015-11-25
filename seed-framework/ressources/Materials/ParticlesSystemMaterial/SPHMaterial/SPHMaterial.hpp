@@ -57,6 +57,8 @@ class SPHMaterial : public Material
 		void render(){};
 		void print(){};
 
+		void gradSurface(std::vector<glm::vec3> pos, glm::vec3 x);
+
 	private:
 
 		void init();

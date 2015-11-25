@@ -61,7 +61,7 @@ class Material
 		* \param rafraction: weight of the refractive coefficient
 		* \param name: name of the material
 		*/
-		Material(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = __nullptr, const float reflec = 0.0, const float refrac = 0.0);
+		Material(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
 		/*!
 		* \brief Constructor of class Material
 		* \param scene: address of the scene
@@ -71,7 +71,7 @@ class Material
 		* \param rafraction: weight of the refractive coefficient
 		* \param pathShaders: path to the directory who contains shaders' files
 		*/
-		Material(Scene *scene, const std::string name, unsigned int *flag = __nullptr, const float reflec = 0.0, const float refrac = 0.0, const std::string pathShaders = "");
+		Material(Scene *scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0, const std::string pathShaders = "");
 
 		~Material();
 

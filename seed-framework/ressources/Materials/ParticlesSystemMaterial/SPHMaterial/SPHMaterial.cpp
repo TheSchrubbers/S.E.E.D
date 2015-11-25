@@ -31,7 +31,7 @@ void SPHMaterial::init()
 		this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 		this->uniformSSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
 		glShaderStorageBlockBinding(this->shader->getID(), this->uniformSSBOID, 0);
-		sph = new SPH(0.1, 0.3);
+		sph = new SPH(10000, 0.01, 0.1, this->scene);
 	}
 }
 
@@ -43,6 +43,7 @@ void SPHMaterial::render(Model *model)
 {
 	if (this->activateShader())
 	{
+		this->sph->update();
 		//UNIFORMS
 		//set the uniform variable MVP
 		glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));
@@ -78,6 +79,5 @@ void SPHMaterial::render(Model *model)
 		//RENDER
 		//render model
 		model->render(this->sph->getNbParticles());
-
 	}
 }

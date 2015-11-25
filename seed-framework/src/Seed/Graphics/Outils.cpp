@@ -57,7 +57,7 @@ bool pointIntoSphere(glm::vec3 &p, glm::vec3 &center, float &radius)
 	return false;
 }
 
-bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 N, glm::vec3 P)
+bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 &N, glm::vec3 &P)
 {
 	float d = -N.x * P.x - N.y * P.y - N.z * P.z;
 	float t = (-N.x * center.x - N.y * center.y - N.z * center.z - d) / (N.x * N.x + N.y * N.y + N.z * N.z);
@@ -65,6 +65,23 @@ bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 N, glm::vec3 
 		return true;
 	return false;
 }
+bool intersectionSphereAlignedPlan(glm::vec3 &C, float r, glm::vec3 &P, int k)
+{
+	if (glm::abs(C[k] - P[k]) <= r)
+		return true;
+	return false;
+}
+
+bool intersectionSphereAlignedPlan(glm::vec4 &C, float r, glm::vec3 &P, int k)
+{
+	std::cout << glm::abs(C[k] - P[k]) << std::endl;
+	if (glm::abs(C[k] - P[k]) <= r)
+	{
+		return true;
+	}
+	return false;
+}
+
 void translate(glm::mat4 &M, const glm::vec3 &T)
 {
 	for (int i = 0; i < 3; i++)
@@ -80,3 +97,5 @@ void scale(glm::mat4 &M, const glm::vec3 &K)
 		M[i][i] *= K[i];
 	}
 }
+
+

@@ -48,7 +48,7 @@ struct ParticleSPH
 {
 	glm::vec4 position;
 	glm::mat4 M;
-	glm::mat4 inverseM;
+	glm::mat4 NormalMatrix;
 	glm::vec4 color;
 	//param 1 : level
 	//param 2 : radius
@@ -63,9 +63,10 @@ struct ParticleSPH
 class SPH : public ParticlesSystem
 {
 	public:
-		SPH(float radius, float Raffect);
+		SPH(int nb, float radius, float Raffect, Scene* const sce);
 		~SPH();
 		void print();
+		void update();
 		//void render(Scene *scene);
 
 		int getNbParticles();
@@ -77,12 +78,12 @@ class SPH : public ParticlesSystem
 		Starter *starter;
 
 		void loadSystem();
-		void createSystem(float r, float rA);
+		void createSystem(float r, float rA, Scene* const sce);
 		void updateSystem();
 		//float isolevel();
 		int nbParticles, type;
 		float deltaT;
-
+		float zonaradius;
 		KDtree *kdtree;
 
 		glm::mat4 Normal_Matrix;

@@ -1,45 +1,26 @@
 #include <Seed/Graphics/particles/SPH.hpp>
 #include <Seed/Graphics/particles/starter.hpp>
 #include <Seed/Graphics/buffers/SSBOBuffer.hpp>
-#include <Seed/Graphics/model/instancedModel.hpp>
-#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/scene.hpp>
-
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <assimp/ai_assert.h>
+#include <Seed/Graphics/camera.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/data_structure/KDtree.hpp>
 
-SPH::SPH(float radius, float Raffect)
+SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
 	//assimp load sphere
 	//Assimp::Importer importer;
 	//std::string path = pathToModels + "UVsphereLow.obj";
 	//const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
-	this->nbParticles = 1000;
+	this->nbParticles = nb;
 	//set the starter of the particles
 	this->starter = new Starter();
-	//load sphare mesh
-	//sphere = new InstancedModel(pScene->mMeshes[0], path);
-	//unsigned int flag;
-	//const std::string s = pathToMaterials + "SimpleMaterial/Shaders/";
-	//new shader -> simplematerial
-	//this->shader = new Shader(s, &flag);
-	//scanSeedError(flag);
-	//get the shader's camera
-	//this->block_index_camera = glGetUniformBlockIndex(shader->getID(), "CameraBuffer");
-	//get the lights' shader
-	/*this->block_index_lights[0] = glGetUniformBlockIndex(this->shader->getID(), "PointLightsBuffer");
-	this->block_index_lights[1] = glGetUniformBlockIndex(this->shader->getID(), "SpotLightsBuffer");
-	this->block_index_lights[2] = glGetUniformBlockIndex(this->shader->getID(), "DirectionnalLightsBuffer");
-	this->block_index_lights[3] = glGetUniformBlockIndex(this->shader->getID(), "FlashLightsBuffer");
-	this->NMID = glGetUniformLocation(this->shader->getID(), "Normal_Matrix");*/
 	//get the shader's particles
 	//create system
-	this->createSystem(radius, Raffect);
+	this->createSystem(radius, Raffect, sce);
+
+	this->zonaradius = Raffect;
 }
 
 SPH::~SPH()
@@ -56,7 +37,7 @@ void SPH::loadSystem()
 	this->SSBOParticles->updateBuffer((void*)(&this->particles[0]), this->nbParticles * sizeof(ParticleSPH));
 }
 
-void SPH::createSystem(float r, float rA)
+void SPH::createSystem(float r, float rA, Scene* const sce)
 {
 	//starter of particles in sphere
 	std::vector<glm::vec3> pos = this->starter->addSphereStarter(glm::vec3(0.0), 0.5, this->nbParticles);
@@ -73,7 +54,7 @@ void SPH::createSystem(float r, float rA)
 		//scale of the particle i
 		scale(p->M, glm::vec3(r));
 		//inverse transformation matrix of the particle i
-		p->inverseM = glm::transpose(glm::inverse(p->M));
+		p->NormalMatrix = glm::transpose(glm::inverse(glm::matrixCompMult(sce->getCamera()->getViewMatrix(), p->M)));
 		//color of the particle i
 		p->color = glm::vec4(1.0);
 		//parameters
@@ -97,9 +78,8 @@ void SPH::createSystem(float r, float rA)
 	//create KDTree for neighbouring particles
 	this->kdtree = new KDtree(particles, 10);
 
-	float rad = 0.5;
-	std::vector<ParticleSPH*> p = this->kdtree->radiusNeighbouring(this->particles[0], rad);
-	this->particles[0]->color = glm::vec4(0.0, 1.0, 0.0, 1.0);
+	std::vector<ParticleSPH*> p = this->kdtree->radiusNeighbouring(this->particles[5], rA);
+	this->particles[5]->color = glm::vec4(0.0, 1.0, 0.0, 1.0);
 	for (int i = 0; i < p.size(); i++)
 	{
 		p[i]->color = glm::vec4(1.0, 0.0, 0.0, 1.0);
@@ -157,4 +137,19 @@ int SPH::getNbParticles()
 GLuint SPH::getSSBOID()
 {
 	return this->SSBOParticles->getID();
+}
+
+void SPH::update()
+{
+	for (ParticleSPH *p : this->particles)
+	{
+		std::vector<ParticleSPH*> parts = this-> kdtree->radiusNeighbouring(p, this->zonaradius);
+		glm::vec3 positionAverage(0.0);
+		for (ParticleSPH* pp : parts)
+		{
+			positionAverage += glm::vec3(pp->position);
+		}
+		positionAverage /= (float)parts.size();
+		p->parameters.z = 1.0 / glm::distance(positionAverage, glm::vec3(p->position));
+	}
 }

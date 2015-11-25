@@ -12,8 +12,8 @@ Material::Material(const aiMaterial *material, Scene *sce, const std::string n, 
 	this->name = n;
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
-	this->texture_normal = __nullptr;
-	this->shader = __nullptr;
+	this->texture_normal = nullptr;
+	this->shader = nullptr;
 	if (flag)
 	{
 		flag = new unsigned int;

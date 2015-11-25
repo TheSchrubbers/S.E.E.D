@@ -19,7 +19,22 @@ void printVec4(glm::vec4 & vec);
 void printErrorOpenGL();
 void scanSeedError(unsigned int flag);
 bool pointIntoSphere(glm::vec3 &p, glm::vec3 &center, float &radius);
-bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 N, glm::vec3 P);
+bool intersectionSpherePlan(glm::vec3 &center, float &r, glm::vec3 &N, glm::vec3 &P);
+/*!
+* \brief Function which returns true if the sphere intersect the plan
+* \param C The center of the sphere
+* \param P The point on the plan
+* \return true if the sphere intersect plan
+*/
+bool intersectionSphereAlignedPlan(glm::vec3 &C, float r, glm::vec3 &P, int k);
+
+/*!
+* \brief Function which returns true if the sphere intersect the plan
+* \param C The center of the sphere
+* \param P The point on the plan
+* \return true if the sphere intersect plan
+*/
+bool intersectionSphereAlignedPlan(glm::vec4 &C, float r, glm::vec3 &P, int k);
 
 //sort vector
 struct sortPointsX

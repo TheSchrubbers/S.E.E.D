@@ -143,7 +143,7 @@ class Scene
 		* \param typeShape: shape of the system of particles (CIRCLE, POINT, SPHERE...)
 		* \param name of the system of particles
 		*/
-		void addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, unsigned int *flag = __nullptr, std::string name = "WaterSystemParticles");
+		void addWaterSystemParticles(const glm::vec3 &positionStarter, const int &typeShape, const int &nb, unsigned int *flag = nullptr, std::string name = "WaterSystemParticles");
 		/*!
 		* \brief Put the lights in the UBO BUffer
 		*/

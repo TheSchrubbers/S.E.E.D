@@ -43,7 +43,7 @@ struct KDnode
 	glm::vec3 orientation;
 	glm::vec3 position;
 	std::vector<ParticleSPH*> list;
-	std::shared_ptr<KDnode> left, right;
+	std::shared_ptr<KDnode> left, right, father;
 };
 
 /*! \class KDtree

@@ -40,7 +40,7 @@
 class Shader
 {
 public:
-	Shader(const std::string shader_dir_path, unsigned int *flag = __nullptr);
+	Shader(const std::string shader_dir_path, unsigned int *flag = nullptr);
 	~Shader();
 	void useProgram();
 	GLuint getID();

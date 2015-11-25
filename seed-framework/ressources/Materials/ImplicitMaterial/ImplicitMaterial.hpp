@@ -50,7 +50,7 @@ class ImplicitMaterial : public Material
 		* \param refraction: weight of the refractive coefficient
 		* \param flag: pointer of an int to get any errors
 		*/
-		ImplicitMaterial(Scene *scene, const std::string name, unsigned int *flag = __nullptr, const float reflec = 0.0, const float refrac = 0.0);
+		ImplicitMaterial(Scene *scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
 		/*!
 		* \brief Destructor of the ImplicitMaterial class
 		*/

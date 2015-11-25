@@ -23,6 +23,7 @@ KDtree::~KDtree()
 void KDtree::constructKDtree(std::vector<ParticleSPH*> pts, int depth)
 {
 	this->root = this->addKDnode(pts, depth);
+	this->root->father = nullptr;
 }
 
 std::shared_ptr<KDnode> KDtree::addKDnode(std::vector<ParticleSPH*> pts, int depth)
@@ -47,22 +48,29 @@ std::shared_ptr<KDnode> KDtree::addKDnode(std::vector<ParticleSPH*> pts, int dep
 	}
 	//root node
 	int mid = pts.size() / 2;
-	//position of the node
-	node->position = glm::vec3(0.0);
-	node->position[k] = (pts[mid]->position[k]);
+	//random position of the node in the plan N.(axis k) = 0
+	node->position = glm::vec3(pts[mid]->position);
+	//node->position = glm::vec3(0.0);
+	//node->position[k] = (pts[mid]->position[k]);
 	//orientation of the vector of the node
 	node->orientation = glm::vec3(0.0);
 	node->orientation[k] = 1.0f;
-	if (pts.size() > 1)
+	if (pts.size() > 1 && depth > 0)
 	{
 		node->list.push_back(pts[mid]);
 		//left and right part of the vector
 		std::vector<ParticleSPH*> left(pts.begin(), pts.begin() + mid), right(pts.begin() + mid + 1, pts.end());
 		//recursive algorithm for left and right child
 		if (left.size())
+		{
 			node->left = this->addKDnode(left, depth - 1);
+			node->left->father = node;
+		}
 		if (right.size())
+		{
 			node->right = this->addKDnode(right, depth - 1);
+			node->right->father = node;
+		}
 	}
 	else
 	{
@@ -73,6 +81,8 @@ std::shared_ptr<KDnode> KDtree::addKDnode(std::vector<ParticleSPH*> pts, int dep
 	}
 	return node;
 }
+
+
 
 void KDtree::afficher()
 {
@@ -98,6 +108,10 @@ void KDtree::afficher()
 	}
 	std::cout << k << std::endl;
 }
+
+
+
+
 std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &radius)
 {
 	int step = 0;
@@ -151,15 +165,103 @@ std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &rad
 			}
 		}
 	}
+	std::cout << "step : " << step << " nb particles : " << pts.size() << std::endl;
 	return pts;
 }
 
+
+/*
+
+
+
+std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &radius)
+{
+	int step = 0;
+	std::vector<ParticleSPH*> pts;
+	std::shared_ptr<KDnode> node;
+	std::stack<std::shared_ptr<KDnode>> nodes;
+	nodes.push(root);
+	int k = 0;
+	while (!nodes.empty())
+	{
+		step++;
+		node = nodes.top();
+		nodes.pop();
+		//node is into the sphere?
+		for (ParticleSPH* pttmp : node->list)
+		{
+			//if point in the node into the sphere of the current point
+			if (pt->position != pttmp->position && glm::distance(pttmp->position, pt->position) <= radius)
+			{
+				pts.push_back(pttmp);
+			}
+		}
+
+		//if it's a node
+		if (node->left != nullptr || node->right != nullptr)
+		{
+			//look at if the median plan is intersecting by the sphere
+			k = this->getOrientation(node->orientation);
+			//if (!intersectionSpherePlan(glm::vec3(pt->position.x, pt->position.y, pt->position.z), radius, node->orientation, node->position))
+			//bool inter = intersectionSphereAlignedPlan(pt->position, radius, node->position, k);
+			bool inter = intersectionSpherePlan(glm::vec3(pt->position), radius, node->orientation, node->position);
+			glm::vec3 A = glm::vec3(pt->position);
+			A[k] = node->position[k];
+
+			int KFather = (k - 1);
+			if (KFather < 0)
+				KFather = DIMENSION - 1;
+
+			std::cout << inter << std::endl;
+			if (node->father)
+				std::cout << A[KFather] << " " << node->position[KFather] << " " << node->father->position[KFather] << std::endl;
+
+			//if the sphere intersect the root plan or a child plan and the intersection is on the side of the child median plan
+			//we watch the both children
+			if (
+				inter && 
+					(node->father == nullptr 
+					|| 
+						(	
+							(A[KFather] <= node->father->position[KFather] && node->position[KFather] <= node->father->position[KFather]) 
+							|| 
+							(A[KFather] >= node->father->position[KFather] && node->position[KFather] >= node->father->position[KFather])
+							||
+							(glm::abs(pt->position[KFather] - node->father->position[KFather]) <= radius)
+						)
+					)
+				)
+			{
+				//we look at the both sides of the median plan
+				//intersecting, we don't know if a node from the both side can be into the sphere
+				//we get the both children
+				if (node->left)
+					nodes.push(node->left);
+				if (node->right)
+					nodes.push(node->right);
+			}
+			else
+			{
+				if (pt->position[k] <= node->position[k] && node->left)
+				{
+					nodes.push(node->left);
+				}
+				else if (pt->position[k] >= node->position[k] && node->right)
+				{
+					nodes.push(node->right);
+				}
+			}
+		}
+	}
+	std::cout << "step : " << step << std::endl;
+	return pts;
+}*/
 
 int KDtree::getOrientation(glm::vec3 &orientation)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		if (orientation[i] == 1 || orientation[i] == -1)
+		if (orientation[i] != 0)
 		{
 			return i;
 		}
@@ -167,3 +269,11 @@ int KDtree::getOrientation(glm::vec3 &orientation)
 	return -1;
 }
 
+bool intersectionSphereAlignedPlan(glm::vec4 &C, float r, glm::vec3 &P, int k, glm::vec3 Axis)
+{
+	glm::vec3 A = glm::vec3(C);
+	A[k] = P[k];
+	if (glm::abs(C[k] - P[k]) < r)
+		return true;
+	return false;
+}
