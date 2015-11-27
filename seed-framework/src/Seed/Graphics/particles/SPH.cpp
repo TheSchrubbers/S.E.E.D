@@ -19,8 +19,18 @@ SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 	//get the shader's particles
 	//create system
 	this->createSystem(radius, Raffect, sce);
-
-	this->zonaradius = Raffect;
+	//init distances surface
+	for (ParticleSPH *p : this->particles)
+	{
+		std::vector<ParticleSPH*> parts = this->kdtree->radiusNeighbouring(p, Raffect);
+		glm::vec3 positionAverage(0.0);
+		for (ParticleSPH* pp : parts)
+		{
+			positionAverage += glm::vec3(pp->position);
+		}
+		positionAverage /= (float)parts.size();
+		p->parameters.z = 1.0 / glm::distance(positionAverage, glm::vec3(p->position));
+	}
 }
 
 SPH::~SPH()
@@ -143,7 +153,7 @@ void SPH::update()
 {
 	for (ParticleSPH *p : this->particles)
 	{
-		std::vector<ParticleSPH*> parts = this-> kdtree->radiusNeighbouring(p, this->zonaradius);
+		std::vector<ParticleSPH*> parts = this-> kdtree->radiusNeighbouring(p, p->parameters.z);
 		glm::vec3 positionAverage(0.0);
 		for (ParticleSPH* pp : parts)
 		{
