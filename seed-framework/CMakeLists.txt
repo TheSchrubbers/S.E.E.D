@@ -1,19 +1,25 @@
 cmake_minimum_required(VERSION 2.8)
+SET(CMAKE_CONFIGURATION_TYPES Release CACHE STRING "" FORCE)
 
 project(SEED CXX)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
+# OpenGL and GLUT package
+find_package(OpenGL REQUIRED)
+if(NOT OPENGL_FOUND)
+    message("ERROR: OpenGL not found")
+endif(NOT OPENGL_FOUND)
 
 file(
     GLOB_RECURSE
     GRAPHICS_SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Seed/Graphics/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ressources/*.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/Seed/Graphics/*.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ressources/*.hpp
 )
@@ -22,39 +28,19 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/Seed/Graphics/*.hpp
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # GLM include directories
-include_directories(lib-required/glm)
-# CLMG include directories
-include_directories(lib-required/clmg)
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/glm)
 # include Materials
-include_directories(ressources/Materials)
+include_directories(${CMAKE_SOURCE_DIR}/include/Seed/Graphics/Materials)
 # AntTweakBar include directories
-include_directories(lib-required/antTweakBar/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/antTweakBar/include)
 # Boost include directories
-include_directories(lib-required/boost_win32)
-
-if(WIN32)
-
-	# Assimp include directories for windows
-	include_directories(lib-required/assimp_win32/include)
-
-	# Glew include directories for windows
-	include_directories(lib-required/glew_win32/include)
-
-	# GLFW include directories for windows
-	include_directories(lib-required/glfw_win32/include)
-
-else(WIN32)
-
-	# Assimp include directories for linux
-	include_directories(lib-required/assimp_linux/include)
-
-	# Glew include directories for linux
-	include_directories(lib-required/glew_linux/include)
-
-	# GLFW include directories for linux
-	include_directories(lib-required/glfw_linux/include)
-
-endif(WIN32)
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/boost_win32)
+# Assimp include directories for windows
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/assimp_win32/include)
+# Glew include directories for windows
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/glew_win32/include)
+# GLFW include directories for windows
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/glfw_win32/include)
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen)
@@ -75,9 +61,7 @@ endif(DOXYGEN_FOUND)
 #Seed's graphics library
 add_library(
     Seed-Graphics
-
     STATIC
-    
     ${GRAPHICS_SRC}
 )
 
@@ -88,7 +72,7 @@ if(WIN32)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3dll.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
-	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-gd-1_59.lib)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
 	target_link_libraries(Seed-Graphics ${OPENGL_INCLUDE_DIRS})
 
 else(WIN32)
@@ -99,11 +83,33 @@ else(WIN32)
 
 endif(WIN32)
 
-#All Seed's libraries
-#add_library(
-#    Seed-All
-    
-# 	STATIC
-    
-#	${GRAPHICS_SRC}
-#)
+#MAIN
+get_filename_component(ProjectId ${CMAKE_SOURCE_DIR} NAME)
+string(REPLACE " " "_" ProjectId ${ProjectId})
+project(${ProjectId})
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+
+file(GLOB_RECURSE SRC ${CMAKE_CURRENT_SOURCE_DIR}/../examples/GraphicsTest/src/*.?pp)
+
+add_executable(${ProjectId} ${SRC})
+
+if(WIN32)
+	target_link_libraries(${ProjectId} opengl32.lib)
+	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
+	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/glew_win32/lib/Release/Win32/glew32.lib)
+	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
+	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)
+	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_system-vc120-mt-1_59.lib)
+	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
+	target_link_libraries(${ProjectId} ${PROJECT_BINARY_DIR}/Release/Seed-Graphics.lib)
+else(WIN32)
+endif(WIN32)
+
+#COPY FILES INTO THE BINARY PROJECT FILES
+file(GLOB DLL
+	${CMAKE_SOURCE_DIR}/lib-required/DLL/*.dll
+)
+file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
+file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)

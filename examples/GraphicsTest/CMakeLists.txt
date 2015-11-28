@@ -42,12 +42,12 @@ include_directories(${LIBS}/glfw_win32/include)
 
 #libs WINDOWS
 if(WIN32)
-	set(GLFW_LIB ${LIBS}/glfw_win32/lib-vc2013/glfw3.lib)
-	set(GLEW_LIB ${LIBS}/glew_win32/lib/Release/Win32/glew32.lib)
-	set(ANT_TWEAK_BAR_LIB ${LIBS}/antTweakBar/lib/Release/Win32/glew32.lib)
-	set(ASSIMP_LIB ${LIB}/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)
-	set(BOOST_FILESYSTEM_LIB ${LIB}/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
-	set(SEED_GRAPHICS_LIB ${FRAMEWORK}/build/lib/Seed-Graphics.lib)
+	set(GLFW_LIB "${LIBS}/glfw_win32/lib-vc2013/glfw3.lib")
+	set(GLEW_LIB "${LIBS}/glew_win32/lib/Release/Win32/glew32.lib")
+	set(ANT_TWEAK_BAR_LIB "${LIBS}/antTweakBar/lib/Release/Win32/glew32.lib")
+	set(ASSIMP_LIB "${LIB}/assimp_win32/lib/assimp_release-dll_win32/assimp.lib")
+	set(BOOST_FILESYSTEM_LIB "${LIB}/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib")
+	set(SEED_GRAPHICS_LIB "${FRAMEWORK}/build/lib/Seed-Graphics.lib")
 else(WIN32)
 endif(WIN32)
 
