@@ -71,6 +71,11 @@ class SPH : public ParticlesSystem
 
 		int getNbParticles();
 		GLuint getSSBOID();
+
+		void merge(ParticleSPH *p);
+		void split(ParticleSPH *p);
+		glm::vec3 weight(ParticleSPH *p, ParticleSPH *neighbor);
+		void algorithm();
 	
 	protected:
 
@@ -80,6 +85,8 @@ class SPH : public ParticlesSystem
 		void loadSystem();
 		void createSystem(float r, float rA, Scene* const sce);
 		void updateSystem();
+		void updateSystem(int i);
+		void processRadiusEffect();
 		//float isolevel();
 		int nbParticles, type;
 		float deltaT;

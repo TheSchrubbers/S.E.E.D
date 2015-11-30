@@ -8,6 +8,9 @@
 #include <Seed/Graphics/Constant.hpp>
 #include <Seed/Graphics/particles/SPH.hpp>
 
+#define PAUSE system("pause");
+#define TEST std::cout << "test " << std::endl;
+
 struct Point{
 	glm::vec3 p;
 	glm::vec3 n;
@@ -16,6 +19,7 @@ struct Point{
 
 void printMat4(glm::mat4 & mat);
 void printVec4(glm::vec4 & vec);
+void printVec3(glm::vec3 & vec);
 void printErrorOpenGL();
 void scanSeedError(unsigned int flag);
 bool pointIntoSphere(glm::vec3 &p, glm::vec3 &center, float &radius);
@@ -56,8 +60,10 @@ struct sortPointsZ
 	}
 };
 
-void translate(glm::mat4 &M, const glm::vec3 &T);
-void scale(glm::mat4 &M, const glm::vec3 &K);
+glm::mat4 translate(const glm::mat4 &M, const glm::vec3 &T);
+glm::mat4 translate(const glm::mat4 &M, const glm::vec4 &T);
+glm::mat4 scale(const glm::mat4 &M, const glm::vec3 &K);
+glm::mat4 scale(const glm::mat4 &M, const glm::vec4 &K);
 
 
 #endif

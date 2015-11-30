@@ -32,6 +32,7 @@ void SPHMaterial::init()
 		this->uniformSSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
 		glShaderStorageBlockBinding(this->shader->getID(), this->uniformSSBOID, 0);
 		sph = new SPH(10000, 0.01, 0.1, this->scene);
+		this->sph->update();
 	}
 }
 
@@ -41,9 +42,9 @@ SPHMaterial::~SPHMaterial()
 
 void SPHMaterial::render(Model *model)
 {
+	this->sph->algorithm();
 	if (this->activateShader())
 	{
-		this->sph->update();
 		//UNIFORMS
 		//set the uniform variable MVP
 		glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));

@@ -15,6 +15,11 @@ void printVec4(glm::vec4 & vec)
 	std::cout << vec.x << " " <<vec.y << " " << vec.z << " " << vec.w << std::endl;
 }
 
+void printVec3(glm::vec3 & vec)
+{
+	std::cout << vec.x << " " << vec.y << " " << vec.z << std::endl;
+}
+
 void printErrorOpenGL()
 {
 	GLenum err;
@@ -82,20 +87,45 @@ bool intersectionSphereAlignedPlan(glm::vec4 &C, float r, glm::vec3 &P, int k)
 	return false;
 }
 
-void translate(glm::mat4 &M, const glm::vec3 &T)
+glm::mat4 translate(const glm::mat4 &M2, const glm::vec3 &T)
 {
+	glm::mat4 M = M2;
 	for (int i = 0; i < 3; i++)
 	{
 		M[3][i] += T[i];
 	}
+	return M;
 }
 
-void scale(glm::mat4 &M, const glm::vec3 &K)
+glm::mat4 translate(const glm::mat4 &M2, const glm::vec4 &T)
 {
+	glm::mat4 M = M2;
+	for (int i = 0; i < 3; i++)
+	{
+		M[3][i] += T[i];
+	}
+	return M;
+}
+
+glm::mat4 scale(const glm::mat4 &M2, const glm::vec3 &K)
+{
+	glm::mat4 M = M2;
 	for (int i = 0; i < 3; i++)
 	{
 		M[i][i] *= K[i];
 	}
+	return M;
 }
+
+glm::mat4 scale(const glm::mat4 &M2, const glm::vec4 &K)
+{
+	glm::mat4 M = M2;
+	for (int i = 0; i < 3; i++)
+	{
+		M[i][i] *= K[i];
+	}
+	return M;
+}
+
 
 

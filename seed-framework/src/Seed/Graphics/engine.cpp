@@ -16,6 +16,8 @@ void Engine::mainRender(Scene *scene)
 	double currentTime = 0, lastTime = 0;
 	float deltaTime = 0;
 
+	//glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
+
 	//main loop to render
 	do
 	{

@@ -3,7 +3,6 @@
 #include <iterator>
 #include <stack>
 
-
 #include <stdlib.h>
 #include <time.h>
 #include <Seed/Graphics/shader.hpp>
@@ -165,7 +164,7 @@ std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &rad
 			}
 		}
 	}
-	std::cout << "step : " << step << " nb particles : " << pts.size() << std::endl;
+	//std::cout << "step : " << step << " nb particles : " << pts.size() << std::endl;
 	return pts;
 }
 

@@ -4,7 +4,6 @@
 
 SSBOBuffer::SSBOBuffer()
 {
-	glGenBuffers(1, &(this->SSBOID));
 }
 
 SSBOBuffer::~SSBOBuffer()
@@ -14,6 +13,7 @@ SSBOBuffer::~SSBOBuffer()
 
 void SSBOBuffer::createBuffer(int s)
 {
+	glGenBuffers(1, &(this->SSBOID));
 	this->size = s;
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, this->SSBOID);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, s, NULL, GL_DYNAMIC_COPY);
