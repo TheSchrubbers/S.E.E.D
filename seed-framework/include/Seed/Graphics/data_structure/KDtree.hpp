@@ -60,9 +60,13 @@ public:
 	std::shared_ptr<KDnode> addKDnode(std::vector<ParticleSPH*> pts, int depth); 
 	void constructKDtree(std::vector<ParticleSPH*> pts, int depth);
 	std::vector<ParticleSPH*> radiusNeighbouring(ParticleSPH* pt, float &radius);
+	std::vector<ParticleSPH*> radiusNeighbouring(glm::vec4 &pt, float &radius);
+	int radiusNeighbouringNumber(glm::vec4 &pt, float &radius);
 	int getOrientation(glm::vec3 &orientation);
 	void afficher();
 	void render(Scene* sce);
+	void addElement(ParticleSPH *p);
+	void delElement(ParticleSPH *p);
 private:
 	std::shared_ptr<KDnode> root;
 };

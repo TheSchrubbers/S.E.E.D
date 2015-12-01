@@ -168,11 +168,194 @@ std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &rad
 	return pts;
 }
 
+int KDtree::radiusNeighbouringNumber(glm::vec4 &pt, float &radius)
+{
+	int Neighbours = 0;
+	std::vector<ParticleSPH*> pts;
+	std::shared_ptr<KDnode> node;
+	std::stack<std::shared_ptr<KDnode>> nodes;
+	nodes.push(root);
+	int k = 0;
+	while (!nodes.empty())
+	{
+		node = nodes.top();
+		nodes.pop();
+		//node is into the sphere?
+		for (ParticleSPH* pttmp : node->list)
+		{
+			//if point in the node into the sphere of the current point
+			if (pt != pttmp->position && glm::distance(pttmp->position, pt) <= radius)
+			{
+				Neighbours++;
+			}
+		}
+
+		//if it's a leaf
+		if (node->left != nullptr || node->right != nullptr)
+		{
+			//look at if the median plan is intersecting by the sphere
+			k = this->getOrientation(node->orientation);
+			if (!intersectionSpherePlan(glm::vec3(pt), radius, node->orientation, node->position))
+			{
+				//if not intersecting, look at if the point is one or other side of the median plan
+				if (pt[k] <= node->position[k])
+				{
+					if (node->left)
+						nodes.push(node->left);
+				}
+				else
+				{
+					if (node->right)
+						nodes.push(node->right);
+				}
+			}
+			else
+			{
+				//intersecting, we don't know if a node from the both side can be into the sphere
+				//we get the both children
+				if (node->left)
+					nodes.push(node->left);
+				if (node->right)
+					nodes.push(node->right);
+			}
+		}
+	}
+	return Neighbours;
+}
+
+std::vector<ParticleSPH*> KDtree::radiusNeighbouring(glm::vec4 &pt, float &radius)
+{
+	int step = 0;
+	std::vector<ParticleSPH*> pts;
+	std::shared_ptr<KDnode> node;
+	std::stack<std::shared_ptr<KDnode>> nodes;
+	nodes.push(root);
+	int k = 0;
+	while (!nodes.empty())
+	{
+		step++;
+		node = nodes.top();
+		nodes.pop();
+		//node is into the sphere?
+		for (ParticleSPH* pttmp : node->list)
+		{
+			//if point in the node into the sphere of the current point
+			if (pt != pttmp->position && glm::distance(pttmp->position, pt) <= radius)
+			{
+				pts.push_back(pttmp);
+			}
+		}
+
+		//if it's a leaf
+		if (node->left != nullptr || node->right != nullptr)
+		{
+			//look at if the median plan is intersecting by the sphere
+			k = this->getOrientation(node->orientation);
+			if (!intersectionSpherePlan(glm::vec3(pt), radius, node->orientation, node->position))
+			{
+				//if not intersecting, look at if the point is one or other side of the median plan
+				if (pt[k] <= node->position[k])
+				{
+					if (node->left)
+						nodes.push(node->left);
+				}
+				else
+				{
+					if (node->right)
+						nodes.push(node->right);
+				}
+			}
+			else
+			{
+				//intersecting, we don't know if a node from the both side can be into the sphere
+				//we get the both children
+				if (node->left)
+					nodes.push(node->left);
+				if (node->right)
+					nodes.push(node->right);
+			}
+		}
+	}
+	//std::cout << "step : " << step << " nb particles : " << pts.size() << std::endl;
+	return pts;
+}
+
+
+void KDtree::addElement(ParticleSPH *p)
+{
+	std::shared_ptr<KDnode> n = root;
+	int k = this->getOrientation(n->orientation);
+	while (n->left || n->right)
+	{
+		if (n->position[k] > p->position[k])
+		{
+			if (n->right)
+				n = n->right;
+			else
+			{
+				k = (k + 1) % DIMENSION;
+				n->right = std::shared_ptr<KDnode>(std::make_shared<KDnode>());
+				n->right->father = n;
+				n->right->list.push_back(p);
+				n->right->position = glm::vec3(p->position);
+				n->right->orientation = glm::vec3(0.0);
+				n->right->orientation[k] = 1.0;
+				break;
+			}
+
+		}
+		else
+		{
+			if (n->left)
+				n = n->left;
+			else
+			{
+
+				k = (k + 1) % DIMENSION;
+				n->left = std::shared_ptr<KDnode>(std::make_shared<KDnode>());
+				n->left->father = n;
+				n->left->list.push_back(p);
+				n->left->position = glm::vec3(p->position);
+				n->left->orientation = glm::vec3(0.0);
+				n->left->orientation[k] = 1.0;
+				break;
+			}
+		}
+		k++;
+	}
+}
+
+void KDtree::delElement(ParticleSPH *p)
+{
+	std::shared_ptr<KDnode> n = root;
+	int k = this->getOrientation(n->orientation);
+	while (n->left || n->right)
+	{
+		k = this->getOrientation(n->orientation);
+		if (n->position == glm::vec3(p->position))
+		{
+			break;
+		}
+		if (n->position[k] > p->position[k])
+		{
+			if (n->left)
+				n = n->left;
+			else
+				std::cout << "Particle not found" << std::endl;
+		}
+		else
+		{
+			if (n->right)
+				n = n->right;
+			else
+				std::cout << "Particle not found" << std::endl;
+		}
+		k++;
+	}
+}
+
 
 /*
-
-
-
 std::vector<ParticleSPH*> KDtree::radiusNeighbouring(ParticleSPH* pt, float &radius)
 {
 	int step = 0;

@@ -6,9 +6,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <Seed/Graphics/data_structure/KDtree.hpp>
+#include <glm/gtc/random.hpp>
 
-#define DELTA 3.0
-#define ALPHA 0.1
+#define DELTA 0.3
+#define ALPHA 0.04
 
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
@@ -18,18 +19,6 @@ SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 	//get the shader's particles
 	//create system
 	this->createSystem(radius, Raffect, sce);
-	//init distances surface
-	/*for (ParticleSPH *p : this->particles)
-	{
-		std::vector<ParticleSPH*> parts = this->kdtree->radiusNeighbouring(p, Raffect);
-		glm::vec3 positionAverage(0.0);
-		for (ParticleSPH* pp : parts)
-		{
-			positionAverage += glm::vec3(pp->position);
-		}
-		positionAverage /= (float)parts.size();
-		p->parameters.z = 1.0 / glm::distance(positionAverage, glm::vec3(p->position));
-	}*/
 }
 
 SPH::~SPH()
@@ -91,7 +80,7 @@ void SPH::createSystem(float r, float rA, Scene* const sce)
 
 void SPH::updateSystem()
 {
-	std::cout << this->particles.size() << std::endl;
+	//std::cout << this->particles.size() << std::endl;
 	this->SSBOParticles->deleteBuffer();
 	this->SSBOParticles->createBuffer(this->particles.size() * sizeof(ParticleSPH));
 	std::vector<ParticleSPH> v;
@@ -159,54 +148,71 @@ void SPH::update()
 
 void SPH::merge(ParticleSPH *p)
 {
-	float rA = p->parameters.y * 3.0;
-	std::vector<ParticleSPH*> neighbors = this->kdtree->radiusNeighbouring(p, rA);
+	std::vector<ParticleSPH*> neighbors = this->kdtree->radiusNeighbouring(p->position, p->parameters.w);
+
 	for (ParticleSPH *neighbourp : neighbors)
 	{
 		if (neighbourp->parameters.x == p->parameters.x)
 		{
-			p->parameters.x += 1.0;
-			p->position = (p->position + neighbourp->position) / glm::vec4(2.0);
-			p->M = translate(glm::mat4(1.0), p->position);
-			p->M = scale(p->M, glm::vec3(2.0 * p->parameters.y));
-			if (p->parameters.x == 1)
-				p->color = glm::vec4(1.0, 0.0, 1.0, 1.0);
-			else if (p->parameters.x == 2)
-				p->color = glm::vec4(0.0, 1.0, 1.0, 1.0);
-			else if (p->parameters.x == 3)
-				p->color = glm::vec4(0.0, 0.0, 1.0, 1.0);
-			p->parameters.y *= 2.0;
-			for (std::vector<ParticleSPH*>::iterator i = this->particles.begin(); i != this->particles.end(); i++)
+			glm::vec4 midPos = (p->position + neighbourp->position) / glm::vec4(2.0);
+			float r = 1.5 * p->parameters.w;// glm::sqrt(glm::sqrt(glm::sqrt(glm::pow(2.0, p->parameters.x)))) * p->parameters.z;
+			if (this->kdtree->radiusNeighbouringNumber(midPos, r) == 2);
 			{
-				if (*i == neighbourp)
+				p->position = (p->position + neighbourp->position) / glm::vec4(2.0);
+				p->parameters = p->parameters;
+				p->parameters.x += 1.0;
+				p->M = translate(glm::mat4(1.0), p->position);
+				p->M = scale(p->M, glm::vec3(2.0 * p->parameters.y));
+				if (p->parameters.x == 1)
+					p->color = glm::vec4(1.0, 0.0, 1.0, 1.0);
+				else if (p->parameters.x == 2)
+					p->color = glm::vec4(0.0, 1.0, 1.0, 1.0);
+				else if (p->parameters.x == 3)
+					p->color = glm::vec4(0.0, 0.0, 1.0, 1.0);
+				p->parameters.y *= 2.0;
+				for (std::vector<ParticleSPH*>::iterator i = this->particles.begin(); i != this->particles.end(); i++)
 				{
-					this->particles.erase(i);
-					break;
+					if (*i == neighbourp)
+					{
+						this->particles.erase(i);
+						break;
+					}
 				}
+				break;
 			}
-			break;
 		}
 	}
 }
 
 void SPH::split(ParticleSPH *p)
 {
-	float rA = p->parameters.y * 2.0;
-	std::vector<ParticleSPH*> neighbors = this->kdtree->radiusNeighbouring(p, rA);
-	for (ParticleSPH *neighbourp : neighbors)
+	//for (int i = 0; i < 5; i++)
 	{
-		p->parameters.x += 1;
-		p->position = (p->position + neighbourp->position) / glm::vec4(2.0);
-		//printMat4(p->M);
+		glm::vec4 pos1(glm::sphericalRand(p->parameters.y) + glm::vec3(p->position), 1.0);
+		glm::vec4 pos2(pos1 + (p->position - pos1) * glm::vec4(2.0));
+		ParticleSPH *p1 = new ParticleSPH;
+		p1->position = pos1;
+		p->position = pos2;
+		glm::vec4 param = glm::vec4(p->parameters.x - 1.0, p->parameters.y / 2.0, p->parameters.z / 2.0, p->parameters.w);
+		p1->parameters = param;
+		p->parameters = param;
+		p1->M = translate(glm::mat4(1.0), p->position);
+		p1->M = scale(p->M, glm::vec3(p->parameters.y));
 		p->M = translate(glm::mat4(1.0), p->position);
-		p->M = scale(p->M, glm::vec3(2.0 * p->parameters.y));
+		p->M = scale(p->M, glm::vec3(p->parameters.y));
+		if (p1->parameters.x == 1)
+			p1->color = glm::vec4(1.0, 0.0, 1.0, 1.0);
+		else if (p1->parameters.x == 2)
+			p1->color = glm::vec4(0.0, 1.0, 1.0, 1.0);
+		else if (p1->parameters.x == 3)
+			p1->color = glm::vec4(0.0, 0.0, 1.0, 1.0);
 		if (p->parameters.x == 1)
 			p->color = glm::vec4(1.0, 0.0, 1.0, 1.0);
 		else if (p->parameters.x == 2)
 			p->color = glm::vec4(0.0, 1.0, 1.0, 1.0);
 		else if (p->parameters.x == 3)
-			p->color = glm::vec4(1.0, 0.0, 1.0, 1.0);
-		break;
+			p->color = glm::vec4(0.0, 0.0, 1.0, 1.0);
+		this->particles.push_back(p1);
 	}
 }
 
@@ -217,15 +223,17 @@ void SPH::algorithm()
 	//merge & split
 	for (ParticleSPH *ptmp : this->particles)
 	{
-		if (ptmp->parameters.z > DELTA)
+		//std::cout << ptmp->parameters.z << std::endl;
+		if (ptmp->parameters.z < ALPHA && ptmp->parameters.x < 4.0)
 		{
 			this->merge(ptmp);
 		}
-		else if (ptmp->parameters.z < ALPHA)
+		else if (ptmp->parameters.x > 0.0 && ptmp->parameters.z > DELTA)
 		{
-			this->split(ptmp);
+			//this->split(ptmp);
 		}
 	}
+	//PAUSE
 	//update ssbo
 	this->updateSystem();
 }
@@ -242,7 +250,7 @@ void SPH::processRadiusEffect()
 			positionAverage += glm::vec3(neighbour->parameters.x + 1.01) * glm::vec3(neighbour->position);
 		}
 		positionAverage /= (float)neighbors.size();
-		p->parameters.z = p->parameters.y / glm::distance(positionAverage, glm::vec3(p->position));
+		p->parameters.z = glm::distance(positionAverage, glm::vec3(p->position)) / p->parameters.w;
 	}
 }
 

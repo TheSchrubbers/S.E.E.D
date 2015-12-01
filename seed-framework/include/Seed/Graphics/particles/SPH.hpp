@@ -53,7 +53,7 @@ struct ParticleSPH
 	//param 1 : level
 	//param 2 : radius
 	//param 3 : AS (adaptative sampling)
-	//param 4 : effect radius surface
+	//param 4 : 
 	glm::vec4 parameters;
 };
 
