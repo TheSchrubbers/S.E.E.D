@@ -76,6 +76,7 @@ class SPH : public ParticlesSystem
 		void split(ParticleSPH *p);
 		glm::vec3 weight(ParticleSPH *p, ParticleSPH *neighbor);
 		void algorithm();
+		void processForces();
 	
 	protected:
 

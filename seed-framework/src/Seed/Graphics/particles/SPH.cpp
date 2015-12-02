@@ -220,8 +220,9 @@ void SPH::algorithm()
 {
 	//process radius effect
 	this->processRadiusEffect();
+	this->processForces();
 	//merge & split
-	for (ParticleSPH *ptmp : this->particles)
+	/*for (ParticleSPH *ptmp : this->particles)
 	{
 		//std::cout << ptmp->parameters.z << std::endl;
 		if (ptmp->parameters.z < ALPHA && ptmp->parameters.x < 4.0)
@@ -232,7 +233,7 @@ void SPH::algorithm()
 		{
 			//this->split(ptmp);
 		}
-	}
+	}*/
 	//PAUSE
 	//update ssbo
 	this->updateSystem();
@@ -257,6 +258,11 @@ void SPH::processRadiusEffect()
 glm::vec3 SPH::weight(ParticleSPH *p, ParticleSPH *pNeighbour)
 {
 	return glm::pow(glm::vec3(1.0) - glm::pow(glm::abs(glm::vec3(p->position - pNeighbour->position)), glm::vec3(2.0)), glm::vec3(3.0));
+}
+
+void SPH::processForces()
+{
+
 }
 
 
