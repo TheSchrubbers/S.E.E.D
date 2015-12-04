@@ -47,14 +47,23 @@ class KDtree;
 struct ParticleSPH
 {
 	glm::vec4 position;
+	glm::vec4 velocity;
 	glm::mat4 M;
 	glm::mat4 NormalMatrix;
 	glm::vec4 color;
+	glm::vec4 mass;
 	//param 1 : level
 	//param 2 : radius
 	//param 3 : AS (adaptative sampling)
 	//param 4 : 
 	glm::vec4 parameters;
+};
+
+struct ParticleSPHSSBO
+{
+	glm::mat4 M;
+	glm::mat4 NormalMatrix;
+	glm::vec4 color;
 };
 
 /*! \class SPH

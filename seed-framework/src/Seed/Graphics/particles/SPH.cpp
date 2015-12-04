@@ -10,6 +10,8 @@
 
 #define DELTA 0.3
 #define ALPHA 0.04
+#define DELTAT 0.000001
+#define GRAVITY 9.81
 
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
@@ -82,13 +84,17 @@ void SPH::updateSystem()
 {
 	//std::cout << this->particles.size() << std::endl;
 	this->SSBOParticles->deleteBuffer();
-	this->SSBOParticles->createBuffer(this->particles.size() * sizeof(ParticleSPH));
-	std::vector<ParticleSPH> v;
+	this->SSBOParticles->createBuffer(this->particles.size() * sizeof(ParticleSPHSSBO));
+	std::vector<ParticleSPHSSBO> v;
 	for (ParticleSPH *pp : this->particles)
 	{
-		v.push_back(*pp);
+		ParticleSPHSSBO p;
+		p.M = pp->M;
+		p.color = pp->color;
+		p.NormalMatrix = pp->NormalMatrix;
+		v.push_back(p);
 	}
-	this->SSBOParticles->updateBuffer(&v[0], this->particles.size() * sizeof(ParticleSPH));
+	this->SSBOParticles->updateBuffer(&v[0], this->particles.size() * sizeof(ParticleSPHSSBO));
 	/*this->SSBOParticles->bind();
 	//get the SSBO data
 	ParticleSPH *p = (ParticleSPH*)this->SSBOParticles->getData(sizeof(ParticleSPH) * this->nbParticles);
@@ -262,7 +268,10 @@ glm::vec3 SPH::weight(ParticleSPH *p, ParticleSPH *pNeighbour)
 
 void SPH::processForces()
 {
-
+	for (ParticleSPH *p : this->particles)
+	{
+		p->position.y += GRAVITY * DELTAT;
+	}
 }
 
 
