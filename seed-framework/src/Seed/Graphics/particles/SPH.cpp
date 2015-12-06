@@ -8,19 +8,23 @@
 #include <Seed/Graphics/data_structure/KDtree.hpp>
 #include <glm/gtc/random.hpp>
 
-#define DELTA 0.3
-#define ALPHA 0.04
-#define DELTAT 0.000001
-#define GRAVITY 9.81
+#define DELTA 0.3f
+#define ALPHA 0.04f
+#define DELTAT 0.005f
+#define MASS 0.2f
+#define WATER_DENSITY 1.0f
+#define K 10.0f
+#define MU 0.1f
 
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
 	this->nbParticles = nb;
+	this->scene = sce;
 	//set the starter of the particles
 	this->starter = new Starter();
 	//get the shader's particles
 	//create system
-	this->createSystem(radius, Raffect, sce);
+	this->createSystem(radius, Raffect);
 }
 
 SPH::~SPH()
@@ -37,16 +41,18 @@ void SPH::loadSystem()
 	this->SSBOParticles->updateBuffer((void*)(&this->particles[0]), this->nbParticles * sizeof(ParticleSPH));
 }
 
-void SPH::createSystem(float r, float rA, Scene* const sce)
+void SPH::createSystem(float r, float rA)
 {
 	//starter of particles in sphere
 	std::vector<glm::vec3> pos = this->starter->addSphereStarter(glm::vec3(0.0), 0.5, this->nbParticles);
+	//std::vector<glm::vec3> pos = this->starter->addCubeStarter(glm::vec3(0.0), rA, this->nbParticles);
 	//for each particle we set the parameters
 	for (int i = 0; i < this->nbParticles; i++)
 	{
 		ParticleSPH *p = new ParticleSPH;
 		//position of the particle i
 		p->position = glm::vec4(pos[i], 1);
+		p->velocity = glm::vec4(0.0);
 		//transformation matrix of the particle i
 		p->M = glm::mat4(1.0);
 		//translation of the particle i
@@ -54,11 +60,13 @@ void SPH::createSystem(float r, float rA, Scene* const sce)
 		//scale of the particle i
 		p->M = scale(p->M, glm::vec3(r));
 		//inverse transformation matrix of the particle i
-		p->NormalMatrix = glm::transpose(glm::inverse(glm::matrixCompMult(sce->getCamera()->getViewMatrix(), p->M)));
+		p->NormalMatrix = glm::transpose(glm::inverse(glm::matrixCompMult(this->scene->getCamera()->getViewMatrix(), p->M)));
 		//color of the particle i
 		p->color = glm::vec4(1.0);
 		//parameters
 		p->parameters = glm::vec4(0.0, r, 0.0, rA);
+		//mass
+		p->parameters2.x = MASS;
 		//we push the particle i into the array of particles
 		particles.push_back(p);
 	}
@@ -95,36 +103,6 @@ void SPH::updateSystem()
 		v.push_back(p);
 	}
 	this->SSBOParticles->updateBuffer(&v[0], this->particles.size() * sizeof(ParticleSPHSSBO));
-	/*this->SSBOParticles->bind();
-	//get the SSBO data
-	ParticleSPH *p = (ParticleSPH*)this->SSBOParticles->getData(sizeof(ParticleSPH) * this->nbParticles);
-	if (p)
-	{
-		//update the SSBO
-		for (int i = 0; i < this->nbParticles; i++)
-		{
-			p[i].M = this->particles[i]->M;
-			p[i].color = this->particles[i]->color;
-			p[i].position = this->particles[i]->position;
-			p[i].parameters = this->particles[i]->parameters;
-		}
-	}
-	this->SSBOParticles->release();*/
-}
-
-void SPH::updateSystem(int i)
-{
-	this->SSBOParticles->bind();
-	//get the SSBO data
-	ParticleSPH *p = (ParticleSPH*)this->SSBOParticles->getData(sizeof(ParticleSPH) * this->nbParticles);
-	if (p)
-	{
-		p[i].M = this->particles[i]->M;
-		p[i].color = this->particles[i]->color;
-		p[i].position = this->particles[i]->position;
-		p[i].parameters = this->particles[i]->parameters;
-	}
-	this->SSBOParticles->release();
 }
 
 int SPH::getNbParticles()
@@ -135,21 +113,6 @@ int SPH::getNbParticles()
 GLuint SPH::getSSBOID()
 {
 	return this->SSBOParticles->getID();
-}
-
-void SPH::update()
-{
-	for (ParticleSPH *p : this->particles)
-	{
-		std::vector<ParticleSPH*> parts = this-> kdtree->radiusNeighbouring(p, p->parameters.w);
-		glm::vec3 positionAverage(0.0);
-		for (ParticleSPH* pp : parts)
-		{
-			positionAverage += glm::vec3(pp->position);
-		}
-		positionAverage /= (float)parts.size();
-		p->parameters.z = 1.0 / glm::distance(positionAverage, glm::vec3(p->position));
-	}
 }
 
 void SPH::merge(ParticleSPH *p)
@@ -226,7 +189,9 @@ void SPH::algorithm()
 {
 	//process radius effect
 	this->processRadiusEffect();
+	//process all forces 
 	this->processForces();
+	this->collision();
 	//merge & split
 	/*for (ParticleSPH *ptmp : this->particles)
 	{
@@ -241,6 +206,8 @@ void SPH::algorithm()
 		}
 	}*/
 	//PAUSE
+	//update matrix
+	this->updateMatrix();
 	//update ssbo
 	this->updateSystem();
 }
@@ -268,9 +235,91 @@ glm::vec3 SPH::weight(ParticleSPH *p, ParticleSPH *pNeighbour)
 
 void SPH::processForces()
 {
+	glm::vec4 seed_gravity(0.0, -9.81, 0.0, 1.0);
+	float dist = 0.0f, hi, hi6, hj, hj6;
+	float tmp = 15.0f / (SEED_PI);
+	float tmp2 = -45.0f / (SEED_PI);
+	float tmp3 = -90.0f / (SEED_PI);
+	glm::vec4 Fpressure, Fviscosity, Fgravity,  q1, q2, W, gradientW1, gradientW2, dW, q, Pi, Pj, Vi, Vj, laplacianW1, laplacianW2, vector;
+	//process smoothing kernel, density and pressure of each particle
 	for (ParticleSPH *p : this->particles)
 	{
-		p->position.y += GRAVITY * DELTAT;
+		//preprocess value
+		hi = p->parameters.w;
+		hi6 = glm::pow(p->parameters.w, 6.0f);
+		//p->parameters2.y = 0;
+		p->density = glm::vec4(0.0f);
+		//neighbors of the particle i
+		std::vector<ParticleSPH*> neighbors = this->kdtree->radiusNeighbouring(p->position, hi);
+		for (ParticleSPH* neighbour : neighbors)
+		{	
+			//distance between the particle i and the particle j
+			dist = glm::distance(neighbour->position, p->position);
+			//process smoothing kernel
+			W = glm::vec4(tmp / hi6) * glm::pow((glm::vec4(hi) - dist), glm::vec4(3.0f));
+			//process density of the particle i
+			//density = sum(mass_j * smoothing_kernel);
+			p->density += neighbour->parameters2.x * W;
+		}
+		p->pression = K * (WATER_DENSITY - p->density);
+	}
+
+	for (ParticleSPH *p : this->particles)
+	{
+		//init
+		Fpressure = glm::vec4(0.0);
+		Fviscosity = glm::vec4(0.0);
+		//preprocess values
+		hi = p->parameters.w;
+		hi6 = glm::pow(p->parameters.w, 6.0f);
+		//process pressure of the particle i
+		std::vector<ParticleSPH*> neighbors = this->kdtree->radiusNeighbouring(p->position, p->parameters.w);
+		std::cout << neighbors.size() << std::endl;
+		for (ParticleSPH* neighbour : neighbors)
+		{
+			hj = neighbour->parameters.w;
+			hj6 = glm::pow(neighbour->parameters.w, 6.0f);
+			//distance between the particle i and its neighbour j
+			dist = glm::distance(p->position, neighbour->position);
+			//process gradient of smoothing kernel of Kelager
+			gradientW1 = (tmp2 / hi6) * ((neighbour->position - p->position) / dist) * (hi - (dist * dist));
+			//process laplacian of smoothing kernel of kelager
+			laplacianW1 = glm::vec4((tmp3 / hi6) * (1.0f / dist) * (hi - dist) * (hi - 2.0f*dist));
+			//process Force pressure of the particle i
+			Fpressure += ((p->pression + neighbour->pression) / 2.0f) * (neighbour->parameters2.x / neighbour->density) * gradientW1;
+			//Fviscosity += (MU*(Vi*Vj)*(neighbour->velocity - p->velocity)*(laplacianW1 + laplacianW2)) / 2.0f;
+		}
+		Fpressure = -Fpressure;
+		Fgravity = p->parameters2.x * seed_gravity;
+		//p->F = Fgravity;// +Fpressure + Fviscosity;
+		p->F = Fpressure +Fgravity;
+
+	}
+	for (ParticleSPH *p : this->particles)
+	{
+		p->velocity += (DELTAT * p->F) / p->parameters2.x;
+		p->position += DELTAT * p->velocity;
+	}
+}
+
+void SPH::updateMatrix()
+{
+	for (ParticleSPH *p : this->particles)
+	{
+		p->M = translate(p->M, p->position);
+		p->NormalMatrix = glm::transpose(glm::inverse(glm::matrixCompMult(this->scene->getCamera()->getViewMatrix(), p->M)));
+	}
+}
+
+void SPH::collision()
+{
+	for (ParticleSPH *p : this->particles)
+	{
+		if (p->position.y < -3.0f)
+		{
+			p->velocity.y -= p->velocity.y;
+			p->position.y = -3.0f;
+		}
 	}
 }
 

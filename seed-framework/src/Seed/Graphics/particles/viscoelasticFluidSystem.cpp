@@ -67,7 +67,7 @@ void ViscoElasticFluidSystem::simulation()
 {
 	for (Particle p : particles)
 	{
-		p.velocity += this->deltaT * SEED_GRAVITY;
+		//p.velocity += this->deltaT * seed_gravity;
 
 		this->applyViscosity(p);
 	}

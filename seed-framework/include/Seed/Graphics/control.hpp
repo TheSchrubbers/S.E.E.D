@@ -5,9 +5,8 @@
 #include <glm/glm.hpp>
 #include <Seed/Graphics/Constant.hpp>
 #include <AntTweakBar.h>
-#include <Seed/Graphics/camera.hpp>
 
-
+class Camera;
 class Controller
 {
 public:
@@ -19,7 +18,6 @@ public:
 	TwBar* getBar();
 	static int context;
 private:
-	
 	TwBar *bar;
 };
 

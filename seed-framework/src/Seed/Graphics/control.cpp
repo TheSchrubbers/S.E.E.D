@@ -1,5 +1,6 @@
 #include <Seed/Graphics/control.hpp>
 #include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/camera.hpp>
 
 int Controller::context = 0;
 
@@ -162,7 +163,6 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 		TwMouseMotion(xpos, ypos);
 	}
 }
-
 
 void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods)
 {

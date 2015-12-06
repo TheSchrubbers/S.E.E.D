@@ -42,7 +42,7 @@ const int Attenuation[3][12] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.
 #define SEED_ERROR_LOAD_SHADER 52
 #define SEED_SUCCESS 1
 
-#define SEED_GRAVITY 9.81
+#define SEED_PI 3.14159265359
 
 #define uniform GLuint
 

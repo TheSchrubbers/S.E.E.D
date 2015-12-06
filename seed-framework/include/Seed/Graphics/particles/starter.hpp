@@ -43,6 +43,7 @@ public:
 	Starter();
 	~Starter();
 	std::vector<glm::vec3> addSphereStarter(glm::vec3 pos, float r, int nb);
+	std::vector<glm::vec3> addCubeStarter(glm::vec3 pos, float r, int nb);
 protected:
 
 };

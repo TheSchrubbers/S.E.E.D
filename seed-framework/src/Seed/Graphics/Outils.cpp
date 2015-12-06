@@ -92,7 +92,7 @@ glm::mat4 translate(const glm::mat4 &M2, const glm::vec3 &T)
 	glm::mat4 M = M2;
 	for (int i = 0; i < 3; i++)
 	{
-		M[3][i] += T[i];
+		M[3][i] = T[i];
 	}
 	return M;
 }
@@ -102,7 +102,7 @@ glm::mat4 translate(const glm::mat4 &M2, const glm::vec4 &T)
 	glm::mat4 M = M2;
 	for (int i = 0; i < 3; i++)
 	{
-		M[3][i] += T[i];
+		M[3][i] = T[i];
 	}
 	return M;
 }

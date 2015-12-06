@@ -30,6 +30,7 @@ std::shared_ptr<KDnode> KDtree::addKDnode(std::vector<ParticleSPH*> pts, int dep
 	std::shared_ptr<KDnode> node(std::make_shared<KDnode>());
 	node->left = nullptr;
 	node->right = nullptr;
+	node->deleted = false;
 	int k = depth % DIMENSION;
 	if (pts.size() > 1)
 	{
@@ -329,26 +330,21 @@ void KDtree::delElement(ParticleSPH *p)
 {
 	std::shared_ptr<KDnode> n = root;
 	int k = this->getOrientation(n->orientation);
-	while (n->left || n->right)
+	while (n->position == glm::vec3(p->position))
 	{
 		k = this->getOrientation(n->orientation);
 		if (n->position == glm::vec3(p->position))
 		{
+			n->deleted = true;
 			break;
 		}
 		if (n->position[k] > p->position[k])
 		{
-			if (n->left)
-				n = n->left;
-			else
-				std::cout << "Particle not found" << std::endl;
+			n = n->right;
 		}
 		else
 		{
-			if (n->right)
-				n = n->right;
-			else
-				std::cout << "Particle not found" << std::endl;
+			n = n->left;
 		}
 		k++;
 	}

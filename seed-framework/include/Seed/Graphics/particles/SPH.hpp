@@ -38,6 +38,8 @@
 #ifndef SPH_HPP
 #define SPH_HPP
 
+#include <map>
+
 class Starter;
 class InstancedModel;
 class Scene;
@@ -50,12 +52,19 @@ struct ParticleSPH
 	glm::vec4 velocity;
 	glm::mat4 M;
 	glm::mat4 NormalMatrix;
+	glm::vec4 density;
+	glm::vec4 pression;
+	glm::vec4 volume;
 	glm::vec4 color;
-	glm::vec4 mass;
+	glm::vec4 F;
+	//param1 : mass
+	//param2 : density
+	//param3 : 
+	glm::vec4 parameters2;
 	//param 1 : level
-	//param 2 : radius
-	//param 3 : AS (adaptative sampling)
-	//param 4 : 
+	//param 2 : radius of the particle
+	//param 3 : AS (adaptative sampling) for splitting and merging
+	//param 4 : Radius neighbouring
 	glm::vec4 parameters;
 };
 
@@ -75,7 +84,6 @@ class SPH : public ParticlesSystem
 		SPH(int nb, float radius, float Raffect, Scene* const sce);
 		~SPH();
 		void print();
-		void update();
 		//void render(Scene *scene);
 
 		int getNbParticles();
@@ -91,16 +99,18 @@ class SPH : public ParticlesSystem
 
 		std::vector<ParticleSPH*> particles;
 		Starter *starter;
-
 		void loadSystem();
-		void createSystem(float r, float rA, Scene* const sce);
+		void createSystem(float r, float rA);
 		void updateSystem();
 		void updateSystem(int i);
 		void processRadiusEffect();
+		void updateMatrix();
+		void collision();
 		//float isolevel();
 		int nbParticles, type;
 		float deltaT;
 		float zonaradius;
+		Scene *scene;
 		KDtree *kdtree;
 
 		glm::mat4 Normal_Matrix;

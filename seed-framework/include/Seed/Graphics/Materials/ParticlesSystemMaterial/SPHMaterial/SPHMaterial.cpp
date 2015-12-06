@@ -31,8 +31,7 @@ void SPHMaterial::init()
 		this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 		this->uniformSSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
 		glShaderStorageBlockBinding(this->shader->getID(), this->uniformSSBOID, 0);
-		sph = new SPH(1000, 0.01, 0.1, this->scene);
-		this->sph->update();
+		sph = new SPH(1000, 0.01, 0.03, this->scene);
 	}
 }
 
