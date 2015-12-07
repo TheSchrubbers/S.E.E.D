@@ -5,7 +5,7 @@ void addLara(Scene *scene);
 int main()
 {
 	//position of the camera
-	glm::vec3 position = glm::vec3(0.0, 0.0, 5.0);
+	glm::vec3 position = glm::vec3(0.0, 0.0, 3.0);
 
 	//INIT ENGINE 
 	Engine engine;

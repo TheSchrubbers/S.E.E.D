@@ -19,6 +19,9 @@ bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
+float Scene::deltat = 0.0005f;
+float Scene::K = 0.0001;
+bool Scene::reset = false;
 
 Scene::Scene()
 {

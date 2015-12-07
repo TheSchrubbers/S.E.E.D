@@ -82,5 +82,5 @@ class Engine
 };
 
 void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
-
+void TW_CALL CallbackButtonReset(void *clientData);
 #endif

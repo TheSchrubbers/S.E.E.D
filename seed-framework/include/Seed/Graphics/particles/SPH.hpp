@@ -34,17 +34,16 @@
 #include <vector>
 #include <GL/glew.h>
 #include <memory>
+#include <Seed/Graphics/data_structure/KDtree.hpp>
 
 #ifndef SPH_HPP
 #define SPH_HPP
-
-#include <map>
 
 class Starter;
 class InstancedModel;
 class Scene;
 class Shader;
-class KDtree;
+//class KDtree;
 
 struct ParticleSPH
 {
@@ -91,7 +90,6 @@ class SPH : public ParticlesSystem
 
 		void merge(ParticleSPH *p);
 		void split(ParticleSPH *p);
-		glm::vec3 weight(ParticleSPH *p, ParticleSPH *neighbor);
 		void algorithm();
 		void processForces();
 	
@@ -111,7 +109,7 @@ class SPH : public ParticlesSystem
 		float deltaT;
 		float zonaradius;
 		Scene *scene;
-		KDtree *kdtree;
+		kdtree *kdtree;
 
 		glm::mat4 Normal_Matrix;
 };

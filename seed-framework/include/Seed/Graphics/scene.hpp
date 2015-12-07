@@ -180,7 +180,8 @@ class Scene
 
 		void afficher();
 
-		static bool wireframe, specularMapActive, specularMapView, normalMappingActive;
+		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset;
+		static float deltat, K;
 		
 
 	private:

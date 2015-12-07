@@ -92,14 +92,23 @@ void Engine::initAntWeakBar(std::string name, const Camera* camera)
 	this->controller->initAntWeakBar(name);
 
 	float a = 0.1f, d = 0.5f, s = 0.4f;
+	float deltat = 0.005;
 	/*TwAddVarRW(this->controller->getBar(), "Ambiant composant", TW_TYPE_FLOAT, &a, " min=0.0 max=1.0 step=0.01 group=Engine label='Ambiant composant' ");
 	TwAddVarRW(this->controller->getBar(), "Diffuse composant", TW_TYPE_FLOAT, &d, " min=0.0 max=1.0 step=0.01 group=Engine label='Diffuse composant' ");
 	TwAddVarRW(this->controller->getBar(), "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");*/
 	// Add callback to toggle auto-rotate mode (callback functions are defined above).
-	TwAddVarRW(this->controller->getBar(), "Wireframe", TW_TYPE_BOOL8, &(Scene::wireframe), " label='WireFrame' key=w help='Active/Desactive mode wireframe' ");
-	TwAddVarRW(this->controller->getBar(), "SpecularMapView", TW_TYPE_BOOL8, &(Scene::specularMapView), "label='Specular Mapping View' help='View Specular Mapping'");
-	TwAddVarRW(this->controller->getBar(), "SpecularMapActive", TW_TYPE_BOOL8, &(Scene::specularMapActive), "label='Specular Mapping Active' help='Active/Desactive Specular Mapping'");
-	TwAddVarRW(this->controller->getBar(), "NormalMapping", TW_TYPE_BOOL8, &(Scene::normalMappingActive), "label='Normal mapping' help='Active/Desactive mode Normal mapping'");
+	TwAddVarRW(this->controller->getBar(), "Wireframe", TW_TYPE_BOOL8, &(Scene::wireframe), " label='WireFrame' key=w help='Active/Desactive mode wireframe' group='Mods'");
+	TwAddVarRW(this->controller->getBar(), "SpecularMapView", TW_TYPE_BOOL8, &(Scene::specularMapView), "label='Specular Mapping View' help='View Specular Mapping' group='Mods'");
+	TwAddVarRW(this->controller->getBar(), "SpecularMapActive", TW_TYPE_BOOL8, &(Scene::specularMapActive), "label='Specular Mapping Active' help='Active/Desactive Specular Mapping' group='Mods'");
+	TwAddVarRW(this->controller->getBar(), "NormalMapping", TW_TYPE_BOOL8, &(Scene::normalMappingActive), "label='Normal mapping' help='Active/Desactive mode Normal mapping' group='Mods'");
+	TwAddVarRW(this->controller->getBar(), "DELTAT", TW_TYPE_FLOAT, &(Scene::deltat), " label='deltat' help='Delta t of the animation' min=0.00001 max=0.1 step=0.00001 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "K", TW_TYPE_FLOAT, &(Scene::K), " label='Stiffness K' help='Stiffness K' min=0.00001 max=0.1 step=0.00001 group='SPH' ");
+	TwAddButton(this->controller->getBar(), "RESET", CallbackButtonReset, NULL, " label='Reset system SPH' group='SPH' ");
 	//TwAddVarCB(this->controller->getBar(), "MouseSpeed", TW_TYPE_FLOAT, Camera::SetSpeedMouseCallback, Camera::GetSpeedMouseCallback, &camera, "label='Speed camera' help='Set the speed of the orientation of the camera' min=10");
 
+}
+
+void TW_CALL CallbackButtonReset(void *clientData)
+{
+	Scene::reset = true;
 }
