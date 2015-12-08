@@ -110,8 +110,6 @@ class SPH : public ParticlesSystem
 		float zonaradius;
 		Scene *scene;
 		kdtree *kdtree;
-
-		glm::mat4 Normal_Matrix;
 };
 
 

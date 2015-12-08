@@ -19,9 +19,14 @@ bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
-float Scene::deltat = 0.0005f;
-float Scene::K = 0.0001;
+float Scene::deltat = 0.0002f;
+float Scene::K = 0.0000001;
 bool Scene::reset = false;
+float Scene::radiusNeighbouring = 0.1f;
+float Scene::nbParticles = 2000;
+float Scene::radiusParticle = 0.01f;
+float Scene::mu = 0.01f;
+float Scene::mass = 0.8f;
 
 Scene::Scene()
 {
@@ -317,8 +322,6 @@ void Scene::cameraUpdate()
 	cam->P = this->camera->getProjectionMatrix();
 	cam->V_inverse = glm::inverse(this->camera->getViewMatrix());
 
-	//std::cout << cam->V[0][0] << std::endl;
-	
 	//send data of lights
 	camBuf->updateBuffer(cam, sizeof(cameraStruct));
 }

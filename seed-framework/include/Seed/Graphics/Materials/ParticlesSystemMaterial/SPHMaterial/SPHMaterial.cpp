@@ -43,7 +43,7 @@ void SPHMaterial::render(Model *model)
 	if (Scene::reset == true)
 	{
 		delete this->sph;
-		this->sph = new SPH(1000, 0.01, 0.1, this->scene);
+		this->sph = new SPH(Scene::nbParticles, Scene::radiusParticle, Scene::radiusNeighbouring, this->scene);
 		Scene::reset = false;
 	}
 	this->sph->algorithm();

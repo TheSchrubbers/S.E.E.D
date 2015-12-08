@@ -102,8 +102,14 @@ void Engine::initAntWeakBar(std::string name, const Camera* camera)
 	TwAddVarRW(this->controller->getBar(), "SpecularMapActive", TW_TYPE_BOOL8, &(Scene::specularMapActive), "label='Specular Mapping Active' help='Active/Desactive Specular Mapping' group='Mods'");
 	TwAddVarRW(this->controller->getBar(), "NormalMapping", TW_TYPE_BOOL8, &(Scene::normalMappingActive), "label='Normal mapping' help='Active/Desactive mode Normal mapping' group='Mods'");
 	TwAddVarRW(this->controller->getBar(), "DELTAT", TW_TYPE_FLOAT, &(Scene::deltat), " label='deltat' help='Delta t of the animation' min=0.00001 max=0.1 step=0.00001 group='SPH' ");
-	TwAddVarRW(this->controller->getBar(), "K", TW_TYPE_FLOAT, &(Scene::K), " label='Stiffness K' help='Stiffness K' min=0.00001 max=0.1 step=0.00001 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "K", TW_TYPE_FLOAT, &(Scene::K), " label='Stiffness K' help='Stiffness K' min=0.000000001 max=0.1 step=0.00001 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "Radius neighbouring", TW_TYPE_FLOAT, &(Scene::radiusNeighbouring), " label='Radius Neighbouring' min=0.01 max=1.0 step=0.05 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "Radius particle", TW_TYPE_FLOAT, &(Scene::radiusParticle), " label='Radius Particle' min=0.01 max=0.1 step=0.05 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "NB particles", TW_TYPE_FLOAT, &(Scene::nbParticles), " label='Nb particles' min=10 max=1000000 step=10 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "Viscosity fluid", TW_TYPE_FLOAT, &(Scene::mu), " label='Viscosity fluid' min=0.01 max=1.0 step=0.01 group='SPH' ");
+	TwAddVarRW(this->controller->getBar(), "Mass particle", TW_TYPE_FLOAT, &(Scene::mass), " label='Mass particle' min=0.001 max=10.0 step=0.01 group='SPH' ");
 	TwAddButton(this->controller->getBar(), "RESET", CallbackButtonReset, NULL, " label='Reset system SPH' group='SPH' ");
+
 	//TwAddVarCB(this->controller->getBar(), "MouseSpeed", TW_TYPE_FLOAT, Camera::SetSpeedMouseCallback, Camera::GetSpeedMouseCallback, &camera, "label='Speed camera' help='Set the speed of the orientation of the camera' min=10");
 
 }

@@ -181,7 +181,7 @@ class Scene
 		void afficher();
 
 		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset;
-		static float deltat, K;
+		static float deltat, K, radiusNeighbouring, radiusParticle, nbParticles, mu, mass;
 		
 
 	private:

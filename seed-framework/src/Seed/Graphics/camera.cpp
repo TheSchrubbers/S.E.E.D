@@ -14,6 +14,7 @@ Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, flo
 	this->far = f;
 	this->speed = s;
 	this->mouseSpeed = ms;
+	this->right = glm::normalize(glm::cross(this->up, this->direction));
 	viewMatrix = glm::lookAt(pos, look, upVector);
 	projectionMatrix = glm::perspective(
 		FOV,         //angle d'ouverture de la caméra
@@ -118,4 +119,20 @@ void Camera::setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &u)
 void Camera::setMouseSpeed(const float speed)
 {
 	this->mouseSpeed = speed;
+}
+
+glm::vec3 Camera::getRight()
+{
+	return this->right;
+}
+
+void Camera::setRight(glm::vec3 &r)
+{
+	this->right = r;
+}
+
+void Camera::setViewMatrix(glm::vec3 &pos)
+{
+	this->position = pos;
+	viewMatrix = glm::lookAt(pos, pos + this->direction, this->up);
 }

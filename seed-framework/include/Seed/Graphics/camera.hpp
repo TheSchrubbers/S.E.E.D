@@ -137,6 +137,9 @@ public:
 	*/
 	void setWAngle(float WAngle);
 
+	glm::vec3 getRight();
+	void setRight(glm::vec3 &right);
+
 
 	/*!
 	* \brief set the view matrix
@@ -145,6 +148,11 @@ public:
 	* \param up : reference to the vertical vector of the camera
 	*/
 	void setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &up);
+	/*!
+	* \brief set the view matrix
+	* \param pos : reference to the position of the camera
+	*/
+	void setViewMatrix(glm::vec3 &pos);
 	/*!
 	* \brief set the projection matrix
 	* \param Fov : reference to the field of view
@@ -179,7 +187,7 @@ private:
 	*/
 	glm::mat4 projectionMatrix;
 
-	glm::vec3 position, direction, up;
+	glm::vec3 position, direction, up, right;
 	//horizontal and vertical angle
 	float WAngle, HAngle, near, far, FoV;
 	float mouseSpeed, speed;

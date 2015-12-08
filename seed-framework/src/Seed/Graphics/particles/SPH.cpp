@@ -11,11 +11,7 @@
 
 //#define DELTA 0.3f
 #define ALPHA 0.04f
-#define DELTAT 0.0005f
-#define MASS 0.2f
 #define WATER_DENSITY 1.0f
-//#define K 0.0001f
-#define MU 0.1f
 
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
@@ -31,6 +27,11 @@ SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 SPH::~SPH()
 {
 	delete this->starter;
+	kd_free(this->kdtree);
+	for (ParticleSPH *p : particles)
+	{
+		delete p;
+	}
 }
 
 void SPH::print()
@@ -67,7 +68,7 @@ void SPH::createSystem(float r, float rA)
 		//parameters
 		p->parameters = glm::vec4(0.0, r, 0.0, rA);
 		//mass
-		p->parameters2.x = MASS;
+		p->parameters2.x = Scene::mass;
 		//we push the particle i into the array of particles
 		particles.push_back(p);
 	}
@@ -90,6 +91,7 @@ void SPH::createSystem(float r, float rA)
 		kd_res_next(neighbors);
 	}
 	particles[o]->color = glm::vec4(0.0, 1.0, 0.0, 1.0);
+	kd_res_free(neighbors);
 
 	this->processRadiusEffect();
 	//SSBO creating
@@ -221,7 +223,15 @@ void SPH::algorithm()
 	this->updateMatrix();
 	//update ssbo
 	this->updateSystem();
-	//PAUSE
+
+	//update particles
+	kd_clear(this->kdtree);
+
+	for (ParticleSPH *p : this->particles)
+	{
+		kd_insert3f(this->kdtree, p->position.x, p->position.y, p->position.z, p);
+	}
+
 }
 
 void SPH::processRadiusEffect()
@@ -248,6 +258,7 @@ void SPH::processRadiusEffect()
 			}
 			kd_res_next(neighbors);
 		}
+		kd_res_free(neighbors);
 		positionAverage /= (float)kd_res_size(neighbors);
 		p->parameters.z = glm::distance(positionAverage, glm::vec3(p->position)) / p->parameters.w;
 	}
@@ -259,7 +270,7 @@ void SPH::processForces()
 	float dist = 0.0f, hi, hi6, hj, hj6;
 	float tmp = 15.0f / (SEED_PI);
 	float tmp2 = -45.0f / (SEED_PI);
-	float tmp3 = -90.0f / (SEED_PI);
+	float tmp3 = 45.0f / (SEED_PI);
 	ParticleSPH* neighbour;
 	glm::vec4 Fpressure, Fviscosity, Fgravity,  q1, q2, W, gradientW1, gradientW2, dW, q, Pi, Pj, Vi, Vj, laplacianW1, laplacianW2, vector;
 	kdres *neighbors = new kdres;
@@ -299,6 +310,7 @@ void SPH::processForces()
 			}
 			kd_res_next(neighbors);
 		}
+		kd_res_free(neighbors);
 		p->pression = Scene::K * (WATER_DENSITY - p->density);
 	}
 
@@ -340,17 +352,20 @@ void SPH::processForces()
 				//process gradient of smoothing kernel of Kelager
 				gradientW1 = (tmp2 / hi6) * ((neighbour->position - p->position) / dist) * (hi - (dist * dist));
 				//process laplacian of smoothing kernel of kelager
-				laplacianW1 = glm::vec4((tmp3 / hi6) * (1.0f / dist) * (hi - dist) * (hi - 2.0f*dist));
+				//laplacianW1 = glm::vec4((tmp3 / hi6) * (1.0f / dist) * (hi - dist) * (hi - 2.0f*dist));
+				laplacianW1 = glm::vec4(tmp3 / hi6) * (hi - dist);
 				//process Force pressure of the particle i
 				Fpressure += ((p->pression + neighbour->pression) / 2.0f) * (neighbour->parameters2.x / neighbour->density) * gradientW1;
-				//Fviscosity += (MU*(Vi*Vj)*(neighbour->velocity - p->velocity)*(laplacianW1 + laplacianW2)) / 2.0f;
+				Fviscosity += (neighbour->velocity - p->velocity) * neighbour->parameters2.x * laplacianW1;
 			}
 			kd_res_next(neighbors);
 		}
+		kd_res_free(neighbors);
 		Fpressure = -Fpressure;
-		Fgravity = p->parameters2.x * seed_gravity;
+		Fviscosity *= (Scene::mu / p->density);
+		Fgravity = p->density * seed_gravity;
 		//p->F = Fgravity;// +Fpressure + Fviscosity;
-		p->F = Fgravity + Fpressure;
+		p->F = Fgravity + Fpressure + Fviscosity;
 
 	}
 	for (ParticleSPH *p : this->particles)
@@ -375,35 +390,8 @@ void SPH::collision()
 	{
 		if (p->position.y < -3.0f)
 		{
-			p->velocity.y -= p->velocity.y;
+			p->velocity.y -= p->velocity.y * 0.01;
 			p->position.y = -3.0f;
 		}
 	}
 }
-
-
-/*void SPH::render(Scene *scene)
-{
-this->shader->useProgram();
-//Enable culling triangles which normal is not towards the camera
-glEnable(GL_CULL_FACE);
-// Enable depth test
-glEnable(GL_DEPTH_TEST);
-//BUFFERS
-for (int i = 0; i < 4; i++)
-{
-//bind UBO buffer light
-glBindBufferBase(GL_UNIFORM_BUFFER, i, scene->getCollector()->getLightUBO(i)->getID());
-//bind UBO lighting with program shader
-glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
-}
-glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this->SSBOParticles->getID());
-//bind UBO buffer camera
-glBindBufferBase(GL_UNIFORM_BUFFER, 0, scene->getCamUBO()->getID());
-//bind UBO camera with program shader
-glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 0);
-sphere->render(this->nbParticles);
-this->SSBOParticles->release();
-//this->updateSystem();
-}*/
