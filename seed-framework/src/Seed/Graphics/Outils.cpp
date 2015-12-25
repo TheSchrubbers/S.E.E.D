@@ -1,5 +1,6 @@
 #include <Seed/Graphics/Outils.hpp>
 #include <glm/gtx/intersect.hpp>
+#include <glm/gtx/transform.hpp>
 #include <iostream>
 
 void printMat4(glm::mat4 & mat)
@@ -79,7 +80,6 @@ bool intersectionSphereAlignedPlan(glm::vec3 &C, float r, glm::vec3 &P, int k)
 
 bool intersectionSphereAlignedPlan(glm::vec4 &C, float r, glm::vec3 &P, int k)
 {
-	std::cout << glm::abs(C[k] - P[k]) << std::endl;
 	if (glm::abs(C[k] - P[k]) <= r)
 	{
 		return true;
@@ -127,5 +127,37 @@ glm::mat4 scale(const glm::mat4 &M2, const glm::vec4 &K)
 	return M;
 }
 
+glm::mat4 rotate(const glm::mat4 &M2, const glm::vec3 &K)
+{
+	glm::mat4 M = M2;
+	for (int i = 0; i < 3; i++)
+	{
+		M = glm::rotate(M, K.x, glm::vec3(1, 0, 0));
+		M = glm::rotate(M, K.y, glm::vec3(0, 1, 0));
+		M = glm::rotate(M, K.z, glm::vec3(0, 0, 1));
+	}
+	return M;
+}
+
+glm::mat4 rotate(const glm::mat4 &M2, const glm::vec4 &K)
+{
+	glm::mat4 M = M2;
+	for (int i = 0; i < 3; i++)
+	{
+		M = glm::rotate(M, K.x, glm::vec3(1, 0, 0));
+		M = glm::rotate(M, K.y, glm::vec3(0, 1, 0));
+		M = glm::rotate(M, K.z, glm::vec3(0, 0, 1));
+	}
+	return M;
+}
+
+float norm(const glm::vec3 &A)
+{
+	return A.x * A.x + A.y * A.y + A.z * A.z;
+}
+float norm(const glm::vec4 &A)
+{
+	return A.x * A.x + A.y * A.y + A.z * A.z;
+}
 
 

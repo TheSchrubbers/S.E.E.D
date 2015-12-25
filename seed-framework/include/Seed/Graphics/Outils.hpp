@@ -64,6 +64,10 @@ glm::mat4 translate(const glm::mat4 &M, const glm::vec3 &T);
 glm::mat4 translate(const glm::mat4 &M, const glm::vec4 &T);
 glm::mat4 scale(const glm::mat4 &M, const glm::vec3 &K);
 glm::mat4 scale(const glm::mat4 &M, const glm::vec4 &K);
+glm::mat4 rotate(const glm::mat4 &M, const glm::vec3 &K);
+glm::mat4 rotate(const glm::mat4 &M, const glm::vec4 &K);
+float norm(const glm::vec3 &A);
+float norm(const glm::vec4 &A);
 
 
 #endif

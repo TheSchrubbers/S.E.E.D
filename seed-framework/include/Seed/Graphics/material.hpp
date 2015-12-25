@@ -103,12 +103,6 @@ class Material
 		*/
 		void setLight(float a, float d, float s);
 		/*!
-		* \brief Transform the model matrix
-		* \param T: Vector of translation
-		* \param M: Matrix to transform
-		*/
-		void translate(glm::vec3 &T, glm::mat4 &M);
-		/*!
 		* \brief Active textures
 		*/
 		void activeTextures();

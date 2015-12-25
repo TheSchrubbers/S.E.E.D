@@ -49,8 +49,9 @@ public:
 	* \param name: name of the light
 	* \param color: color of the light
 	* \param position: position of the light
+	* \param K: Coefficient for the light (Ambiant, Diffuse, Specular)
 	*/
-	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &color = glm::vec3(1.0), const int &distance = 50);
+	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0), const int &distance = 50);
 	/*!
 	* \brief Destructor of class PointLight
 	*/
@@ -65,11 +66,16 @@ public:
 	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
 	*/
 	glm::vec3 getAttenuation();
+	/*!
+	* \brief Get the light coefficients
+	* \return K(Ambiant, Diffuse, Specular)
+	*/
+	glm::vec3 getK();
 
 	virtual void afficher(){};
 
 private:
-	glm::vec3 position;
+	glm::vec3 position, K;
 	float constant, quadratic, linear;
 };
 
@@ -80,6 +86,7 @@ struct pointLightStruct
 	glm::vec4 color;
 	glm::vec4 attenuation;
 	glm::ivec4 size;
+	glm::vec4 K;
 };
 
 #endif

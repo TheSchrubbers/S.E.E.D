@@ -10,6 +10,7 @@ struct PointLight
 	vec4 color;
 	vec4 attenuation;
 	ivec4 size;
+	vec4 K;
 };
 struct SpotLight
 {
@@ -18,12 +19,14 @@ struct SpotLight
 	vec4 color;
 	vec4 attenuation;
 	ivec4 size;
+	vec4 K;
 };
 struct DirectionnalLight
 {
 	vec4 direction;
 	vec4 color;
 	ivec4 size;
+	vec4 K;
 };
 struct FlashLight
 {
@@ -32,6 +35,7 @@ struct FlashLight
 	vec4 color;
 	vec4 attenuation;
 	ivec4 size;
+	vec4 K;
 };
 
 struct Light

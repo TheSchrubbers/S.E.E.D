@@ -55,7 +55,6 @@ Material::Material(Scene *sce, const std::string n, unsigned int *flag, const fl
 	{
 		this->addShaders(pathShaders);
 	}
-	std::cout << this->shader << std::endl;
 }
 
 Material::~Material()
@@ -153,12 +152,6 @@ void Material::setLight(float a, float d, float s)
 	this->compl.ambiant = a;
 	this->compl.diffuse = d;
 	this->compl.specular = s;
-}
-
-void Material::translate(glm::vec3 &T, glm::mat4 &M)
-
-{
-	M = glm::translate(M, T);
 }
 
 void Material::activeTextures()

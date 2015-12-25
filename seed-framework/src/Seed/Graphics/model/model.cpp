@@ -108,7 +108,6 @@ void Model::loadInGPU(GLuint frequency)
 	int nbVertices = this->geometry->getNumVertices();
 	int nbFaces = this->geometry->getNumFaces();
 	unsigned int sizeFaces = nbFaces * numVerticesPerFace * sizeof(GLuint);
-	std::cout << sizeFaces << std::endl;
 	int strideVert;
 	if (numVerticesPerFace == 3)
 	{

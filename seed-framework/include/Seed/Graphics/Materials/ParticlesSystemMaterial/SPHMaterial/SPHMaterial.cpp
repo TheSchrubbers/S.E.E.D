@@ -4,6 +4,7 @@
 #include <Seed/Graphics/particles/SPH.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
 
+
 SPHMaterial::SPHMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToSPHMaterial + "Shaders")
 {
 	this->init();
@@ -30,7 +31,7 @@ void SPHMaterial::init()
 		this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 		this->uniformSSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
 		glShaderStorageBlockBinding(this->shader->getID(), this->uniformSSBOID, 0);
-		sph = new SPH(1000, 0.01, 0.1, this->scene);
+		sph = new SPH(Scene::nbParticles, Scene::radiusParticle, Scene::radiusNeighbouring, this->scene);
 	}
 }
 

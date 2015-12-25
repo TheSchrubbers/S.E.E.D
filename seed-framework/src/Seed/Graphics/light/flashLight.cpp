@@ -1,7 +1,7 @@
 #include <Seed/Graphics/light/flashLight.hpp>
 #include <Seed/Graphics/Constant.hpp>
 
-FlashLight::FlashLight(const std::string &n, const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, const float &ang, const int &dist) : Light(n, c)
+FlashLight::FlashLight(const std::string &n, const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &K2, const glm::vec3 &c, const float &ang, const int &dist) : Light(n, c)
 {
 	this->position = pos;
 	this->direction = dir;
@@ -9,6 +9,7 @@ FlashLight::FlashLight(const std::string &n, const glm::vec3 &pos, const glm::ve
 	this->constant = Attenuation[0][distToAttenuation.at(dist)];
 	this->linear = Attenuation[1][distToAttenuation.at(dist)];
 	this->quadratic = Attenuation[2][distToAttenuation.at(dist)];
+	this->K = K2;
 }
 
 FlashLight::~FlashLight()
@@ -28,4 +29,9 @@ glm::vec3 FlashLight::getDirection()
 glm::vec3 FlashLight::getPosition()
 {
 	return this->position;
+}
+
+glm::vec3 FlashLight::getK()
+{
+	return this->K;
 }

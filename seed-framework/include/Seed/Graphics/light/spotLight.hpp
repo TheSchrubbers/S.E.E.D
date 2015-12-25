@@ -51,7 +51,7 @@ public:
 	* \param angle: angle of the light
 	* \param position: position of the light
 	*/
-	SpotLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color = glm::vec3(1.0), const float &angle = 30.0f, const int &distance = 50);
+	SpotLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0), const float &angle = 30.0f, const int &distance = 50);
 	/*!
 	* \brief Destructor of class SpotLight
 	*/
@@ -76,6 +76,11 @@ public:
 	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
 	*/
 	float getAngle();
+	/*!
+	* \brief Get the light coefficients
+	* \return K(Ambiant, Diffuse, Specular)
+	*/
+	glm::vec3 getK();
 
 	void afficher(){}
 
@@ -84,6 +89,7 @@ private:
 	glm::vec3 direction;
 	float angle;
 	float constant, quadratic, linear;
+	glm::vec3 K;
 };
 
 //structure for UBO of light
@@ -94,6 +100,7 @@ struct spotLightStruct
 	glm::vec4 color;
 	glm::vec4 attenuation;
 	glm::ivec4 size;
+	glm::vec4 K;
 };
 
 #endif

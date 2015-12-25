@@ -19,14 +19,27 @@ bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
-float Scene::deltat = 0.0002f;
-float Scene::K = 0.0000001;
+float Scene::deltat = 0.01f;
+float Scene::K = 3.0f;
 bool Scene::reset = false;
-float Scene::radiusNeighbouring = 0.1f;
-float Scene::nbParticles = 2000;
-float Scene::radiusParticle = 0.01f;
-float Scene::mu = 0.01f;
-float Scene::mass = 0.8f;
+float Scene::radiusNeighbouring = 0.0457f;
+float Scene::nbParticles = 500;
+float Scene::radiusParticle = 0.05f;
+float Scene::mu = 3.5f;
+float Scene::mass = 0.02f;
+float Scene::densityFluid = 998.29f;
+float Scene::radiusSphereStarter = 1.0f;
+float Scene::threshold = 7.065;
+float Scene::sigma = 0.0728;
+float Scene::x = 30.0f;
+float Scene::AverageNeighbors = 0;
+float Scene::sizeCube = 1.0f;
+float Scene::mergeCoef = 0.018f;
+float Scene::splitCoef = 0.3f;
+bool Scene::nextFrame = false;
+bool Scene::play = false;
+float Scene::nbPart = 0.0f;
+bool Scene::half = false;
 
 Scene::Scene()
 {
@@ -216,7 +229,7 @@ void Scene::afficher()
 	}
 }
 
-void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, int dist, std::string n)
+void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, const glm::vec3 &K2, int dist, std::string n)
 {
 	int j = 0;
 	//search if the given name is the same of a light in the list of lights
@@ -233,12 +246,12 @@ void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, int dist, st
 	//create a new node and push it like the children of node lights
 	PointLightNode *node = new PointLightNode(this, n);
 	this->collector->m_pointLightNodes.push_back(node);
-	node->setLight(new PointLight(n, pos, c, dist));
+	node->setLight(new PointLight(n, pos, K2, c, dist));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 }
 
-void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, int a, int dist, std::string n)
+void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, const glm::vec3 &K2, int a, int dist, std::string n)
 {
 	int j = 0;
 	//search if the given name is the same of a light in the list of lights
@@ -255,12 +268,12 @@ void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::
 	//create a new node and push it like the children of node lights
 	SpotLightNode *node = new SpotLightNode(this, n);
 	this->collector->m_spotLightNodes.push_back(node);
-	node->setLight(new SpotLight(n, pos, dir, c, a, dist));
+	node->setLight(new SpotLight(n, pos, dir, K2, c, a, dist));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 }
 
-void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, std::string n)
+void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, const glm::vec3 &K2, std::string n)
 {
 	int j = 0;
 	//search if the given name is the same of a light in the list of lights
@@ -277,12 +290,12 @@ void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, std::
 	//create a new node and push it like the children of node lights
 	DirectionnalLightNode *node = new DirectionnalLightNode(this, n);
 	this->collector->m_directionnalLightNodes.push_back(node);
-	node->setLight(new DirectionnalLight(n, dir, c));
+	node->setLight(new DirectionnalLight(n, dir, K2, c));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 }
 
-void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 &c, int dist, std::string n)
+void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 &c, const glm::vec3 &K2, int dist, std::string n)
 {
 	int j = 0;
 	//search if the given name is the same of a light in the list of lights
@@ -299,7 +312,7 @@ void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 
 	//create a new node and push it like the children of node lights
 	FlashLightNode *node = new FlashLightNode(this, n);
 	this->collector->m_flashLightNodes.push_back(node);
-	node->setLight(new FlashLight(n, pos, dir, c, dist));
+	node->setLight(new FlashLight(n, pos, dir, K2, c, dist));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 }

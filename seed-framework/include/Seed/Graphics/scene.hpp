@@ -110,7 +110,7 @@ class Scene
 		* \param distance: distance of the field of light
 		* \param name of the pointlight
 		*/
-		void addPointLight(const glm::vec3 &position, const glm::vec3 &color, int distance = 50, std::string name = "PointLight");
+		void addPointLight(const glm::vec3 &position, const glm::vec3 &color, const glm::vec3 &K, int distance = 50, std::string name = "PointLight");
 		/*!
 		* \brief Adding spotLight to the scene
 		* \param position: position of the spotlight in the scene
@@ -120,14 +120,14 @@ class Scene
 		* \param distance: distance of the field of light
 		* \param name of the spotlight
 		*/
-		void addSpotLight(const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color, int angle = 30,  int distance = 50, std::string name = "SpotLight");
+		void addSpotLight(const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color, const glm::vec3 &K, int angle = 30,  int distance = 50, std::string name = "SpotLight");
 		/*!
 		* \brief Adding directionnalLight to the scene
 		* \param color: color of the directionnallight
 		* \param direction: direction of the light
 		* \param name of the directionnallight
 		*/
-		void addDirectionnalLight(const glm::vec3 &color, const glm::vec3 &direction, std::string name = "DirectionnalLight");
+		void addDirectionnalLight(const glm::vec3 &color, const glm::vec3 &direction, const glm::vec3 &K, std::string name = "DirectionnalLight");
 		/*!
 		* \brief Adding flashLight to the scene
 		* \param position: position of the flashlight in the scene
@@ -136,7 +136,7 @@ class Scene
 		* \param distance: distance of the field of light
 		* \param name of the flashlight
 		*/
-		void addFlashLight(const glm::vec3 &position, const glm::vec3 &direction, glm::vec3 &color, int distance = 50, std::string name = "FlashLight");
+		void addFlashLight(const glm::vec3 &position, const glm::vec3 &direction, glm::vec3 &color, const glm::vec3 &K, int distance = 50, std::string name = "FlashLight");
 		/*!
 		* \brief Adding a Water system particles
 		* \param position: position of starter of the particles
@@ -180,8 +180,9 @@ class Scene
 
 		void afficher();
 
-		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset;
-		static float deltat, K, radiusNeighbouring, radiusParticle, nbParticles, mu, mass;
+		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset, nextFrame, play, half;
+		static float deltat, K, radiusNeighbouring, radiusParticle, nbParticles, mu, mass, densityFluid, radiusSphereStarter, threshold, sigma, x;
+		static float AverageNeighbors, sizeCube, mergeCoef, splitCoef, nbPart;
 		
 
 	private:

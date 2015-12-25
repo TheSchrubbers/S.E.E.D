@@ -11,7 +11,7 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 	//load image
 	if (image.readImage(pathT))
 	{
-		std::cout << "Loading texture " << pathT.c_str() << std::endl;
+		//std::cout << "Loading texture " << pathT.c_str() << std::endl;
 		this->path = pathT;
 		this->type = typeTexture;
 		//format of image

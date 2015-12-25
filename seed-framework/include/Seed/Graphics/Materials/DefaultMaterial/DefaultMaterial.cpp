@@ -1,6 +1,6 @@
 #include <DefaultMaterial/DefaultMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	this->init();
@@ -13,9 +13,6 @@ DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, unsigned int *
 void DefaultMaterial::init()
 {
 	GLuint programID = this->shader->getID();
-	this->compl.ambiant = 0.1;
-	this->compl.diffuse = 0.8;
-	this->compl.specular = 0.1;
 
 	this->M = glm::mat4(1.0);
 
@@ -24,9 +21,6 @@ void DefaultMaterial::init()
 	this->MID = glGetUniformLocation(programID, "M");
 	this->NMID = glGetUniformLocation(programID, "Normal_Matrix");
 	this->matID = glGetUniformLocation(programID, "mat");
-	this->compl.ambiantID = glGetUniformLocation(programID, "light.ambiant");
-	this->compl.diffuseID = glGetUniformLocation(programID, "light.diffuse");
-	this->compl.specularID = glGetUniformLocation(programID, "light.specular");
 	this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
 	this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
 	this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
@@ -46,14 +40,10 @@ void DefaultMaterial::render(Model *model)
 	if (this->activateShader())
 	{
 		//UNIFORMS
-		//this->M *= glm::rotate(0.005f, glm::vec3(0, 1, 0));
 		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
 		//set the uniform variable MVP
 		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-		glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));
-		glUniform1fv(this->compl.diffuseID, 1, &(compl.diffuse));
-		glUniform1fv(this->compl.specularID, 1, &(compl.specular));
 		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);
@@ -92,4 +82,19 @@ void DefaultMaterial::render(Model *model)
 		this->releaseTextures();
 		//glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0);
 	}
+}
+
+void DefaultMaterial::translateModel(glm::vec3 T)
+{
+	this->M = translate(this->M, T);
+}
+
+void DefaultMaterial::scaleModel(glm::vec3 T)
+{
+	this->M = scale(this->M, T);
+}
+
+void DefaultMaterial::rotateModel(glm::vec3 T)
+{
+	this->M = rotate(this->M, T);
 }

@@ -120,7 +120,7 @@ bool CubeMap::loadFace(int type, const std::string *path, parserImage *img)
 	//load image
 	if (img->readImage(*path))
 	{
-		std::cout << "Loading texture " << *path << std::endl;
+		//std::cout << "Loading texture " << *path << std::endl;
 		switch (type)
 		{
 			case 0:

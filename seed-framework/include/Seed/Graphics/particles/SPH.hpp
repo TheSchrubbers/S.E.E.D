@@ -53,7 +53,6 @@ struct ParticleSPH
 	glm::mat4 NormalMatrix;
 	glm::vec4 density;
 	glm::vec4 pression;
-	glm::vec4 volume;
 	glm::vec4 color;
 	glm::vec4 F;
 	//param1 : mass
@@ -65,6 +64,7 @@ struct ParticleSPH
 	//param 3 : AS (adaptative sampling) for splitting and merging
 	//param 4 : Radius neighbouring
 	glm::vec4 parameters;
+	bool flag;
 };
 
 struct ParticleSPHSSBO
@@ -104,12 +104,15 @@ class SPH : public ParticlesSystem
 		void processRadiusEffect();
 		void updateMatrix();
 		void collision();
+		void updateParticles();
+		glm::vec4 colorLevel(float level);
 		//float isolevel();
 		int nbParticles, type;
 		float deltaT;
 		float zonaradius;
 		Scene *scene;
 		kdtree *kdtree;
+		ParticleSPH* ppp;
 };
 
 

@@ -50,7 +50,7 @@ public:
 	* \param color: color of the light
 	* \param direction: direction of the light
 	*/
-	DirectionnalLight(const std::string &name, const glm::vec3 &direction, const glm::vec3 &color = glm::vec3(1.0));
+	DirectionnalLight(const std::string &name, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0));
 	/*!
 	* \brief Destructor of class DirectionnalLight
 	*/
@@ -62,9 +62,15 @@ public:
 	* \return the direction of the light
 	*/
 	glm::vec3 getDirection();
+	/*!
+	* \brief Get the light coefficients 
+	* \return K(Ambiant, Diffuse, Specular)
+	*/
+	glm::vec3 getK();
 
 private:
 	glm::vec3 direction;
+	glm::vec3 K;
 };
 
 //structure for UBO of light
@@ -73,6 +79,7 @@ struct directionnalLightStruct
 	glm::vec4 direction;
 	glm::vec4 color;
 	glm::ivec4 size;
+	glm::vec4 K;
 };
 
 #endif

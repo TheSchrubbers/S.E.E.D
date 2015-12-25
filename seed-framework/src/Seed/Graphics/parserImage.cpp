@@ -6,7 +6,7 @@ parserImage::parserImage()
 bool parserImage::readImage(const std::string path)
 {
 	int format = this->getFormat(path);
-	std::cout << path << std::endl;
+	//std::cout << path << std::endl;
 	switch (format)
 	{
 	case SEED_JPEG_FORMAT:
@@ -128,11 +128,8 @@ int parserImage::getFormat(const std::string path)
 	while (path[path.size() - i - 1] != '.' && i < path.size())
 	{
 		type[i] = path[path.size() - i - 1];
-		//std::cout << type[i];
 		i++;
 	}
-
-	//std::cout << type << std::endl;
 
 	//BMP
 	if ((type[0] == 'p' || type[0] == 'P') && (type[1] == 'm' || type[1] == 'M') && (type[2] == 'b' || type[2] == 'B'))

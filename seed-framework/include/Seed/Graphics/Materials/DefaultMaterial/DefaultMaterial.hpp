@@ -64,6 +64,14 @@ class DefaultMaterial : public Material
 
 		~DefaultMaterial();
 
+		/*!
+		* \brief Translate the model with vector T
+		* \param T: tanslation vector
+		*/
+		void translateModel(glm::vec3 T);
+		void scaleModel(glm::vec3 T);
+		void rotateModel(glm::vec3 T);
+
 		void render(Model *model);
 		void render(){};
 		void print(){};

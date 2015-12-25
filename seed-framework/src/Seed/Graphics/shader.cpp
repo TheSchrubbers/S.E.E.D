@@ -68,7 +68,7 @@ GLuint Shader::loadShaders(const std::string directory_file_path)
 			}
 
 			// Link the program
-			fprintf(stdout, "Linking program\n");
+			//fprintf(stdout, "Linking program\n");
 			GLuint ProgramID = glCreateProgram();
 			for (int i = 0; i < NBSHADERS; i++)
 			{
@@ -112,7 +112,7 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		}
 		ShaderStream.close();
 
-		printf("Compiling shader : %s\n", s);
+		//printf("Compiling shader : %s\n", s);
 		
 		char const * SourcePointer = ShaderCode.c_str();
 
