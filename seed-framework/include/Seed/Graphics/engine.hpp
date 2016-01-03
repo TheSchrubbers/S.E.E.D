@@ -40,10 +40,11 @@
 #include <Seed/Graphics/control.hpp>
 #include <Seed/Graphics/scene.hpp>
 #include <DefaultMaterial/DefaultMaterial.hpp>
+#include <SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp>
 #include <Seed/Graphics/node/objectNode.hpp>
 #include <ImplicitMaterial/ImplicitMaterial.hpp>
 #include <Seed/Graphics/particles/SPH.hpp>
-#include <ParticlesSystemMaterial\SPHMaterial\SPHMaterial.hpp>
+#include <ParticlesSystemMaterial/SPHMaterial/SPHMaterial.hpp>
 #define GLFW_INCLUDE_GLCOREARB
 
 

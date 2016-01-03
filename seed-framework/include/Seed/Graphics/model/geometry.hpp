@@ -134,9 +134,11 @@ public:
 	std::vector<GLuint> * getFaces();
 	/*!
 	* \brief Set vertices
-	* \param vertices : vertices' array
+	* \param vertices vertices' array
+	* \param nb number of vertices
+	* \param nbVerticesPerFace Number of vertices per face
 	*/
-	void setVertices(float *vertices, int nb);
+	void setVertices(float *vertices, int nb, int nbVerticesPerFace);
 	/*!
 	* \brief Set normals
 	* \param normals : normals' array

@@ -52,6 +52,8 @@ class ObjectNode;
 class PointLightNode;
 class UBOBuffer;
 class CubeMap;
+class QuadMaterial;
+class FBOBuffer;
 
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
@@ -177,22 +179,28 @@ class Scene
 		*\brief Render nodes who be must rendered
 		*/
 		void render();
-
+		void SSAOrender();
+		FBOBuffer* getFBOBuffer();
 		void afficher();
 
-		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset, nextFrame, play, half;
+		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset, nextFrame, play, half, SPHGravity;
 		static float deltat, K, radiusNeighbouring, radiusParticle, nbParticles, mu, mass, densityFluid, radiusSphereStarter, threshold, sigma, x;
 		static float AverageNeighbors, sizeCube, mergeCoef, splitCoef, nbPart;
 		
-
 	private:
-		
+
 		ObjectNode *rootObjectNode;
 		Node *rootLightNode;
 		Camera *camera;
 		Collector *collector;
 		UBOBuffer *camBuf;
 		CubeMap * cubemap;
+		Model *RenderingQuad;
+		QuadMaterial *RenderingQuadMaterial;
+		FBOBuffer* FBObuffer;
+		
+		
+
 
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes
@@ -218,6 +226,10 @@ class Scene
 		* \param name: name of the material
 		*/
 		void loadMaterials(const aiScene *pScene, std::string name);
+		/*!
+		* \brief Construct Quad for deferred shading
+		*/
+		void constructQuad();
 };
 
 #endif

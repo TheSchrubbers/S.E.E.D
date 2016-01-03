@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file shader.hpp
-* \brief Loader shaders
+* \file SSBOBuffer.hpp
+* \brief geometry of the mesh
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -30,30 +30,52 @@
 * \license Zlib License.
 */
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
 
-#include <string>
-#include <GL/glew.h>
+#ifndef FBOBUFFER_HPP
+#define FBOBUFFER_HPP
+
+#include <iostream>
 #include <vector>
 
-class Shader
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <Seed/Graphics/Outils.hpp>
+
+/*! \class FBOBuffer
+* \brief Create, update, delete FBOBuffers
+*/
+class FBOBuffer
 {
 public:
-	Shader(const std::string shader_dir_path, unsigned int *flag = nullptr);
-	Shader();
-	~Shader();
-	bool useProgram();
+	/*!
+	* \brief Constructor of class FBOBuffer
+	*/
+	FBOBuffer();
+	/*!
+	* \brief Destructor of class FBOBuffer
+	*/
+	~FBOBuffer();
+	/*!
+	* \brief delete FBOBuffer
+	*/
+	void deleteBuffer();
+	/*!
+	* \brief get Id of the FBO buffer
+	* \return ID of the FBO buffer
+	*/
 	GLuint getID();
-	bool loadUniqueShader(const std::string vertex_file_path);
-	bool loadVertexFragmentShaders(const std::string vertex_file_path, const std::string fragment_file_path);
+
+	void bindWrite();
+	void bindRead();
 	void release();
+	void activeTextures();
+	void releaseTextures();
 
 private:
-	GLuint programID;
-
-	GLuint loadShaders(const std::string directory_file_path);
-	GLuint loadCompileShader(std::string s, GLuint type, GLint &Result, int &InfoLogLength, std::vector<char> *ShaderErrorMessage);
+	GLuint FBOID;
+	GLuint GPosition, GNormal, GColorSpec;
+	GLuint attachments[3];
+	int size;
 };
 
 #endif

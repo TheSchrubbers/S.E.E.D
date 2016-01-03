@@ -154,15 +154,15 @@ void Material::setLight(float a, float d, float s)
 	this->compl.specular = s;
 }
 
-void Material::activeTextures()
+void Material::activeTextures(GLuint programID)
 {
-	GLuint programID = this->shader->getID();
 	unsigned int i = 0, j = 0;
 	//active and bind textures
 	for (i = 0; i < textures_ambiant.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_ambiant[i]->bind();
+		std::string s = "samplerAmbiantTexture" + std::to_string(i);
 		glUniform1i(glGetUniformLocation(programID, ("samplerAmbiantTexture" + std::to_string(i)).c_str()), i);
 		j++;
 	}
@@ -203,15 +203,15 @@ void Material::releaseTextures()
 	//release textures
 	for (i = 0; i < textures_ambiant.size(); i++)
 	{
-		this->textures_ambiant[i]->bind();
+		this->textures_ambiant[i]->release();
 	}
 	for (i = 0; i < textures_diffuse.size(); i++)
 	{
-		this->textures_diffuse[i]->bind();
+		this->textures_diffuse[i]->release();
 	}
 	for (i = 0; i < this->textures_specular.size(); i++)
 	{
-		this->textures_specular[i]->bind();
+		this->textures_specular[i]->release();
 	}
 	CubeMap *c;
 	if (c = this->scene->getCubeMap())
@@ -242,10 +242,5 @@ void Material::printTextures()
 
 bool Material::activateShader()
 {
-	if (this->shader->getID() != 0)
-	{
-		glUseProgram(this->shader->getID());
-		return true;
-	}
-	return false;
+	return this->shader->useProgram();
 }

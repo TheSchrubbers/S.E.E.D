@@ -105,7 +105,7 @@ class Material
 		/*!
 		* \brief Active textures
 		*/
-		void activeTextures();
+		void activeTextures(GLuint programID);
 		/*!
 		* \brief Release textures
 		*/
@@ -116,9 +116,8 @@ class Material
 		*/
 		void printTextures();
 
-		virtual void render(){};
-		virtual void render(Model *m){};
-
+		virtual void render(){}
+		virtual void render(Model *m){}
 		virtual void print() = 0;
 
 	protected:

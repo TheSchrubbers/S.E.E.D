@@ -1,11 +1,12 @@
 ﻿#include <Seed/Graphics/engine.hpp>
 
 void addLara(Scene *scene);
+void addHouse(Scene *scene);
 
 int main()
 {
 	//position of the camera
-	glm::vec3 position = glm::vec3(0.0, 0.0, 3.0);
+	glm::vec3 position = glm::vec3(0.0, 0.0, 8.0);
 
 	//INIT ENGINE 
 	Engine engine;
@@ -25,20 +26,29 @@ int main()
 	//create camera
 	Camera camera(position, glm::vec3(0.0, 0.0, 0.0));
 
-	engine.initAntWeakBar("Outils", &camera);
+	engine.initAntWeakBar("TOOLS", &camera);
 
 	//adding camera to the scene
 	scene.setCamera(&camera);
 
 	//scene.setCubeMap(pathToTextures + "CubeMap/Skybox");
 
-	scene.addPointLight(glm::vec3(3.0,8.0,-5.0), glm::vec3(1.0), 50, "light_1");
-	scene.addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)));
+	scene.addPointLight(glm::vec3(3.0,8.0,-5.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 50, "light_1");
+	scene.addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)), glm::vec3(0.1f, 0.8f, 0.8f));
 	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);
 	
 	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
+
 	//addLara(&scene); 
+	//addHouse(&scene);
+
+	/*ObjectNode *cube = scene.importModelFromFile(pathToModels + "cube.obj", "cube");
+	DeferredMaterial *material = new DeferredMaterial(&scene, "cube_material", nullptr);
+	cube->setMaterialRecur(material);*/
+
+	//scene.addNode(cube);
+
 	SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
 	ObjectNode *n = scene.importModelFromFile(pathToModels + "UVsphereLow.obj", "UVSphere");
 	n->setMaterialRecur(m);
@@ -186,6 +196,34 @@ void addLara(Scene *scene)
 
 	scene->addNode(lara);
 
+}
+
+void addHouse(Scene *scene)
+{
+	unsigned int error;
+	//import model
+	ObjectNode *house = scene->importModelFromFile(pathToModels + "GostHouse.obj", "ghost_house");
+
+	ObjectNode *n = house->getNode("Gost_House");
+	if (n)
+	{
+		DefaultMaterial *material = new DefaultMaterial(scene, "GostHouse_material", &error, 0.0, 0.0);
+		scanSeedError(error);
+		material->scaleModel(glm::vec3(0.1f));
+		material->addTexture("House/House_Body.bmp", scene, SEED_TEXTURE_AMBIANT);
+		n->setMaterialRecur(material);
+	}
+	n = house->getNode("plants");
+	if (n)
+	{
+		DefaultMaterial *material = new DefaultMaterial(scene, "Plants_material", &error, 0.0, 0.0);
+		scanSeedError(error);
+		material->scaleModel(glm::vec3(0.1f));
+		material->addTexture("House/grass.bmp", scene, SEED_TEXTURE_AMBIANT);
+		n->setMaterialRecur(material);
+	}
+
+	scene->addNode(house);
 }
 
 //import model

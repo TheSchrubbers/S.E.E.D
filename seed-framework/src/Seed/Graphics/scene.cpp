@@ -14,15 +14,17 @@
 #include <Seed/Graphics/cubeMap.hpp>
 #include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
+#include <Seed/Graphics/Materials/SSAOMaterial/QuadMaterial/QuadMaterial.hpp>
+#include <Seed/Graphics/buffers/FBOBuffer.hpp>
 
 bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
-float Scene::deltat = 0.01f;
+float Scene::deltat = 0.001f;
 float Scene::K = 3.0f;
 bool Scene::reset = false;
-float Scene::radiusNeighbouring = 0.0457f;
+float Scene::radiusNeighbouring = 0.1f;
 float Scene::nbParticles = 500;
 float Scene::radiusParticle = 0.05f;
 float Scene::mu = 3.5f;
@@ -40,6 +42,7 @@ bool Scene::nextFrame = false;
 bool Scene::play = false;
 float Scene::nbPart = 0.0f;
 bool Scene::half = false;
+bool Scene::SPHGravity = false;
 
 Scene::Scene()
 {
@@ -50,6 +53,11 @@ Scene::Scene()
 	this->camBuf = new UBOBuffer();
 	this->camBuf->createBuffer(sizeof(cameraStruct));
 	this->cubemap = NULL;
+
+	this->constructQuad();
+	this->RenderingQuadMaterial = new QuadMaterial(this, "QuadMaterial");
+
+	this->FBObuffer = new FBOBuffer();
 }
 
 Scene::~Scene()
@@ -353,21 +361,69 @@ Collector* Scene::getCollector()
 
 void Scene::render()
 {
+	//update camera
 	cameraUpdate();
 	//we get all the rendered nodes(models, materials...)
 	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+	this->lightsRender();
 	if (Scene::wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
 		renderedNodes->at(i)->render();
 	}
-	this->lightsRender();
+
 	if (this->cubemap)
 		this->cubemap->draw();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Scene::SSAOrender()
+{
+	//update camera
+	cameraUpdate();
+	//we get all the rendered nodes(models, materials...)
+	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+	this->lightsRender();
+
+	if (Scene::wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	//geometry pass
+	/////////////////////////////////////////////////
+	//bind FBO
+	this->FBObuffer->bindWrite();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//each node rendering
+	for (int i = 0; i < renderedNodes->size(); i++)
+	{
+		renderedNodes->at(i)->render();
+	}
+	/////////////////////////////////////////////////
+
+	//light pass
+	//release FBO
+	this->FBObuffer->release();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+	this->FBObuffer->bindRead();
+	this->FBObuffer->activeTextures();
+	
+	//deferred lights rendering
+	this->RenderingQuadMaterial->render(this->RenderingQuad);
+
+	this->FBObuffer->releaseTextures();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
@@ -446,11 +502,31 @@ void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int 
 			square[9] = 0.0f; square[10] = 0.0f; square[11] = 0.0f;
 			indices[0] = 0; indices[1] = 1; indices[2] = 2;
 			indices[3] = 0; indices[4] = 2; indices[5] = 3;
-			g->setVertices(square, 12);
+			g->setVertices(square, 12, 3);
 			g->setFaces(GL_TRIANGLES, indices, 6);
 			InstancedModel *mo = new InstancedModel(g);
 			n->setModel(mo);
 			this->addNode(n);
 		}
 	}
+}
+
+void Scene::constructQuad()
+{
+	float vertices[] = {
+		-1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0,
+		1.0, -1.0, 0.0,
+		1.0, -1.0, 0.0,
+		-1.0, -1.0, 0.0,
+		-1.0, 1.0, 0.0
+	};
+	Geometry *g = new Geometry();
+	g->setVertices(vertices, 18, 3);
+	this->RenderingQuad = new Model(g, GL_STATIC_DRAW);
+}
+
+FBOBuffer* Scene::getFBOBuffer()
+{
+	return this->FBObuffer;
 }

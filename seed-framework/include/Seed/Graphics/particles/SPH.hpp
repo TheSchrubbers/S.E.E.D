@@ -51,10 +51,11 @@ struct ParticleSPH
 	glm::vec4 velocity;
 	glm::mat4 M;
 	glm::mat4 NormalMatrix;
-	glm::vec4 density;
-	glm::vec4 pression;
+	float density;
+	float pression;
 	glm::vec4 color;
 	glm::vec4 F;
+	glm::vec4 shift;
 	//param1 : mass
 	//param2 : density
 	//param3 : 

@@ -1,16 +1,16 @@
-#include <DefaultMaterial/DefaultMaterial.hpp>
+#include <SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
-DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
+DeferredMaterial::DeferredMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	this->init();
 }
-DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToDefaultMaterial + "Shaders")
+DeferredMaterial::DeferredMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToMaterials + "DeferredMaterial/Shaders")
 {
 	this->init();
 }
 
-void DefaultMaterial::init()
+void DeferredMaterial::init()
 {
 	GLuint programID = this->shader->getID();
 
@@ -31,14 +31,16 @@ void DefaultMaterial::init()
 	this->SMVIEWID = glGetUniformLocation(programID, "SpecularMappingView");
 }
 
-DefaultMaterial::~DefaultMaterial()
+DeferredMaterial::~DeferredMaterial()
 {
 }
 
-void DefaultMaterial::render(Model *model)
+void DeferredMaterial::render(Model *model)
 {
+	//TEXTURES
 	if (this->activateShader())
 	{
+		//this->activeTextures(this->shader->getID());
 		//UNIFORMS
 		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
 		//set the uniform variable MVP
@@ -53,48 +55,31 @@ void DefaultMaterial::render(Model *model)
 		glEnable(GL_CULL_FACE);
 		// Enable depth test
 		glEnable(GL_DEPTH_TEST);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		//TEXTURES
-		this->activeTextures(this->shader->getID());
-
-		//BUFFERS
-		for (int i = 0; i < 4; i++)
-		{
-			//bind UBO buffer light
-			glBindBufferBase(GL_UNIFORM_BUFFER, i, this->scene->getCollector()->getLightUBO(i)->getID());
-			//bind UBO lighting with program shader
-			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
-		}
-
+		glEnable(GL_LESS);
 		//bind UBO buffer camera
 		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
-
 		//RENDER
 		//render model
 		model->render();
-
 		//RELEASE
-		this->releaseTextures();
-		//glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0);
+		//this->releaseTextures();
+		this->shader->release();
 	}
 }
 
-void DefaultMaterial::translateModel(glm::vec3 T)
+void DeferredMaterial::translateModel(glm::vec3 T)
 {
 	this->M = translate(this->M, T);
 }
 
-void DefaultMaterial::scaleModel(glm::vec3 T)
+void DeferredMaterial::scaleModel(glm::vec3 T)
 {
 	this->M = scale(this->M, T);
 }
 
-void DefaultMaterial::rotateModel(glm::vec3 T)
+void DeferredMaterial::rotateModel(glm::vec3 T)
 {
 	this->M = rotate(this->M, T);
 }

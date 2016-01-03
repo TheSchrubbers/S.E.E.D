@@ -8,10 +8,13 @@
 #include <Seed/Graphics/data_structure/KDtree.hpp>
 #include <glm/gtc/random.hpp>
 #include <Seed/Graphics/Outils.hpp>
+#include <math.h>
 
 #define DELTA 0.3f
 #define ALPHA 0.04f
 #define PRESSION 101325
+#define BOUNDPRESSION 0.1
+#define H 10
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
 this->nbParticles = nb;
@@ -48,6 +51,8 @@ void SPH::createSystem(float r, float rA)
 {
 	//starter of particles in sphere
 	std::vector<glm::vec3> pos = this->starter->addSphereStarter(glm::vec3(0.0), Scene::radiusSphereStarter, this->nbParticles);
+	//std::vector<glm::vec3> pos = this->starter->addCubeStarter(glm::vec3(0.0), Scene::radiusParticle, this->nbParticles);
+
 	float volume = (4.0f * SEED_PI * glm::pow(Scene::radiusSphereStarter, 3.0f)) / 3.0f;
 	//for each particle we set the parameters
 	for (int i = 0; i < this->nbParticles; i++)
@@ -75,6 +80,7 @@ void SPH::createSystem(float r, float rA)
 		//we push the particle i into the array of particles
 		particles.push_back(p);
 	}
+
 
 	//create KDTree for neighbouring particles
 	//this->kdtree = new KDtree(particles, 1000);
@@ -182,15 +188,17 @@ void SPH::processRadiusEffect()
 void SPH::processForces()
 {
 	glm::vec4 seed_gravity(0.0, -9.81, 0.0, 1.0);
-	float dist = 0.0f, hi, hi2, hi6, hi9, hj, hj6, hj9;
+	float dist = 0.0f, hi, hi2, hi6, hi8, hi9, hj, hj6, hj9;
 	float tmp = 15.0f / (SEED_PI);
 	float tmp2 = -45.0f / (SEED_PI);
 	float tmp3 = 45.0f / (SEED_PI);
 	float tmp5 = 315.0 / (64.0 * SEED_PI);
 	float niNorm = 0.0f;
-	glm::vec4 tmp4;
+	float W;
+	float tmp4;
 	ParticleSPH* neighbour;
-	glm::vec4 Fpressure, Fviscosity, Fgravity, FtensionSurface, q1, q2, W, gradientW1, gradientW2, dW, q, Pi, Pj, Vi, Vj, laplacianW1, laplacianW2, vector, ni, colorField;
+	glm::vec4 shift = glm::vec4(0.0);
+	glm::vec4 Fpressure, Fviscosity, Fgravity, FtensionSurface, q1, q2, gradientW1, gradientW2, dW, q, Pi, Pj, Vi, Vj, laplacianW1, laplacianW2, vector, ni, colorField;
 	kdres *neighbors = new kdres;
 	//process smoothing kernel, density and pressure of each particle
 	for (ParticleSPH *p : this->particles)
@@ -198,12 +206,14 @@ void SPH::processForces()
 		if (p->flag)
 		{
 			//preprocess value
+			//hi = p->parameters.w;
 			hi = p->parameters.w;
-			hi2 = glm::pow(p->parameters.w, 2.0f);
-			hi6 = glm::pow(p->parameters.w, 6.0f);
-			hi9 = glm::pow(p->parameters.w, 9.0f);
+			hi2 = glm::pow(hi, 2.0f);
+			hi6 = glm::pow(hi, 6.0f);
+			hi8 = glm::pow(hi, 8.0f);
+			hi9 = glm::pow(hi, 9.0f);
 
-			p->density = glm::vec4(0.0f);
+			p->density = 0.0f;
 
 			//get the neighbors
 			neighbors = kd_nearest_range3f(this->kdtree, p->position.x, p->position.y, p->position.z, p->parameters.w);
@@ -214,19 +224,17 @@ void SPH::processForces()
 				if (neighbour->flag && neighbour != p)
 				{
 					//distance between the particle i and the particle j
-					dist = glm::distance(neighbour->position, p->position);
+					dist = glm::distance(p->position, neighbour->position);
 					//process smoothing kernel
-					//W = glm::vec4(tmp / hi6) * glm::pow((glm::vec4(hi) - dist), glm::vec4(3.0f));
-					W = glm::vec4(tmp5 / hi9) * glm::pow((glm::vec4(hi2 - glm::pow(dist, 2.0))), glm::vec4(3.0f));
+					W = tmp / hi6 * glm::pow((hi - dist), 3.0f);
 					//process density of the particle i
-					//density = sum(mass_j * smoothing_kernel);
 					p->density += neighbour->parameters2.x * W;
-					//surface tension 
 				}
 				kd_res_next(neighbors);
 			}
 			kd_res_free(neighbors);
 			p->pression = Scene::K * (Scene::densityFluid - p->density);
+			
 		}
 	}
 	for (ParticleSPH *p : this->particles)
@@ -236,59 +244,75 @@ void SPH::processForces()
 		Fviscosity = glm::vec4(0.0);
 		//preprocess values
 		hi = p->parameters.w;
-		hi6 = glm::pow(p->parameters.w, 6.0f);
+		hi6 = glm::pow(hi, 6.0f);
 		neighbors = kd_nearest_range3f(this->kdtree, p->position.x, p->position.y, p->position.z, p->parameters.w);
 		while (!kd_res_end(neighbors))
 		{
 			neighbour = (ParticleSPH*)kd_res_item_data(neighbors);
 			if (neighbour->flag && neighbour != p)
 			{
-				hj = neighbour->parameters.w;
-				hj6 = glm::pow(neighbour->parameters.w, 6.0f);
+				//hj = neighbour->parameters.w;
+				//hj6 = glm::pow(neighbour->parameters.w, 6.0f);
 				//distance between the particle i and its neighbour j
 				dist = glm::distance(p->position, neighbour->position);
 				//process gradient of smoothing kernel of Kelager
 				gradientW1 = (tmp2 / hi6) * ((p->position - neighbour->position) / dist) * (hi - (dist * dist));
 				//process laplacian of smoothing kernel of kelager
 				//laplacianW1 = glm::vec4((tmp3 / hi6) * (1.0f / dist) * (hi - dist) * (hi - 2.0f*dist));
-				laplacianW1 = glm::vec4(tmp3 / hi6) * (hi - dist);
+				//laplacianW1 = glm::vec4(tmp3 / hi6) * (hi - dist);
 
-				tmp4 = neighbour->parameters2.x / neighbour->density;
+				//tmp4 = neighbour->parameters2.x / neighbour->density;
 				//surface tension
-				ni += tmp4 * gradientW1;
+				//ni += tmp4 * gradientW1;
 				//color field
-				colorField += tmp4 * laplacianW1;
+				//colorField += tmp4 * laplacianW1;
 				//process internel forces of the particle i
 				//pressure force
 				//Fpressure += ((p->pression + neighbour->pression) / 2.0f) * (neighbour->parameters2.x / neighbour->density) * gradientW1;
-				Fpressure += ((p->pression / glm::pow(p->density, glm::vec4(2.0))) + (neighbour->pression / glm::pow(neighbour->density, glm::vec4(2.0)))) * p->parameters2.x * gradientW1;
+				if (p->density != 0.0 && neighbour->density != 0.0)
+				{
+					Fpressure += glm::vec4((p->pression / glm::pow(p->density, 2.0)) + (neighbour->pression / glm::pow(neighbour->density, 2.0))) * neighbour->parameters2.x * gradientW1;
+					//Fpressure += neighbour->pression * (neighbour->parameters2.x / neighbour->density) * gradientW1;
+				}
 				//viscosity force
 				//Fviscosity += (neighbour->velocity - p->velocity) * neighbour->parameters2.x * laplacianW1;
-				Fviscosity += (neighbour->velocity - p->velocity) * (neighbour->parameters2.x / neighbour->density) * laplacianW1;
+				//Fviscosity += (neighbour->velocity - p->velocity) * (neighbour->parameters2.x / neighbour->density) * laplacianW1;
+				if (glm::distance(p->position, neighbour->position) < p->parameters.y)
+				{
+					shift += (neighbour->position - p->position);
+				}
 			}
-			//Fpressure *= (-p->density);
 			kd_res_next(neighbors);
 		}
-		niNorm = norm(ni);
+		//niNorm = norm(ni);
 		kd_res_free(neighbors);
 		//Fpressure = -Fpressure;
+		//Fpressure *= (-p->density);
 		//Fviscosity *= (Scene::mu / p->density);
-		Fviscosity *= Scene::mu;
-		//Fgravity = -glm::vec4(0.0f, p->parameters2.x * 1.81f, 0.0f,1.0f);
-		FtensionSurface = glm::vec4(0.0);
-		if (niNorm >= Scene::threshold)
+		//Fviscosity *= Scene::mu;
+		Fgravity = -glm::vec4(0.0f, 9.81 * p->density / 2.0, 0.0f,1.0f);
+		//FtensionSurface = glm::vec4(0.0);
+		/*if (niNorm >= Scene::threshold)
 		{
 			FtensionSurface = -Scene::sigma*colorField * (ni / niNorm);
+		}*/
+		if (Scene::SPHGravity)
+		{
+			p->F = Fpressure + Fgravity;
 		}
-		p->F = Fpressure;// +Fviscosity;// +Fgravity;
+		else
+		{
+			p->F = Fpressure;
+		}
 	}
 	for (ParticleSPH *p : this->particles)
 	{
 		if (p->flag)
 		{
-			p->velocity += (Scene::deltat * p->F) / p->parameters2.x;
+			p->velocity += Scene::deltat * p->F;
 			p->velocity.w = 1.0;
 			p->position += Scene::deltat * p->velocity;
+			//p->position += shift;
 			p->position.w = 1.0;
 		}
 	}

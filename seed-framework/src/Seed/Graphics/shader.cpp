@@ -20,6 +20,10 @@ Shader::Shader(const std::string shader_dir_path, unsigned int *flag)
 	}
 }
 
+Shader::Shader()
+{
+}
+
 Shader::~Shader()
 {
 	glDeleteProgram(this->programID);
@@ -142,12 +146,22 @@ GLuint Shader::getID()
 	return this->programID;
 }
 
-void Shader::useProgram()
+bool Shader::useProgram()
 {
-	glUseProgram(this->programID);
+	if (this->programID)
+	{
+		glUseProgram(this->programID);
+		return true;
+	}
+	return false;
 }
 
-GLuint Shader::loadShaders(const std::string vertex_file_path, const std::string fragment_file_path)
+void Shader::release()
+{
+	glUseProgram(0);
+}
+
+bool Shader::loadVertexFragmentShaders(const std::string vertex_file_path, const std::string fragment_file_path)
 {
 	// Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -190,7 +204,7 @@ GLuint Shader::loadShaders(const std::string vertex_file_path, const std::string
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path.c_str());
+	//printf("Compiling shader : %s\n", vertex_file_path.c_str());
 	char const * VertexSourcePointer = VertexShaderCode.c_str();
 	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
 	glCompileShader(VertexShaderID);
@@ -232,5 +246,65 @@ GLuint Shader::loadShaders(const std::string vertex_file_path, const std::string
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(FragmentShaderID);
 
-	return ProgramID;
+	this->programID = ProgramID;
+
+	return true;
+}
+
+bool Shader::loadUniqueShader(const std::string vertex_file_path)
+{
+	// Create the shaders
+	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+
+	// Read the Vertex Shader code from the file
+	std::string VertexShaderCode;
+	std::ifstream VertexShaderStream(vertex_file_path.c_str(), std::ios::in);
+
+	if (VertexShaderStream.is_open())
+	{
+		std::string Line = "";
+		while (getline(VertexShaderStream, Line))
+			VertexShaderCode += "\n" + Line;
+		VertexShaderStream.close();
+	}
+	else
+	{
+		std::cout << "ERROR: error the vertexshader file \"" << vertex_file_path << "\" is not found." << std::endl;
+		return 0;
+	}
+
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+
+	// Compile Vertex Shader
+	printf("Compiling shader : %s\n", vertex_file_path.c_str());
+	char const * VertexSourcePointer = VertexShaderCode.c_str();
+	glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
+	glCompileShader(VertexShaderID);
+
+	// Check Vertex Shader
+	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	std::vector<char> VertexShaderErrorMessage(InfoLogLength);
+	glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+	fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
+
+	// Link the program
+	fprintf(stdout, "Linking program\n");
+	GLuint ProgramID = glCreateProgram();
+	glAttachShader(ProgramID, VertexShaderID);
+	glLinkProgram(ProgramID);
+
+	// Check the program
+	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	std::vector<char> ProgramErrorMessage(glm::max(InfoLogLength, int(1)));
+	glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+	fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+
+	glDeleteShader(VertexShaderID);
+
+	this->programID = ProgramID;
+
+	return true;
 }

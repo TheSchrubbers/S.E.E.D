@@ -25,7 +25,6 @@ void Engine::mainRender(Scene *scene)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Black background
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
 		//get events glfw
 		glfwPollEvents();
 		//get current time
@@ -36,10 +35,9 @@ void Engine::mainRender(Scene *scene)
 
 		//node->getMaterial()->setLight(a, d, s);
 		scene->render();
-
+		//scene->SSAOrender();
 		//Draw anttweakbar
 		TwDraw();
-
 		//get current time
 		lastTime = glfwGetTime();
 		//time between 2 frames
@@ -103,25 +101,26 @@ void Engine::initAntWeakBar(std::string name, const Camera* camera)
 	TwAddVarRW(this->controller->getBar(), "NORMALMAPPING", TW_TYPE_BOOL8, &(Scene::normalMappingActive), "label='Normal mapping' help='Active/Desactive mode Normal mapping' group=Mods");
 	TwAddVarRW(this->controller->getBar(), "DELTAT", TW_TYPE_FLOAT, &(Scene::deltat), " label='deltat' help='Delta t of the animation' min=0.00001 max=0.1 step=0.00001 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "K", TW_TYPE_FLOAT, &(Scene::K), " label='Stiffness K' help='Stiffness K' min=0.1 max=10.0 step=0.1 group=parameters ");
-	TwAddVarRW(this->controller->getBar(), "RADIUSPARTICLE", TW_TYPE_FLOAT, &(Scene::radiusParticle), " label='Radius Particle' min=0.01 max=0.1 step=0.05 group=parameters ");
+	TwAddVarRW(this->controller->getBar(), "RADIUSPARTICLE", TW_TYPE_FLOAT, &(Scene::radiusParticle), " label='Radius Particle' min=0.01 max=1.0 step=0.05 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "NBPARTICLES", TW_TYPE_FLOAT, &(Scene::nbParticles), " label='Nb particles' min=10 max=1000000 step=10 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "VISCOSITY", TW_TYPE_FLOAT, &(Scene::mu), " label='Viscosity fluid' min=0.01 max=1.0 step=0.01 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "DENSITY", TW_TYPE_FLOAT, &(Scene::densityFluid), " label='Density fluid' min=1.0 max=10000.0 step=1.0 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "RADIUSSPHERESTARTER", TW_TYPE_FLOAT, &(Scene::radiusSphereStarter), " label='Radius sphere starter' min=0.1 max=5.0 step=0.1 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "SURFACETENSION", TW_TYPE_FLOAT, &(Scene::sigma), " label='Surface tension coefficient' min=0.01 max=1.0 step=0.01 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "NEIGHBORSNB", TW_TYPE_FLOAT, &(Scene::x), " label='x particles in volume neighbouring' min=1.0 max=100.0 step=1.0 group=parameters ");
-	TwAddVarRW(this->controller->getBar(), "SIZECUBECONTAINER", TW_TYPE_FLOAT, &(Scene::sizeCube), " label='Size of the container cube' min=0.5 max=5.0 step=0.1 group=parameters");
-	TwAddVarRO(this->controller->getBar(), "MASSPARTICLE", TW_TYPE_FLOAT, &(Scene::mass), " label='Mass particle' min=0.001 max=10.0 step=0.01 group=read visible=false");
+	TwAddVarRW(this->controller->getBar(), "SIZECUBECONTAINER", TW_TYPE_FLOAT, &(Scene::sizeCube), " label='Size of the container cube' min=0.5 max=10.0 step=0.1 group=parameters");
+	//TwAddVarRO(this->controller->getBar(), "MASSPARTICLE", TW_TYPE_FLOAT, &(Scene::mass), " label='Mass particle' min=0.001 max=10.0 step=0.01 group=read visible=false");
 	TwAddVarRO(this->controller->getBar(), "RADIUSNEIBOURING", TW_TYPE_FLOAT, &(Scene::radiusNeighbouring), " label='Radius Neighbouring' min=0.01 max=1.0 step=0.05 group=read ");
 	TwAddVarRO(this->controller->getBar(), "AVERAGENEIGHBOURING", TW_TYPE_FLOAT, &(Scene::AverageNeighbors), " label='Average neighbouring'  group=read ");
 	TwAddVarRO(this->controller->getBar(), "NBPARTICLES", TW_TYPE_INT32, &(Scene::nbPart), " label='Current number of particles'  group=read ");
 	TwAddVarRW(this->controller->getBar(), "COEFMERGE", TW_TYPE_FLOAT, &(Scene::mergeCoef), " label='Merge' help='Coefficient of merging particle' min=0.001 max=1.0 step=0.001 group=Split-Merge ");
-	TwAddVarRW(this->controller->getBar(), "COEFSPLIT", TW_TYPE_FLOAT, &(Scene::splitCoef), " label='Split' help='Coefficient of splitting particle' min=0.2 max=1.0 step=0.001 group=Split-Merge ");
+	TwAddVarRW(this->controller->getBar(), "COEFSPLIT", TW_TYPE_FLOAT, &(Scene::splitCoef), " label='Split' help='Coefficient of splitting particle' min=0.1 max=1.0 step=0.001 group=Split-Merge ");
 	TwAddButton(this->controller->getBar(), "NEXTFRAME", CallbackButtonReset, NULL, " label='Reset' group=control ");
 	TwAddButton(this->controller->getBar(), "PLAY", CallbackButtonPlay, NULL, " label='Play' group=control ");
 	TwAddButton(this->controller->getBar(), "PAUSE", CallbackButtonPause, NULL, " label='Pause' group=control ");
 	TwAddButton(this->controller->getBar(), "RESET", CallbackButtonNextFrame, NULL, " label='Next frame' group=control ");
 	TwAddVarRW(this->controller->getBar(), "HALF", TW_TYPE_BOOL8, &(Scene::half), " label='Half' help='Print half particles' group=control ");
+	TwAddVarRW(this->controller->getBar(), "GRAVITY", TW_TYPE_BOOL8, &(Scene::SPHGravity), " label='Gravity' help='EnabledGravity' group=control ");
 	TwDefine(" TOOLS/parameters   group=SPH");
 	TwDefine(" TOOLS/Split-Merge   group=SPH");
 	TwDefine(" TOOLS/read   group=SPH");

@@ -145,13 +145,14 @@ std::vector<GLuint> * Geometry::getFaces()
 	return &(this->m_faces);
 }
 
-void Geometry::setVertices(GLfloat *vert, int nb) 
+void Geometry::setVertices(GLfloat *vert, int nb, int nbVerticePerFace) 
 {
-	for (int i = 0; i < nb/3; i++)
+	for (int i = 0; i < nb/nbVerticePerFace; i++)
 	{
-		this->m_vertices.push_back(glm::vec3(vert[i * 3], vert[i * 3 + 1], vert [i * 3 + 2]));
+			this->m_vertices.push_back(glm::vec3(vert[i * 3], vert[i * 3 + 1], vert [i * 3 + 2]));
 	}
-	this->m_numVertices = nb/3;
+	this->m_numVertices = nb/nbVerticePerFace;
+	this->m_maxIndicesByFace = nbVerticePerFace;
 }
 
 bool Geometry::setFaces(GLuint type, GLuint *faces, int nb)

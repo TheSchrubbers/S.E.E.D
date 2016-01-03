@@ -96,7 +96,7 @@ void ImplicitMaterial::render()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		//TEXTURES
-		this->activeTextures();
+		this->activeTextures(this->shader->getID());
 
 		//BUFFERS
 		for (int i = 0; i < 4; i++)
