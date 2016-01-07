@@ -43,17 +43,17 @@ int main()
 	//addLara(&scene); 
 	//addHouse(&scene);
 
-	/*ObjectNode *cube = scene.importModelFromFile(pathToModels + "cube.obj", "cube");
+	ObjectNode *cube = scene.importModelFromFile(pathToModels + "cube.obj", "cube");
 	DeferredMaterial *material = new DeferredMaterial(&scene, "cube_material", nullptr);
-	cube->setMaterialRecur(material);*/
+	cube->setMaterialRecur(material);
 
-	//scene.addNode(cube);
+	scene.addNode(cube);
 
-	SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
+	/*SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
 	ObjectNode *n = scene.importModelFromFile(pathToModels + "UVsphereLow.obj", "UVSphere");
 	n->setMaterialRecur(m);
 
-	scene.addNode(n);
+	scene.addNode(n);*/
 
 	//ObjectNode *n = new ObjectNode(&scene);
 	//ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");

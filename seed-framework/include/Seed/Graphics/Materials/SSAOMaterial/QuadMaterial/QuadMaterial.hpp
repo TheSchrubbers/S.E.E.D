@@ -35,6 +35,9 @@
 
 #include <Seed/Graphics/material.hpp>
 
+#define NBKERNEL 128
+
+class UBOBuffer;
 /*! \class QuadMaterial
 * \brief Material
 */
@@ -68,12 +71,22 @@ class QuadMaterial : public Material
 		void print(){};
 
 	private:
-
+		struct Kernel
+		{
+			glm::vec3 value;
+		};
+		struct Noise
+		{
+			glm::vec3 value;
+		};
 		void init();
+		Kernel kernel[NBKERNEL];
+		UBOBuffer *uboKernels, *uboNoise;
+		GLuint kernelsID, noiseID;
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
-		glm::mat4 M;
-		Shader *lightsShader;
+		Noise noise[16];
+		Texture *t;
 };
 
 #endif

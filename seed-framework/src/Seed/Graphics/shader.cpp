@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <fstream>
 #include <iostream>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 
 #define NBSHADERS 3
 
@@ -116,7 +117,7 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		}
 		ShaderStream.close();
 
-		//printf("Compiling shader : %s\n", s);
+		std::cout << "Shader : " << s << std::endl;
 		
 		char const * SourcePointer = ShaderCode.c_str();
 

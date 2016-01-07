@@ -8,7 +8,7 @@ FBOBuffer::FBOBuffer()
 	glGenTextures(1, &this->GPosition);
 	glBindTexture(GL_TEXTURE_2D, this->GPosition);
 	//create texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, WIDTH, HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
 	//parameters
 	//we want to get the nearest value which corresponds of th fragment value
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -39,9 +39,9 @@ FBOBuffer::FBOBuffer()
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, GColorSpec, 0);
 	//tell to the framebuffer which are the attachments
 	attachments[0] = GL_COLOR_ATTACHMENT0;
-	//attachments[1] = GL_COLOR_ATTACHMENT1;
-	//attachments[2] = GL_COLOR_ATTACHMENT2;
-	glDrawBuffers(1, attachments);
+	attachments[1] = GL_COLOR_ATTACHMENT1;
+	attachments[2] = GL_COLOR_ATTACHMENT2;
+	glDrawBuffers(3, attachments);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "ERROR the FrameBuffer failed" << std::endl;
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -68,27 +68,43 @@ void FBOBuffer::bindWrite()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->FBOID);
 }
 
-void FBOBuffer::bindRead()
+void FBOBuffer::bindRead(GLuint programID)
 {
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, this->FBOID);
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, this->FBOID);
+	this->activeTextures(programID);
 }
 
 void FBOBuffer::release()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void FBOBuffer::activeTextures()
+void FBOBuffer::activeTextures(GLuint programID)
 {
 	//active gposition
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->GPosition);
+	glUniform1i(glGetUniformLocation(programID, "gPosition"), 0);
 	//active gNormal
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, this->GNormal);
+	glUniform1i(glGetUniformLocation(programID, "gNormal"), 1);
 	//active gColor&spec
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, this->GColorSpec);
+	glUniform1i(glGetUniformLocation(programID, "gColorSpec"), 2);
+}
+
+void FBOBuffer::printTextures()
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, this->FBOID);
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, 0, WIDTH / 2.0f, HEIGHT / 2.0f, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glReadBuffer(GL_COLOR_ATTACHMENT1);
+	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, HEIGHT / 2.0f, WIDTH / 2.0f, HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glReadBuffer(GL_COLOR_ATTACHMENT2);
+	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, WIDTH / 2.0f, HEIGHT / 2.0f, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void FBOBuffer::releaseTextures()

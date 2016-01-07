@@ -34,8 +34,8 @@ void Engine::mainRender(Scene *scene)
 		this->controller->updateControl(this->window, scene->getCamera(), deltaTime);
 
 		//node->getMaterial()->setLight(a, d, s);
-		scene->render();
-		//scene->SSAOrender();
+		//scene->render();
+		scene->SSAOrender();
 		//Draw anttweakbar
 		TwDraw();
 		//get current time

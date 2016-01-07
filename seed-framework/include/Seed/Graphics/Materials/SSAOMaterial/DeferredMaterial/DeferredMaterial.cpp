@@ -40,6 +40,19 @@ void DeferredMaterial::render(Model *model)
 	//TEXTURES
 	if (this->activateShader())
 	{
+
+		//OPTIONS
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Enable culling triangles which normal is not towards the camera
+		glEnable(GL_CULL_FACE);
+		//glEnable(GL_LESS);
+		glEnable(GL_DEPTH_TEST);
+		//Enable depth test
+		glDepthMask(GL_TRUE);
+		
+		glDisable(GL_BLEND);
+		
+		
 		//this->activeTextures(this->shader->getID());
 		//UNIFORMS
 		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
@@ -50,12 +63,7 @@ void DeferredMaterial::render(Model *model)
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
-		//OPTIONS
-		//Enable culling triangles which normal is not towards the camera
-		glEnable(GL_CULL_FACE);
-		// Enable depth test
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_LESS);
+		
 		//bind UBO buffer camera
 		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
 		//bind UBO camera with program shader
@@ -65,6 +73,9 @@ void DeferredMaterial::render(Model *model)
 		model->render();
 		//RELEASE
 		//this->releaseTextures();
+		glDepthMask(GL_FALSE);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
 		this->shader->release();
 	}
 }

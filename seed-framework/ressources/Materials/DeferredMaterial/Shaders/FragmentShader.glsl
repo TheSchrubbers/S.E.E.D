@@ -15,8 +15,8 @@ in vec3 P;
 
 void main()
 {
-	gPosition = P;
-	gNormal = N;
+	gPosition = vec3(P);
+	gNormal = normalize(N);
 	gColorSpec.xyz = vec3(1.0);//texture(samplerAmbiantTexture0, UV).xyz;
 	gColorSpec.w = 1.0;//texture(samplerSpecularTexture0, UV).x;
 }

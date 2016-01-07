@@ -66,10 +66,11 @@ public:
 	GLuint getID();
 
 	void bindWrite();
-	void bindRead();
+	void bindRead(GLuint programID);
 	void release();
-	void activeTextures();
+	void activeTextures(GLuint programID);
 	void releaseTextures();
+	void printTextures();
 
 private:
 	GLuint FBOID;

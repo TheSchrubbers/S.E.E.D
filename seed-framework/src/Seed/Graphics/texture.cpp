@@ -11,7 +11,7 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 	//load image
 	if (image.readImage(pathT))
 	{
-		//std::cout << "Loading texture " << pathT.c_str() << std::endl;
+		std::cout << "Loading texture " << pathT.c_str() << std::endl;
 		this->path = pathT;
 		this->type = typeTexture;
 		//format of image
@@ -36,11 +36,13 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 		glBindTexture(GL_TEXTURE_2D, 0);
-		*flag = SEED_SUCCESS;
+		if (flag)
+			*flag = SEED_SUCCESS;
 	}
 	else
 	{
-		*flag = SEED_ERROR_FILE_LOCATION;
+		if (flag)
+			*flag = SEED_ERROR_FILE_LOCATION;
 		std::cout << "Error opening file " << pathT << std::endl;
 	}
 }

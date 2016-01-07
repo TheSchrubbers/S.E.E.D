@@ -401,8 +401,6 @@ void Scene::SSAOrender()
 	/////////////////////////////////////////////////
 	//bind FBO
 	this->FBObuffer->bindWrite();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
 	{
@@ -414,16 +412,12 @@ void Scene::SSAOrender()
 	//release FBO
 	this->FBObuffer->release();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-	this->FBObuffer->bindRead();
-	this->FBObuffer->activeTextures();
+	//this->FBObuffer->printTextures();
 	
 	//deferred lights rendering
 	this->RenderingQuadMaterial->render(this->RenderingQuad);
 
-	this->FBObuffer->releaseTextures();
+	this->FBObuffer->release();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
