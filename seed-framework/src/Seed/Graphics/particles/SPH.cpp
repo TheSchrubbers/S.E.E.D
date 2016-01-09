@@ -361,6 +361,7 @@ void SPH::processForces()
 
 void SPH::collision()
 {
+	//Cube container
 	for (ParticleSPH *p : this->particles)
 	{
 		if (p->flag)
@@ -489,6 +490,7 @@ void SPH::split(ParticleSPH *p)
 	p->flag = false;
 }
 
+//update matrix of each particle
 void SPH::updateMatrix()
 {
 	for (ParticleSPH *p : this->particles)
@@ -517,6 +519,7 @@ void SPH::updateParticles()
 	{
 	this->particles.erase(it[k]);
 	}*/
+	//update all the kdtree
 	kd_clear(this->kdtree);
 	for (int k = 0; k < this->particles.size(); k++)
 	{
@@ -525,14 +528,17 @@ void SPH::updateParticles()
 	}
 }
 
-
+//update all the system
 void SPH::updateSystem()
 {
 	this->nbParticles = 0;
 	this->SSBOParticles->deleteBuffer();
 	std::vector<ParticleSPHSSBO> v;
+
+	//if rendering half scene
 	if (Scene::half)
 	{
+		//print half scene
 		for (ParticleSPH *pp : this->particles)
 		{
 			if (pp->flag && pp->position.z < 0)
@@ -546,6 +552,7 @@ void SPH::updateSystem()
 			}
 		}
 	}
+	//rendering all the scene
 	else
 	{
 		for (ParticleSPH *pp : this->particles)
@@ -561,10 +568,13 @@ void SPH::updateSystem()
 			}
 		}
 	}
+	//update the SSBObuffer
 	this->SSBOParticles->createBuffer(this->nbParticles * sizeof(ParticleSPHSSBO));
 	this->SSBOParticles->updateBuffer(&v[0], this->nbParticles * sizeof(ParticleSPHSSBO));
 }
 
+
+//color according to the level of the particle
 glm::vec4 SPH::colorLevel(float level)
 {
 	switch ((int)level)
