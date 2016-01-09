@@ -41,19 +41,38 @@ int main()
 
 
 	//addLara(&scene); 
-	//addHouse(&scene);
-
-	ObjectNode *cube = scene.importModelFromFile(pathToModels + "cube.obj", "cube");
-	DeferredMaterial *material = new DeferredMaterial(&scene, "cube_material", nullptr);
+	/*unsigned int error;
+	ObjectNode *cube = scene.importModelFromFile(pathToBasicModels + "Monkey.obj", "cube");
+	DefaultMaterial *material = new DefaultMaterial(&scene, "cube_material", &error);
+	scanSeedError(error);
+	//material->translateModel(glm::vec3(2.0, 0.0, 1.0));
 	cube->setMaterialRecur(material);
+	scene.addNode(cube);*/
 
-	scene.addNode(cube);
+	/*ObjectNode *cube2 = scene.importModelFromFile(pathToBasicModels + "cube.obj", "cube");
+	DefaultMaterial *material2 = new DefaultMaterial(&scene, "cube2_material", nullptr);
+	material->rotateModel(glm::vec3(0.0, 0.2, 0.0));
+	cube2->setMaterialRecur(material2);
+	scene.addNode(cube2);
 
-	/*SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
-	ObjectNode *n = scene.importModelFromFile(pathToModels + "UVsphereLow.obj", "UVSphere");
+	ObjectNode *sphere = scene.importModelFromFile(pathToBasicModels + "sphere.obj", "cube");
+	DefaultMaterial *material3 = new DefaultMaterial(&scene, "sphere_material", nullptr);
+	material3->translateModel(glm::vec3(-1.0, 2.0, 2.0));
+	sphere->setMaterialRecur(material3);
+	scene.addNode(sphere);
+
+	ObjectNode *plan = scene.importModelFromFile(pathToBasicModels + "plan.obj", "cube");
+	DefaultMaterial *material4 = new DefaultMaterial(&scene, "plan_material", nullptr);
+	material4->scaleModel(glm::vec3(3.0, 3.0, 3.0));
+	material4->translateModel(glm::vec3(0.0, -0.5, 0.0));
+	plan->setMaterialRecur(material4);
+	scene.addNode(plan);*/
+
+	SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
+	ObjectNode *n = scene.importModelFromFile(pathToBasicModels + "UVsphereLow.obj", "UVSphere");
 	n->setMaterialRecur(m);
 
-	scene.addNode(n);*/
+	scene.addNode(n);
 
 	//ObjectNode *n = new ObjectNode(&scene);
 	//ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");
@@ -66,6 +85,8 @@ int main()
 	scene.collectRenderedNodes();
 	//active loop main render
 	engine.mainRender(&scene);
+
+	//delete cube;
 
 	return 0;
 }

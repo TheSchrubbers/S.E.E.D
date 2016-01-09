@@ -49,10 +49,13 @@ void SPH::loadSystem()
 
 void SPH::createSystem(float r, float rA)
 {
+	diffT = 0;
 	//starter of particles in sphere
-	std::vector<glm::vec3> pos = this->starter->addSphereStarter(glm::vec3(0.0), Scene::radiusSphereStarter, this->nbParticles);
+	//std::vector<glm::vec3> pos = this->starter->addSphereStarter(glm::vec3(0.0), Scene::radiusSphereStarter, this->nbParticles);
+	std::vector<glm::vec3> pos;
+	pos.push_back(glm::vec3(0.0, 0.95, 0.0));
 	//std::vector<glm::vec3> pos = this->starter->addCubeStarter(glm::vec3(0.0), Scene::radiusParticle, this->nbParticles);
-
+	rInit = r;
 	float volume = (4.0f * SEED_PI * glm::pow(Scene::radiusSphereStarter, 3.0f)) / 3.0f;
 	//for each particle we set the parameters
 	for (int i = 0; i < this->nbParticles; i++)
@@ -101,8 +104,44 @@ void SPH::createSystem(float r, float rA)
 
 void SPH::algorithm()
 {
+
+	if (Scene::play)
+	{
+		if (this->diffT > 0.1)
+		{
+			this->nbParticles++;
+			//add particle
+			ParticleSPH *p = new ParticleSPH;
+			//position of the particle i
+			p->position = glm::vec4(glm::vec3(glm::linearRand(-0.1, 0.1), 0.9, 0.0), glm::linearRand(-0.1, 0.1));
+			p->velocity = glm::vec4(0.0);
+			//transformation matrix of the particle i
+			p->M = glm::mat4(1.0);
+			//translation of the particle i
+			p->M = translate(p->M, p->position);
+			//scale of the particle i
+			p->M = scale(p->M, glm::vec3(rInit));
+			//inverse transformation matrix of the particle i
+			p->NormalMatrix = glm::transpose(glm::inverse(glm::matrixCompMult(this->scene->getCamera()->getViewMatrix(), p->M)));
+			//color of the particle i
+			p->color = glm::vec4(1.0);
+			//parameters
+			//float volume = (4.0f * SEED_PI * glm::pow(Scene::radiusSphereStarter, 3.0f)) / 3.0f;
+			Scene::radiusNeighbouring = glm::sqrt(glm::sqrt(glm::sqrt((3.0f * Scene::x) / (4.0f * SEED_PI * this->nbParticles))));
+			p->parameters = glm::vec4(0.0, rInit, 0.0, Scene::radiusNeighbouring);
+			//mass
+			p->parameters2.x = (Scene::densityFluid) / this->nbParticles;
+			p->flag = true;
+			//we push the particle i into the array of particles
+			particles.push_back(p);
+			diffT = 0.0;
+
+		}
+		diffT += (std::clock() - tNow) / (double)CLOCKS_PER_SEC;
+	}
 	if (Scene::nextFrame || Scene::play)
 	{
+		tNow = std::clock();
 		//process radius effect
 		this->processRadiusEffect();
 		//process all forces 
@@ -114,7 +153,8 @@ void SPH::algorithm()
 		{
 			if (ptmp->flag)
 			{
-				if (ptmp->parameters.z < Scene::mergeCoef && ptmp->parameters.x < 3.0)
+				//if adaptative parameter of the particle < merge parameter and level < 2.0
+				if (ptmp->parameters.z < Scene::mergeCoef && ptmp->parameters.x < 2.0)
 				{
 					this->merge(ptmp);
 				}
@@ -125,12 +165,13 @@ void SPH::algorithm()
 			}
 		}
 		Scene::nextFrame = false;
+		//std::cout << (float)diffT << std::endl;
 	}
+	
 	//update matrix
 	this->updateMatrix();
 	//update ssbo
 	this->updateSystem();
-
 	this->updateParticles();
 
 	//update particles
@@ -290,7 +331,7 @@ void SPH::processForces()
 		//Fpressure *= (-p->density);
 		//Fviscosity *= (Scene::mu / p->density);
 		//Fviscosity *= Scene::mu;
-		Fgravity = -glm::vec4(0.0f, 9.81 * p->density / 2.0, 0.0f,1.0f);
+		Fgravity = -glm::vec4(0.0f, 9.81 * p->parameters2.x * 4.0f, 0.0f,1.0f);
 		//FtensionSurface = glm::vec4(0.0);
 		/*if (niNorm >= Scene::threshold)
 		{
@@ -368,11 +409,11 @@ void SPH::merge(ParticleSPH *p)
 				//new level
 				p2->parameters.x = p->parameters.x + 1.0;
 				//new radius of the particle
-				p2->parameters.y = p->parameters.y * 2.0;
+				p2->parameters.y = p->parameters.y * 1.5;
 				//new radius neighbouring
 				p2->parameters.w = p->parameters.w * 1.5f;
 				//new mass
-				p2->parameters2.x = p->parameters2.x * 2.0f;
+				p2->parameters2.x = p->parameters2.x * 1.5f;
 				//new transformation matrix
 				p2->M = scale(glm::mat4(1.0), glm::vec3(p2->parameters.y));
 				//new color
@@ -409,7 +450,7 @@ void SPH::split(ParticleSPH *p)
 	//new level
 	p2->parameters.x = p->parameters.x - 1.0f;
 	//new radius for the particle
-	p2->parameters.y = p->parameters.y / 2.0f;
+	p2->parameters.y = p->parameters.y / 1.5f;
 	//new radius neighbouring
 	p2->parameters.w = p->parameters.w / 1.5f;
 	//new mass
@@ -425,7 +466,7 @@ void SPH::split(ParticleSPH *p)
 	//new level
 	p3->parameters.x = p->parameters.x - 1.0f;
 	//new radius of particle
-	p3->parameters.y = p->parameters.y / 2.0f;
+	p3->parameters.y = p->parameters.y / 1.5f;
 	//new radius neighbouring
 	p3->parameters.w = p->parameters.w / 1.5f;
 	//new mass

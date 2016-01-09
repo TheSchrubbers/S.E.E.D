@@ -16,7 +16,8 @@ ObjectNode::~ObjectNode()
 {
 	for (int i = 0; i < m_children.size(); i++)
 	{
-		delete m_children[i];
+		if (m_children[i])
+			delete m_children[i];
 	}
 }
 
@@ -57,7 +58,9 @@ void ObjectNode::render()
 		if (this->material)
 		{
 			if (this->model)
+			{
 				this->material->render(this->model);
+			}
 			else
 				material->render();
 		}

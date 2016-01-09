@@ -34,6 +34,8 @@ Material::Material(Scene *sce, const std::string n, unsigned int *flag, const fl
 	this->name = n;
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
+	this->texture_normal = nullptr;
+	this->shader = nullptr;
 	//if user doesn't give path to the shaders, we take the default shaders
 	if (pathShaders == "")
 	{
@@ -162,7 +164,6 @@ void Material::activeTextures(GLuint programID)
 	{
 		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_ambiant[i]->bind();
-		std::string s = "samplerAmbiantTexture" + std::to_string(i);
 		glUniform1i(glGetUniformLocation(programID, ("samplerAmbiantTexture" + std::to_string(i)).c_str()), i);
 		j++;
 	}
@@ -212,6 +213,10 @@ void Material::releaseTextures()
 	for (i = 0; i < this->textures_specular.size(); i++)
 	{
 		this->textures_specular[i]->release();
+	}
+	if (this->texture_normal)
+	{
+		this->texture_normal->release();
 	}
 	CubeMap *c;
 	if (c = this->scene->getCubeMap())

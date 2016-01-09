@@ -56,10 +56,8 @@ void DefaultMaterial::render(Model *model)
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		//TEXTURES
 		this->activeTextures(this->shader->getID());
-
 		//BUFFERS
 		for (int i = 0; i < 4; i++)
 		{
@@ -68,12 +66,10 @@ void DefaultMaterial::render(Model *model)
 			//bind UBO lighting with program shader
 			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
 		}
-
 		//bind UBO buffer camera
 		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
-
 		//RENDER
 		//render model
 		model->render();

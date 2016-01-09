@@ -35,6 +35,8 @@
 #include <GL/glew.h>
 #include <memory>
 #include <Seed/Graphics/data_structure/KDtree.hpp>
+#include <ctime>
+
 
 #ifndef SPH_HPP
 #define SPH_HPP
@@ -114,6 +116,10 @@ class SPH : public ParticlesSystem
 		Scene *scene;
 		kdtree *kdtree;
 		ParticleSPH* ppp;
+		float rInit;
+		std::clock_t tNow, t;
+		double diffT;
+
 };
 
 

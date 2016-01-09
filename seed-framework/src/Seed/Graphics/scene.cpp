@@ -22,10 +22,10 @@ bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
 float Scene::deltat = 0.001f;
-float Scene::K = 3.0f;
+float Scene::K = 1.0f;
 bool Scene::reset = false;
 float Scene::radiusNeighbouring = 0.1f;
-float Scene::nbParticles = 500;
+float Scene::nbParticles = 1;
 float Scene::radiusParticle = 0.05f;
 float Scene::mu = 3.5f;
 float Scene::mass = 0.02f;
@@ -36,13 +36,13 @@ float Scene::sigma = 0.0728;
 float Scene::x = 30.0f;
 float Scene::AverageNeighbors = 0;
 float Scene::sizeCube = 1.0f;
-float Scene::mergeCoef = 0.018f;
-float Scene::splitCoef = 0.3f;
+float Scene::mergeCoef = 0.02f;
+float Scene::splitCoef = 0.25f;
 bool Scene::nextFrame = false;
 bool Scene::play = false;
 float Scene::nbPart = 0.0f;
 bool Scene::half = false;
-bool Scene::SPHGravity = false;
+bool Scene::SPHGravity = true;
 
 Scene::Scene()
 {
@@ -54,10 +54,10 @@ Scene::Scene()
 	this->camBuf->createBuffer(sizeof(cameraStruct));
 	this->cubemap = NULL;
 
-	this->constructQuad();
-	this->RenderingQuadMaterial = new QuadMaterial(this, "QuadMaterial");
+	//this->constructQuad();
+	//this->RenderingQuadMaterial = new QuadMaterial(this, "QuadMaterial");
 
-	this->FBObuffer = new FBOBuffer();
+	//this->FBObuffer = new FBOBuffer();
 }
 
 Scene::~Scene()
@@ -370,7 +370,6 @@ void Scene::render()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)

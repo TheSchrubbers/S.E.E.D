@@ -45,7 +45,9 @@ void Model::render()
 	{
 		unsigned int sizeFaces = this->geometry->getNumFaces() * this->geometry->getNumIndicesPerFace();
 		if (this->geometry->getNumIndicesPerFace() == 3)
+		{
 			glDrawRangeElements(GL_TRIANGLES, 0, sizeFaces, sizeFaces, GL_UNSIGNED_INT, 0);
+		}
 		else
 			glDrawRangeElements(GL_QUADS, 0, sizeFaces, sizeFaces, GL_UNSIGNED_INT, 0);
 	}
@@ -56,6 +58,7 @@ void Model::render()
 		else
 			glDrawArrays(GL_QUADS, 0, this->geometry->getNumVertices());
 	}
+
 	//free VAO
 	glBindVertexArray(0);
 }
