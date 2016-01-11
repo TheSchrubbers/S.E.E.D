@@ -28,9 +28,9 @@ out vec3 P;
 void main()
 {
 	//Position, normal, position of the camera in the screen space
-	P = (cam.P * cam.V * vec4(Position, 1.0)).xyz;
-	N = (cam.P * cam.V * vec4(Normal, 0.0)).xyz;
-	C = (cam.V_inverse * vec4(0.0f,0.0f,0.0f,1.0f)).xyz;
+	P = (vec4(Position, 1.0)).xyz;
+	N = (cam.V * vec4(Normal, 0.0)).xyz;
+	//C = (cam.V_inverse * vec4(0.0f,0.0f,0.0f,1.0f)).xyz;
 	UV = UVcoord;
 	gl_Position = cam.P * cam.V * M * vec4(Position, 1.0f);
 }

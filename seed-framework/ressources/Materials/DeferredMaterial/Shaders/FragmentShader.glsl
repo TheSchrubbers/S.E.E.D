@@ -10,7 +10,7 @@ uniform sampler2D samplerSpecularTexture0;
 
 in vec3 N;
 in vec2 UV;
-in vec3 C;
+//in vec3 C;
 in vec3 P;
 
 void main()

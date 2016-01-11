@@ -106,7 +106,7 @@ vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap,
 void main()
 {
 	vec3 Pos = texture(gPosition, UV).xyz;
-	float gSampleRad = 1.5;
+	float gSampleRad = 1.0;
     float AO = 0.0;
 
     for (int i = 0 ; i < NBKERNEL ; i++) {
@@ -125,7 +125,7 @@ void main()
 
     AO = 1.0 - AO/128.0;
 
-    Color = vec4(pow(AO, 2.0));
+    Color = vec4(vec3(pow(AO, 2.0)), 1.0);
 }
 
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec)
