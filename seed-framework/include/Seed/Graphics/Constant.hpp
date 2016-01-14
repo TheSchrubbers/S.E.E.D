@@ -13,8 +13,8 @@ const std::string pathToTextures = "ressources/Textures/";
 const std::string pathToCubeMapMaterial = "ressources/Materials/CubeMapMaterial/";
 const std::string pathToParticlesWaterSystemMaterial = "ressources/Materials/ParticlesSystemMaterial/ParticlesWaterSystemMaterial/";
 const std::string pathToSPHMaterial = "ressources/Materials/ParticlesSystemMaterial/SPHMaterial/";
-const std::string pathToModels = "ressources/models/";
-const std::string pathToBasicModels = "ressources/models/BasicMesh/";
+const std::string pathToModels = "ressources/Models/";
+const std::string pathToBasicModels = "ressources/Models/BasicMesh/";
 const std::string pathToMaterials = "ressources/Materials/";
 
 

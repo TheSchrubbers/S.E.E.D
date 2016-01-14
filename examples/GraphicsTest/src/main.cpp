@@ -40,7 +40,7 @@ int main()
 	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
 
-	//addLara(&scene); 
+	addLara(&scene); 
 	/*unsigned int error;
 	ObjectNode *cube = scene.importModelFromFile(pathToBasicModels + "Monkey.obj", "cube");
 	DefaultMaterial *material = new DefaultMaterial(&scene, "cube_material", &error);
@@ -68,11 +68,11 @@ int main()
 	plan->setMaterialRecur(material4);
 	scene.addNode(plan);*/
 
-	SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
+	/*SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
 	ObjectNode *n = scene.importModelFromFile(pathToBasicModels + "UVsphereLow.obj", "UVSphere");
 	n->setMaterialRecur(m);
 
-	scene.addNode(n);
+	scene.addNode(n);*/
 
 	//ObjectNode *n = new ObjectNode(&scene);
 	//ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");

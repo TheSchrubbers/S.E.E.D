@@ -70,6 +70,7 @@ ObjectNode* Scene::importModelFromFile(const std::string path, const std::string
 {
 	Assimp::Importer importer;
 	bool exist = false;
+
 	//file exists?
 	std::ifstream fichier(path);
 	if (!fichier.fail())
