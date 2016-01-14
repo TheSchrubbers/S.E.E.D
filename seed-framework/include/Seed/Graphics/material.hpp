@@ -151,7 +151,7 @@ class Material
 
 		glm::mat4 Normal_Matrix;
 		uniform MID, NMID, matID, NMACTIVEID,SMACTIVEID, SMVIEWID;
-		compLight compl;
+		compLight complight;
 		Mat mat;
 };
 

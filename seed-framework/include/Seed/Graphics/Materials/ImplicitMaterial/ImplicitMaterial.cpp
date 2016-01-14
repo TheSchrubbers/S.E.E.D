@@ -1,6 +1,6 @@
 #include <ImplicitMaterial/ImplicitMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/implicitSurface/iSphere.hpp>
 
 ImplicitMaterial::ImplicitMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToImplicitMaterial + "Shaders")
@@ -12,9 +12,9 @@ void ImplicitMaterial::init()
 {
 	GLuint programID = this->shader->getID();
 
-	this->compl.ambiant = 0.1;
-	this->compl.diffuse = 0.8;
-	this->compl.specular = 0.1;
+	this->complight.ambiant = 0.1;
+	this->complight.diffuse = 0.8;
+	this->complight.specular = 0.1;
 
 	this->M = glm::mat4(1.0);
 	this->M = glm::translate(this->M, glm::vec3(1.0, 0.0, 0.0));
@@ -24,9 +24,9 @@ void ImplicitMaterial::init()
 	this->MID = glGetUniformLocation(programID, "M");
 	this->NMID = glGetUniformLocation(programID, "Normal_Matrix");
 	this->matID = glGetUniformLocation(programID, "mat");
-	this->compl.ambiantID = glGetUniformLocation(programID, "light.ambiant");
-	this->compl.diffuseID = glGetUniformLocation(programID, "light.diffuse");
-	this->compl.specularID = glGetUniformLocation(programID, "light.specular");
+	this->complight.ambiantID = glGetUniformLocation(programID, "light.ambiant");
+	this->complight.diffuseID = glGetUniformLocation(programID, "light.diffuse");
+	this->complight.specularID = glGetUniformLocation(programID, "light.specular");
 	this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
 	this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
 	this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
@@ -79,9 +79,9 @@ void ImplicitMaterial::render()
 		//set the uniform variable MVP
 		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-		glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));
-		glUniform1fv(this->compl.diffuseID, 1, &(compl.diffuse));
-		glUniform1fv(this->compl.specularID, 1, &(compl.specular));
+		glUniform1fv(this->complight.ambiantID, 1, &(complight.ambiant));
+		glUniform1fv(this->complight.diffuseID, 1, &(complight.diffuse));
+		glUniform1fv(this->complight.specularID, 1, &(complight.specular));
 		glUniform1i(this->NMACTIVEID, false);
 		glUniform1i(this->SMACTIVEID, false);
 		glUniform1i(this->SMVIEWID, false);

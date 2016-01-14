@@ -177,7 +177,7 @@ bool parserImage::BMP_parser(const std::string path)
 		//verify if file has been reading totally
 		if (!imgFile)
 		{
-			printf("ERROR: error reading file %s\n", path);
+			std::cout << "ERROR: error reading file " + path << std::endl;
 			imgFile.close();
 			return false;
 		}

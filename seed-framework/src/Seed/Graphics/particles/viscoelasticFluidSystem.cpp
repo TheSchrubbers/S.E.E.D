@@ -1,4 +1,4 @@
-#include <Seed/Graphics/particles/ViscoElasticFluidSystem.hpp>
+#include <Seed/Graphics/particles/viscoelasticFluidSystem.hpp>
 #include <glm/gtc/random.hpp>
 #include <Seed/Graphics/buffers/SSBOBuffer.hpp>
 #include <Seed/Graphics/Constant.hpp>

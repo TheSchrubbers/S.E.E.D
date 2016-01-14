@@ -10,7 +10,7 @@
 #include <Seed/Graphics/light/pointLight.hpp>
 #include <Seed/Graphics/light/spotLight.hpp>
 #include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/cubeMap.hpp>
 #include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
@@ -80,10 +80,10 @@ ObjectNode* Scene::importModelFromFile(const std::string path, const std::string
 	else
 	{
 		std::cout << "ERROR LOADING MODEL : Couldn't open file: " << path << std::endl;
-		return NULL;
+		return nullptr;
 	}
 
-	ObjectNode* node = NULL;
+	ObjectNode* node = nullptr;
 
 	//if file exists
 	if (exist)
@@ -97,13 +97,13 @@ ObjectNode* Scene::importModelFromFile(const std::string path, const std::string
 			if ((node = loadObjectInScene(pScene, path, name)) == NULL)
 			{
 				std::cout << "ERROR LOADING MODEL : error parsing " << path << std::endl << importer.GetErrorString() << std::endl;
-				return false;
+				return nullptr;
 			}
 		}
 		else
 		{
 			std::cout << "ERROR ASSIMP LOADING MODEL : Couln't import Mesh" << std::endl;
-			return false;
+			return nullptr;
 		}
 	}
 	return node;

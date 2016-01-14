@@ -14,7 +14,7 @@ set{FRAMEWORK "${CMAKE_SOURCE_DIR/../../seed-framework")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
-# OpenGL and GLUT package
+# OpenGL package
 find_package(OpenGL REQUIRED)
 if(NOT OPENGL_FOUND)
     message("ERROR: OpenGL not found")

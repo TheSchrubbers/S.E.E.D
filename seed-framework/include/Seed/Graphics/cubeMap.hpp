@@ -99,7 +99,7 @@ private:
 	* \param path Path to the picture
 	* \param img ParserImage (Optimization)
 	*/
-	bool CubeMap::loadFace(int type, const std::string *path, parserImage *img);
+	bool loadFace(int type, const std::string *path, parserImage *img);
 };
 
 #endif

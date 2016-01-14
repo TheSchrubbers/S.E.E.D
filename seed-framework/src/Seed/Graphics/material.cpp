@@ -151,9 +151,9 @@ void Material::addTexture(const std::string path, Scene *scene, unsigned int typ
 
 void Material::setLight(float a, float d, float s)
 {
-	this->compl.ambiant = a;
-	this->compl.diffuse = d;
-	this->compl.specular = s;
+	this->complight.ambiant = a;
+	this->complight.diffuse = d;
+	this->complight.specular = s;
 }
 
 void Material::activeTextures(GLuint programID)

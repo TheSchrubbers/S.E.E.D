@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 SET(CMAKE_CONFIGURATION_TYPES Release CACHE STRING "" FORCE)
 
+ENABLE_LANGUAGE(C)
+
 project(SEED CXX)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
@@ -13,6 +15,7 @@ find_package(OpenGL REQUIRED)
 if(NOT OPENGL_FOUND)
     message("ERROR: OpenGL not found")
 endif(NOT OPENGL_FOUND)
+set(GL_LIBRARY GL GLU X11)
 
 file(
     GLOB_RECURSE
@@ -66,7 +69,6 @@ add_library(
 )
 
 if(WIN32)
-	find_package(OpenGL REQUIRED)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glew_win32/lib/Release/Win32/glew32.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
@@ -74,13 +76,13 @@ if(WIN32)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
 	target_link_libraries(Seed-Graphics ${OPENGL_INCLUDE_DIRS})
-
 else(WIN32)
-
-	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/assimp_linux/lib/libassimp.so.3)
-	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glew_linux/lib/libGLEW.so.1.13)
-	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/glfw_linux/lib/libglfw.so.3.1)
-
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/assimp/lib/libassimp.so.3)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glew/lib/libGLEW.so.1.13)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glfw/lib/libglfw.so.3.1)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_system.so.1.59.0)
+	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_filesystem.so.1.59.0)
+	target_link_libraries(Seed-Graphics ${OPENGL_INCLUDE_DIRS})
 endif(WIN32)
 
 #MAIN
@@ -107,9 +109,11 @@ if(WIN32)
 else(WIN32)
 endif(WIN32)
 
+if(WIN32)
 #COPY FILES INTO THE BINARY PROJECT FILES
 file(GLOB DLL
 	${CMAKE_SOURCE_DIR}/lib-required/DLL/*.dll
 )
-file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
+	file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
+endif(WIN32)
 file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)

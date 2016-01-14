@@ -8,7 +8,7 @@
 #include <Seed/Graphics/light/directionnalLight.hpp>
 #include <Seed/Graphics/light/flashLight.hpp>
 #include <Seed/Graphics/light/spotLight.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 
 Collector::Collector()
 {

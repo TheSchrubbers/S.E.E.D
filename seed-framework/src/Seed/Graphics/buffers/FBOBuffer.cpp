@@ -1,4 +1,4 @@
-#include <Seed/Graphics/Buffers/FBOBuffer.hpp>
+#include <Seed/Graphics/buffers/FBOBuffer.hpp>
 
 FBOBuffer::FBOBuffer()
 {

@@ -1,6 +1,6 @@
-#include <Seed/Graphics/Buffers/SSBOBuffer.hpp>
-
-#include<Seed/Graphics/particles/SPH.hpp>
+#include <Seed/Graphics/buffers/SSBOBuffer.hpp>
+#include <Seed/Graphics/particles/SPH.hpp>
+#include <string.h>
 
 SSBOBuffer::SSBOBuffer()
 {

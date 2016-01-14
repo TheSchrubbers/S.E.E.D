@@ -5,7 +5,6 @@
 #include <Seed/Graphics/camera.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Seed/Graphics/data_structure/KDtree.hpp>
 #include <glm/gtc/random.hpp>
 #include <Seed/Graphics/Outils.hpp>
 #include <math.h>
@@ -17,14 +16,14 @@
 #define H 10
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
-this->nbParticles = nb;
-this->scene = sce;
-//set the starter of the particles
-this->starter = new Starter();
-//get the shader's particles
-//create system
-this->createSystem(radius, Raffect);
-ppp = nullptr;
+	this->nbParticles = nb;
+	this->scene = sce;
+	//set the starter of the particles
+	this->starter = new Starter();
+	//get the shader's particles
+	//create system
+	this->createSystem(radius, Raffect);
+	ppp = nullptr;
 }
 
 SPH::~SPH()

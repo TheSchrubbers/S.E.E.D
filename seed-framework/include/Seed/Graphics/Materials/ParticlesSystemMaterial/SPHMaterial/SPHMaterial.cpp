@@ -1,6 +1,6 @@
 #include <ParticlesSystemMaterial/SPHMaterial/SPHMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/particles/SPH.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
 
@@ -15,15 +15,15 @@ void SPHMaterial::init()
 	if (this->shader)
 	{
 		GLuint programID = this->shader->getID();
-		this->compl.ambiant = 0.1;
-		this->compl.diffuse = 0.8;
-		this->compl.specular = 0.1;
+		this->complight.ambiant = 0.1;
+		this->complight.diffuse = 0.8;
+		this->complight.specular = 0.1;
 		// Get a handle for our "MVP" uniform.
 		// Only at initialisation time.
 		this->matID = glGetUniformLocation(programID, "mat");
-		this->compl.ambiantID = glGetUniformLocation(programID, "light.ambiant");
-		this->compl.diffuseID = glGetUniformLocation(programID, "light.diffuse");
-		this->compl.specularID = glGetUniformLocation(programID, "light.specular");
+		this->complight.ambiantID = glGetUniformLocation(programID, "light.ambiant");
+		this->complight.diffuseID = glGetUniformLocation(programID, "light.diffuse");
+		this->complight.specularID = glGetUniformLocation(programID, "light.specular");
 		this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
 		this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
 		this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
@@ -52,9 +52,9 @@ void SPHMaterial::render(Model *model)
 	{
 		//UNIFORMS
 		//set the uniform variable MVP
-		glUniform1fv(this->compl.ambiantID, 1, &(compl.ambiant));
-		glUniform1fv(this->compl.diffuseID, 1, &(compl.diffuse));
-		glUniform1fv(this->compl.specularID, 1, &(compl.specular));
+		glUniform1fv(this->complight.ambiantID, 1, &(complight.ambiant));
+		glUniform1fv(this->complight.diffuseID, 1, &(complight.diffuse));
+		glUniform1fv(this->complight.specularID, 1, &(complight.specular));
 		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);

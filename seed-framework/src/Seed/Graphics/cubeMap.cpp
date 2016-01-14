@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <Seed/Graphics/parserImage.hpp>
 #include <Seed/Graphics/scene.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/shader.hpp>
 
 CubeMap::CubeMap(const std::string path, Scene* sce, unsigned int *flag)

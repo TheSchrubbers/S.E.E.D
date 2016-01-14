@@ -1,6 +1,6 @@
 #include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
 #include <Seed/Graphics/collector.hpp>
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/particles/particlesSystem.hpp>
 #include <Seed/Graphics/particles/particlesWaterSystem.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>

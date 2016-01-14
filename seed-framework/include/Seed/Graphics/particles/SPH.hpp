@@ -114,7 +114,7 @@ class SPH : public ParticlesSystem
 		float deltaT;
 		float zonaradius;
 		Scene *scene;
-		kdtree *kdtree;
+		struct kdtree *kdtree;
 		ParticleSPH* ppp;
 		float rInit;
 		std::clock_t tNow, t;

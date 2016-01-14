@@ -39,7 +39,7 @@
 #include <fstream>
 
 #include <assimp/scene.h>
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 /*! \class Geometry

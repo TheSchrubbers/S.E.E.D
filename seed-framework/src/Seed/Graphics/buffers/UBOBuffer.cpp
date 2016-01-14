@@ -1,4 +1,5 @@
-#include <Seed/Graphics/Buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
+#include <string.h>
 
 UBOBuffer::UBOBuffer()
 {
