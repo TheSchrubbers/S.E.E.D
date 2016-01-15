@@ -31,7 +31,7 @@ void SPHMaterial::init()
 		this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 		this->uniformSSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
 		glShaderStorageBlockBinding(this->shader->getID(), this->uniformSSBOID, 0);
-		sph = new SPH(Scene::nbParticles, Scene::radiusParticle, Scene::radiusNeighbouring, this->scene);
+		sph = new SPH(SPH::nbParticles, SPH::radiusParticle, SPH::radiusNeighbouring, this->scene);
 	}
 }
 
@@ -41,11 +41,11 @@ SPHMaterial::~SPHMaterial()
 
 void SPHMaterial::render(Model *model)
 {
-	if (Scene::reset == true)
+	if (SPH::reset == true)
 	{
 		delete this->sph;
-		this->sph = new SPH(Scene::nbParticles, Scene::radiusParticle, Scene::radiusNeighbouring, this->scene);
-		Scene::reset = false;
+		this->sph = new SPH(SPH::nbParticles, SPH::radiusParticle, SPH::radiusNeighbouring, this->scene);
+		SPH::reset = false;
 	}
 	this->sph->algorithm();
 	if (this->activateShader())

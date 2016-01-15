@@ -183,9 +183,7 @@ class Scene
 		FBOBuffer* getFBOBuffer();
 		void afficher();
 
-		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, reset, nextFrame, play, half, SPHGravity;
-		static float deltat, K, radiusNeighbouring, radiusParticle, nbParticles, mu, mass, densityFluid, radiusSphereStarter, threshold, sigma, x;
-		static float AverageNeighbors, sizeCube, mergeCoef, splitCoef, nbPart;
+		static bool wireframe, specularMapActive, specularMapView, normalMappingActive;
 		
 	private:
 
@@ -199,9 +197,6 @@ class Scene
 		QuadMaterial *RenderingQuadMaterial;
 		FBOBuffer* FBObuffer;
 		
-		
-
-
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes
 		* \param pScene: The assimp scene object

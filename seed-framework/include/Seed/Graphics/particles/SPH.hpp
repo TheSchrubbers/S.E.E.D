@@ -95,6 +95,10 @@ class SPH : public ParticlesSystem
 		void split(ParticleSPH *p);
 		void algorithm();
 		void processForces();
+
+		static bool reset, nextFrame, play, half, SPHGravity;
+		static float deltat, K, radiusNeighbouring, radiusParticle, nbParticles, mu, mass, densityFluid, radiusSphereStarter, threshold, sigma, x;
+		static float AverageNeighbors, sizeCube, mergeCoef, splitCoef, nbPart;
 	
 	protected:
 
@@ -110,7 +114,7 @@ class SPH : public ParticlesSystem
 		void updateParticles();
 		glm::vec4 colorLevel(float level);
 		//float isolevel();
-		int nbParticles, type;
+		int type;
 		float deltaT;
 		float zonaradius;
 		Scene *scene;

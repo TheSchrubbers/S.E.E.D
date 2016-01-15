@@ -14,6 +14,31 @@
 #define PRESSION 101325
 #define BOUNDPRESSION 0.1
 #define H 10
+
+float SPH::deltat = 0.001f;
+float SPH::K = 1.0f;
+bool SPH::reset = false;
+float SPH::radiusNeighbouring = 0.1f;
+float SPH::nbParticles = 1;
+float SPH::radiusParticle = 0.05f;
+float SPH::mu = 3.5f;
+float SPH::mass = 0.02f;
+float SPH::densityFluid = 998.29f;
+float SPH::radiusSphereStarter = 1.0f;
+float SPH::threshold = 7.065;
+float SPH::sigma = 0.0728;
+float SPH::x = 30.0f;
+float SPH::AverageNeighbors = 0;
+float SPH::sizeCube = 1.0f;
+float SPH::mergeCoef = 0.02f;
+float SPH::splitCoef = 0.25f;
+bool SPH::nextFrame = false;
+bool SPH::play = false;
+float SPH::nbPart = 0.0f;
+bool SPH::half = false;
+bool SPH::SPHGravity = true;
+
+
 SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
 {
 	this->nbParticles = nb;
@@ -55,7 +80,7 @@ void SPH::createSystem(float r, float rA)
 	pos.push_back(glm::vec3(0.0, 0.95, 0.0));
 	//std::vector<glm::vec3> pos = this->starter->addCubeStarter(glm::vec3(0.0), Scene::radiusParticle, this->nbParticles);
 	rInit = r;
-	float volume = (4.0f * SEED_PI * glm::pow(Scene::radiusSphereStarter, 3.0f)) / 3.0f;
+	float volume = (4.0f * SEED_PI * glm::pow(SPH::radiusSphereStarter, 3.0f)) / 3.0f;
 	//for each particle we set the parameters
 	for (int i = 0; i < this->nbParticles; i++)
 	{
@@ -74,10 +99,10 @@ void SPH::createSystem(float r, float rA)
 		//color of the particle i
 		p->color = glm::vec4(1.0);
 		//parameters
-		Scene::radiusNeighbouring = glm::sqrt(glm::sqrt(glm::sqrt((3.0f * volume * Scene::x) / (4.0f * SEED_PI * this->nbParticles))));
-		p->parameters = glm::vec4(0.0, r, 0.0, Scene::radiusNeighbouring);
+		SPH::radiusNeighbouring = glm::sqrt(glm::sqrt(glm::sqrt((3.0f * volume * SPH::x) / (4.0f * SEED_PI * this->nbParticles))));
+		p->parameters = glm::vec4(0.0, r, 0.0, SPH::radiusNeighbouring);
 		//mass
-		p->parameters2.x = (Scene::densityFluid * volume) / this->nbParticles;
+		p->parameters2.x = (SPH::densityFluid * volume) / this->nbParticles;
 		p->flag = true;
 		//we push the particle i into the array of particles
 		particles.push_back(p);
@@ -97,14 +122,14 @@ void SPH::createSystem(float r, float rA)
 	//new SSBObuffer
 	this->SSBOParticles = new SSBOBuffer();
 
-	Scene::nbPart = this->nbParticles;
+	SPH::nbPart = this->nbParticles;
 }
 
 
 void SPH::algorithm()
 {
 
-	if (Scene::play)
+	if (SPH::play)
 	{
 		if (this->diffT > 0.1)
 		{
@@ -126,10 +151,10 @@ void SPH::algorithm()
 			p->color = glm::vec4(1.0);
 			//parameters
 			//float volume = (4.0f * SEED_PI * glm::pow(Scene::radiusSphereStarter, 3.0f)) / 3.0f;
-			Scene::radiusNeighbouring = glm::sqrt(glm::sqrt(glm::sqrt((3.0f * Scene::x) / (4.0f * SEED_PI * this->nbParticles))));
-			p->parameters = glm::vec4(0.0, rInit, 0.0, Scene::radiusNeighbouring);
+			SPH::radiusNeighbouring = glm::sqrt(glm::sqrt(glm::sqrt((3.0f * SPH::x) / (4.0f * SEED_PI * this->nbParticles))));
+			p->parameters = glm::vec4(0.0, rInit, 0.0, SPH::radiusNeighbouring);
 			//mass
-			p->parameters2.x = (Scene::densityFluid) / this->nbParticles;
+			p->parameters2.x = (SPH::densityFluid) / this->nbParticles;
 			p->flag = true;
 			//we push the particle i into the array of particles
 			particles.push_back(p);
@@ -138,7 +163,7 @@ void SPH::algorithm()
 		}
 		diffT += (std::clock() - tNow) / (double)CLOCKS_PER_SEC;
 	}
-	if (Scene::nextFrame || Scene::play)
+	if (SPH::nextFrame || SPH::play)
 	{
 		tNow = std::clock();
 		//process radius effect
@@ -153,17 +178,17 @@ void SPH::algorithm()
 			if (ptmp->flag)
 			{
 				//if adaptative parameter of the particle < merge parameter and level < 2.0
-				if (ptmp->parameters.z < Scene::mergeCoef && ptmp->parameters.x < 2.0)
+				if (ptmp->parameters.z < SPH::mergeCoef && ptmp->parameters.x < 2.0)
 				{
 					this->merge(ptmp);
 				}
-				else if (ptmp->parameters.x > 0.0 && ptmp->parameters.z > Scene::splitCoef)
+				else if (ptmp->parameters.x > 0.0 && ptmp->parameters.z > SPH::splitCoef)
 				{
 					this->split(ptmp);
 				}
 			}
 		}
-		Scene::nextFrame = false;
+		SPH::nextFrame = false;
 		//std::cout << (float)diffT << std::endl;
 	}
 	
@@ -214,7 +239,7 @@ void SPH::processRadiusEffect()
 				kd_res_next(neighbors);
 			}
 			//update number of neighbors of all particles
-			Scene::AverageNeighbors = (float)nbNeighbors / (float)nbParticles;
+			SPH::AverageNeighbors = (float)nbNeighbors / (float)nbParticles;
 			//free the result
 			kd_res_free(neighbors);
 			//average of the barycenter position
@@ -273,7 +298,7 @@ void SPH::processForces()
 				kd_res_next(neighbors);
 			}
 			kd_res_free(neighbors);
-			p->pression = Scene::K * (Scene::densityFluid - p->density);
+			p->pression = SPH::K * (SPH::densityFluid - p->density);
 			
 		}
 	}
@@ -336,7 +361,7 @@ void SPH::processForces()
 		{
 			FtensionSurface = -Scene::sigma*colorField * (ni / niNorm);
 		}*/
-		if (Scene::SPHGravity)
+		if (SPH::SPHGravity)
 		{
 			p->F = Fpressure + Fgravity;
 		}
@@ -349,9 +374,9 @@ void SPH::processForces()
 	{
 		if (p->flag)
 		{
-			p->velocity += Scene::deltat * p->F;
+			p->velocity += SPH::deltat * p->F;
 			p->velocity.w = 1.0;
-			p->position += Scene::deltat * p->velocity;
+			p->position += SPH::deltat * p->velocity;
 			//p->position += shift;
 			p->position.w = 1.0;
 		}
@@ -367,15 +392,15 @@ void SPH::collision()
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				if (p->position[i] < -Scene::sizeCube)
+				if (p->position[i] < -SPH::sizeCube)
 				{
 					p->velocity[i] = -p->velocity[i] * 0.01;
-					p->position[i] = -Scene::sizeCube;
+					p->position[i] = -SPH::sizeCube;
 				}
-				if (p->position[i] > Scene::sizeCube)
+				if (p->position[i] > SPH::sizeCube)
 				{
 					p->velocity[i] = -p->velocity[i] * 0.01;
-					p->position[i] = Scene::sizeCube;
+					p->position[i] = SPH::sizeCube;
 				}
 			}
 		}
@@ -500,7 +525,7 @@ void SPH::updateMatrix()
 			p->NormalMatrix = glm::transpose(glm::inverse(glm::matrixCompMult(this->scene->getCamera()->getViewMatrix(), p->M)));
 		}
 	}
-	Scene::nbPart = this->nbParticles;
+	SPH::nbPart = this->nbParticles;
 }
 
 void SPH::updateParticles()
@@ -535,7 +560,7 @@ void SPH::updateSystem()
 	std::vector<ParticleSPHSSBO> v;
 
 	//if rendering half scene
-	if (Scene::half)
+	if (SPH::half)
 	{
 		//print half scene
 		for (ParticleSPH *pp : this->particles)

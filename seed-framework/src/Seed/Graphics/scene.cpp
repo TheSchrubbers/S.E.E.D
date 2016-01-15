@@ -21,28 +21,6 @@ bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
-float Scene::deltat = 0.001f;
-float Scene::K = 1.0f;
-bool Scene::reset = false;
-float Scene::radiusNeighbouring = 0.1f;
-float Scene::nbParticles = 1;
-float Scene::radiusParticle = 0.05f;
-float Scene::mu = 3.5f;
-float Scene::mass = 0.02f;
-float Scene::densityFluid = 998.29f;
-float Scene::radiusSphereStarter = 1.0f;
-float Scene::threshold = 7.065;
-float Scene::sigma = 0.0728;
-float Scene::x = 30.0f;
-float Scene::AverageNeighbors = 0;
-float Scene::sizeCube = 1.0f;
-float Scene::mergeCoef = 0.02f;
-float Scene::splitCoef = 0.25f;
-bool Scene::nextFrame = false;
-bool Scene::play = false;
-float Scene::nbPart = 0.0f;
-bool Scene::half = false;
-bool Scene::SPHGravity = true;
 
 Scene::Scene()
 {
