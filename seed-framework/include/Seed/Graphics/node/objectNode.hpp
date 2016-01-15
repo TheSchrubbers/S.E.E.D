@@ -32,7 +32,8 @@
 #ifndef OBJECTNODE_HPP
 #define OBJECTNODE_HPP
 
-#include <Seed/Graphics/node.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/node/node.hpp>
 
 class Scene;
 class Model;

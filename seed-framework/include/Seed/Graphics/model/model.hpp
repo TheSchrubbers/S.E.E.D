@@ -30,27 +30,23 @@
 * \license Zlib License.
 */
 
-
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
+//OTHER INCLUDES
 #include <iostream>
 #include <vector>
 #include <fstream>
-
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <assimp/ai_assert.h>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
-#include <Seed/Graphics/material.hpp>
-#include <Seed/Graphics/texture.hpp>
-#include <Seed/Graphics/Outils.hpp>
-#include <Seed/Graphics/shader.hpp>
-#include <Seed/Graphics/Constant.hpp>
-#include <Seed/Graphics/camera.hpp>
-#include <Seed/Graphics/model/geometry.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/tools.hpp>
+
+class Geometry;
 
 /*! \class Model
 * \brief Loads and generate an Model in GPU

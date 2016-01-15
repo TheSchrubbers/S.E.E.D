@@ -1,9 +1,11 @@
-#include <ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
-#include <Seed/Graphics/collector.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/materials/ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp>
+#include <Seed/Graphics/engine/collector.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/particles/particlesSystem.hpp>
 #include <Seed/Graphics/particles/particlesWaterSystem.hpp>
 #include <Seed/Graphics/model/instancedModel.hpp>
+#include <Seed/Graphics/engine/shader.hpp>
 
 ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(Scene *sce, const int &nb, const std::string n, unsigned int *flag) : Material(sce, n, flag, 0.0, 0.0, pathToParticlesWaterSystemMaterial + "Shaders")
 {

@@ -1,6 +1,9 @@
-#include <DefaultMaterial/DefaultMaterial.hpp>
-#include <Seed/Graphics/collector.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/materials/DefaultMaterial/DefaultMaterial.hpp>
+#include <Seed/Graphics/engine/collector.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/engine/shader.hpp>
+
 DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	this->init();

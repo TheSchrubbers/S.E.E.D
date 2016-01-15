@@ -33,8 +33,9 @@
 #ifndef QUADMATERIAL_HPP
 #define QUADMATERIAL_HPP
 
-#include <Seed/Graphics/material.hpp>
-
+//SEED INCLUDES
+#include <Seed/Graphics/engine/material.hpp>
+//DEFINES
 #define NBKERNEL 128
 
 class UBOBuffer;

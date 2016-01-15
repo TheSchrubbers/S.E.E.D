@@ -33,7 +33,8 @@
 #ifndef SPHMATERIAL_HPP
 #define SPHMATERIAL_HPP
 
-#include <Seed/Graphics/material.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/material.hpp>
 
 /*! \class SPHMaterial
 * \brief SPH Material

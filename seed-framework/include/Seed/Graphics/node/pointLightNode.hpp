@@ -32,10 +32,12 @@
 #ifndef POINTLIGHTNODE_HPP
 #define POINTLIGHTNODE_HPP
 
+//OTHER INCLUDES
 #include <vector>
 #include <iostream>
 #include <exception>
-#include <Seed/Graphics/node.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/node/node.hpp>
 
 
 class Scene;

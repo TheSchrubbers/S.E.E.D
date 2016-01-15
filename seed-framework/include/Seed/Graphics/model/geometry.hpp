@@ -34,10 +34,10 @@
 #ifndef GEOMETRY_HPP
 #define GEOMETRY_HPP
 
+//OTHER INCLUDES
 #include <iostream>
 #include <vector>
 #include <fstream>
-
 #include <assimp/scene.h>
 #include <GL/glew.h>
 #include <glm/glm.hpp>

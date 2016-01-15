@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file SSBOBuffer.hpp
-* \brief geometry of the mesh
+* \file UBOBuffer.hpp
+* \brief Uniform Buffer Object
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -34,12 +34,15 @@
 #ifndef UBOBUFFER_HPP
 #define UBOBUFFER_HPP
 
+//SEED INCLUDES
+#include <Seed/Graphics/engine/tools.hpp>
+
+//OTHER INCLUDES
 #include <iostream>
 #include <vector>
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <Seed/Graphics/Outils.hpp>
+
 
 /*! \class UBOBuffer
 * \brief Create, update, delete UBOBuffers

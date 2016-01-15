@@ -32,10 +32,13 @@
 #ifndef DIRECTIONNALLIGHTNODE_HPP
 #define DIRECTIONNALLIGHTNODE_HPP
 
+//OTHER INCLUDES
 #include <vector>
 #include <iostream>
 #include <exception>
-#include <Seed/Graphics/node.hpp>
+
+//SEED INCLUDES
+#include <Seed/Graphics/node/node.hpp>
 
 class DirectionnalLight;
 class Scene;

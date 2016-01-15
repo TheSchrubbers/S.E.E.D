@@ -33,7 +33,8 @@
 #ifndef IMPLICITMATERIAL_HPP
 #define IMPLICITMATERIAL_HPP
 
-#include <Seed/Graphics/material.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/material.hpp>
 #include <Seed/Graphics/marchingCubes/marchingCubes.hpp>
 
 /*! \class ImplicitMaterial

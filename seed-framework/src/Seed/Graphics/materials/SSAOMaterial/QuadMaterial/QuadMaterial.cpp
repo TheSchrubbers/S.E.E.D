@@ -1,7 +1,10 @@
-#include <SSAOMaterial/QuadMaterial/QuadMaterial.hpp>
-#include <Seed/Graphics/collector.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/materials/SSAOMaterial/QuadMaterial/QuadMaterial.hpp>
+#include <Seed/Graphics/engine/collector.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/buffers/FBOBuffer.hpp>
+#include <Seed/Graphics/engine/shader.hpp>
+//OTHER INCLUDES
 #include <glm/gtc/random.hpp>
 
 

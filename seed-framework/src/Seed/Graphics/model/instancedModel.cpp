@@ -1,4 +1,6 @@
+//SEED INCLUDES
 #include <Seed/Graphics/model/instancedModel.hpp>
+#include <Seed/Graphics/model/geometry.hpp>
 
 InstancedModel::~InstancedModel()
 {
@@ -19,8 +21,6 @@ InstancedModel::~InstancedModel()
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
-
-	delete this->geometry;
 }
 InstancedModel::InstancedModel(const aiMesh *mesh, std::string p) : Model(mesh, GL_STREAM_DRAW, p)
 {

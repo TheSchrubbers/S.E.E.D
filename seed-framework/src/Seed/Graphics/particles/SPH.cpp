@@ -1,12 +1,14 @@
+//SEED INCLUDES
 #include <Seed/Graphics/particles/SPH.hpp>
 #include <Seed/Graphics/particles/starter.hpp>
 #include <Seed/Graphics/buffers/SSBOBuffer.hpp>
-#include <Seed/Graphics/scene.hpp>
-#include <Seed/Graphics/camera.hpp>
+#include <Seed/Graphics/engine/scene.hpp>
+#include <Seed/Graphics/engine/camera.hpp>
+#include <Seed/Graphics/engine/tools.hpp>
+//OTHER iNCLUDES
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/random.hpp>
-#include <Seed/Graphics/Outils.hpp>
 #include <math.h>
 
 #define DELTA 0.3f

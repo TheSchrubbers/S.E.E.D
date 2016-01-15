@@ -32,10 +32,12 @@
 #ifndef SPOTLIGHTNODE_HPP
 #define SPOTLIGHTNODE_HPP
 
+//OTHER INCLUDES
 #include <vector>
 #include <iostream>
 #include <exception>
-#include <Seed/Graphics/node.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/node/node.hpp>
 
 class SpotLight;
 class Scene;

@@ -1,4 +1,6 @@
+//SEED INCLUDES
 #include <Seed/Graphics/model/model.hpp>
+#include <Seed/Graphics/model/geometry.hpp>
 
 Model::~Model()
 {

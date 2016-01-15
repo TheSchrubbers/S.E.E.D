@@ -1,7 +1,9 @@
+//SEED INCLUDES
 #include <Seed/Graphics/node/objectNode.hpp>
-#include <Seed/Graphics/material.hpp>
+#include <Seed/Graphics/engine/material.hpp>
 #include <Seed/Graphics/model/model.hpp>
-#include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/engine/scene.hpp>
+//OTHER INCLUDES
 #include <vector>
 #include <iostream>
 #include <exception>

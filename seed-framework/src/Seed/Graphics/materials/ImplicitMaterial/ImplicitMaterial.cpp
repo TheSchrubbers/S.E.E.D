@@ -1,7 +1,9 @@
-#include <ImplicitMaterial/ImplicitMaterial.hpp>
-#include <Seed/Graphics/collector.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.hpp>
+#include <Seed/Graphics/engine/collector.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/implicitSurface/iSphere.hpp>
+#include <Seed/Graphics/engine/shader.hpp>
 
 ImplicitMaterial::ImplicitMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToImplicitMaterial + "Shaders")
 {

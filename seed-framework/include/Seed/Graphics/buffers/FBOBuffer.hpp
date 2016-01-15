@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file SSBOBuffer.hpp
-* \brief geometry of the mesh
+* \file FBOBuffer.hpp
+* \brief Frame Buffer Object
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -34,12 +34,13 @@
 #ifndef FBOBUFFER_HPP
 #define FBOBUFFER_HPP
 
+//OTHER INCLUDES
 #include <iostream>
 #include <vector>
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include <Seed/Graphics/Outils.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/tools.hpp>
 
 /*! \class FBOBuffer
 * \brief Create, update, delete FBOBuffers

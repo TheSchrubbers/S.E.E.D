@@ -1,10 +1,13 @@
+//INCLUDES SEED
 #include <Seed/Graphics/particles/viscoelasticFluidSystem.hpp>
-#include <glm/gtc/random.hpp>
 #include <Seed/Graphics/buffers/SSBOBuffer.hpp>
-#include <Seed/Graphics/Constant.hpp>
-#include <Seed/Graphics/shader.hpp>
-#include <Seed/Graphics/scene.hpp>
+#include <Seed/Graphics/engine/Constant.hpp>
+#include <Seed/Graphics//engine/shader.hpp>
+#include <Seed/Graphics//engine/scene.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
+//INCLUDES OTHER
+#include <glm/gtc/random.hpp>
+
 
 ViscoElasticFluidSystem::ViscoElasticFluidSystem(Scene *sce, const int nb, const unsigned int sS, const glm::vec3 pS)
 {

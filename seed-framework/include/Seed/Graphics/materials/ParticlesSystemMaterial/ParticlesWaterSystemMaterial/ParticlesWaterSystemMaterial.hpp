@@ -33,7 +33,8 @@
 #ifndef PARTICLESWATERSYSTEMMATERIAL_HPP
 #define PARTICLESWATERSYSTEMMATERIAL_HPP
 
-#include <Seed/Graphics/material.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/material.hpp>
 
 /*! \class ParticlesWaterSystemMaterial
 * \brief Material

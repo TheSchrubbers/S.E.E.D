@@ -33,7 +33,8 @@
 #ifndef DEFAULTMATERIAL_HPP
 #define DEFAULTMATERIAL_HPP
 
-#include <Seed/Graphics/material.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/material.hpp>
 
 /*! \class DefaultMaterial
 * \brief Material

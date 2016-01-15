@@ -33,7 +33,8 @@
 #ifndef DEFERREDMATERIAL_HPP
 #define DEFERREDMATERIAL_HPP
 
-#include <Seed/Graphics/material.hpp>
+//SEED INCLUDES
+#include <Seed/Graphics/engine/material.hpp>
 
 /*! \class DeferredMaterial
 * \brief Material

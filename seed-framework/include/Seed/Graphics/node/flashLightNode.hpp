@@ -32,10 +32,13 @@
 #ifndef FLASHLIGHTNODE_HPP
 #define FLASHLIGHTNODE_HPP
 
+//SEED INCLUDES
+#include <Seed/Graphics/node/node.hpp>
+
+//OTHER INCLUDES
 #include <vector>
 #include <iostream>
 #include <exception>
-#include <Seed/Graphics/node.hpp>
 
 class FlashLight;
 class Scene;
