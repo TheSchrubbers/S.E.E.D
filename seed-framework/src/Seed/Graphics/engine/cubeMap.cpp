@@ -6,6 +6,7 @@
 #include <Seed/Graphics/loaders/parserImage.hpp>
 #include <Seed/Graphics/engine/scene.hpp>
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
+#include <Seed/Graphics/engine/camera.hpp>
 //OTHER INCLUDES
 #include <boost/filesystem.hpp>
 
@@ -227,7 +228,7 @@ void CubeMap::draw()
 		//load shaders in memory
 		this->shader->useProgram();
 		glDepthFunc(GL_LEQUAL);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamUBO()->getID());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 0);
 		glActiveTexture(GL_TEXTURE0);

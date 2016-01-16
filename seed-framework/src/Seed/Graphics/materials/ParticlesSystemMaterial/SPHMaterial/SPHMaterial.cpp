@@ -78,7 +78,7 @@ void SPHMaterial::render(Model *model)
 			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
 		}
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
 		//bind ssbo particles

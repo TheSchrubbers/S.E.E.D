@@ -31,9 +31,7 @@ Scene::Scene()
 	this->rootObjectNode = new ObjectNode(this, "RootObjectNode");
 	this->rootLightNode = new Node(this, "RootLightNode");
 	this->collector = new Collector();
-	//create a UBObuffer
-	this->camBuf = new UBOBuffer();
-	this->camBuf->createBuffer(sizeof(cameraStruct));
+	
 	this->cubemap = nullptr;
 
 	this->assimpLoader = new AssimpLoader();
@@ -54,113 +52,15 @@ ObjectNode* Scene::importModelFromFile(const std::string path, const std::string
 {
 	return this->assimpLoader->importModelFromFile(path, this, this->collector, name);
 }
-/*ObjectNode* Scene::importModelFromFile(const std::string path, const std::string name)
-{
-	Assimp::Importer importer;
-	bool exist = false;
-
-	//file exists?
-	std::ifstream fichier(path);
-	if (!fichier.fail())
-	{
-		exist = true;
-		fichier.close();
-	}
-	else
-	{
-		std::cout << "ERROR LOADING MODEL : Couldn't open file: " << path << std::endl;
-		return nullptr;
-	}
-
-	ObjectNode* node = nullptr;
-
-	//if file exists
-	if (exist)
-	{
-		//imports model in pScene, the model is triangulate, with tangents informations and merges same vertices
-		//A REDEFINIR!!
-		const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
-		//if pScene exists, the mesh is assigning with node
-		if (pScene)
-		{
-			if ((node = loadObjectInScene(pScene, path, name)) == NULL)
-			{
-				std::cout << "ERROR LOADING MODEL : error parsing " << path << std::endl << importer.GetErrorString() << std::endl;
-				return nullptr;
-			}
-		}
-		else
-		{
-			std::cout << "ERROR ASSIMP LOADING MODEL : Couln't import Mesh" << std::endl;
-			return nullptr;
-		}
-	}
-	return node;
-}
-
-ObjectNode* Scene::loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name)
-{
-	int i = 0;
-	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
-	//adding child's objectnode to the root objectnode
-	ObjectNode *objectNode = new ObjectNode(this, name);
-	//set the root node like father node
-	//node->setFather(this->rootNode);
-	//set this node like son's node to the root node
-	//this->rootNode->addChild(node);
-
-	//load Meshes
-	this->loadMeshes(pScene, path);
-
-	//load Materials
-	//this->loadMaterials(pScene, name);
-
-	//insert nodes
-	this->insertRecurNode(pScene, pScene->mRootNode, objectNode);
-	
-	return objectNode;
-}
-
-//build the child's tree of nodes of the scene 
-void Scene::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father)
-{
-	int i = 0;
-	//attribute address's meshe to the node if this is a leaf
-	if (nodeFather->mNumMeshes == 1)
-	{
-		father->setModel(this->collector->getModelIndexed(nodeFather->mMeshes[0]));
-	}
-	//recursive method for exploring children's nodes and do the same thing
-	for (int i = 0; i < nodeFather->mNumChildren; i++)
-	{
-		ObjectNode *n;
-		if (nodeFather->mChildren[i]->mName.C_Str() != "")
-		{
-			n = new ObjectNode(this, nodeFather->mChildren[i]->mName.C_Str());
-		}
-		else
-		{
-			n = new ObjectNode(this, father->getName() + "_" + std::to_string(i));
-		}
-		father->addChild(n);
-		n->setFather(father);
-		this->insertRecurNode(pScene, nodeFather->mChildren[i], n);
-	}
-}
-
-void Scene::loadMeshes(const aiScene *pScene, std::string path)
-{
-	//insert meshes
-	for (int i = 0; i < pScene->mNumMeshes; i++)
-	{
-		Model *m = new Model(pScene->mMeshes[i], GL_STATIC_DRAW, path);
-		this->collector->collectModels(m);
-	}
-}*/
 
 void Scene::setCamera(Camera *cam)
 {
 	this->camera = cam;
+}
+
+Camera* Scene::getCamera()
+{
+	return this->camera;
 }
 
 //getters
@@ -169,10 +69,7 @@ ObjectNode* Scene::getRootObjectNode()
 	return this->rootObjectNode;
 }
 
-Camera* Scene::getCamera()
-{
-	return this->camera;
-}
+
 
 ObjectNode* Scene::getObjectNode(const std::string name)
 {
@@ -198,11 +95,6 @@ ObjectNode* Scene::getObjectNode(const std::string name)
 		}
 	}
 	return NULL;
-}
-
-UBOBuffer* Scene::getCamUBO()
-{
-	return this->camBuf;
 }
 
 void Scene::afficher()
@@ -317,23 +209,9 @@ void Scene::lightsRender()
 	this->collector->pushSpotLights();
 }
 
-void Scene::cameraUpdate()
-{
-	//structure of camera
-	cameraStruct *cam = new cameraStruct;
-
-	//we set the camera in the structure
-	cam->V = this->camera->getViewMatrix();
-	cam->P = this->camera->getProjectionMatrix();
-	cam->V_inverse = glm::inverse(this->camera->getViewMatrix());
-
-	//send data of lights
-	camBuf->updateBuffer(cam, sizeof(cameraStruct));
-}
-
 void Scene::collectRenderedNodes()
 {
-	this->cameraUpdate();
+	this->camera->updateUBO();
 	this->collector->collectRenderedObjectNodes(this->rootObjectNode);
 	this->lightsRender();
 }
@@ -346,7 +224,7 @@ Collector* Scene::getCollector()
 void Scene::render()
 {
 	//update camera
-	cameraUpdate();
+	this->camera->updateUBO();
 	//we get all the rendered nodes(models, materials...)
 	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
 	this->lightsRender();
@@ -370,7 +248,7 @@ void Scene::render()
 void Scene::SSAOrender()
 {
 	//update camera
-	cameraUpdate();
+	this->camera->updateUBO();
 	//we get all the rendered nodes(models, materials...)
 	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
 	this->lightsRender();
@@ -409,41 +287,6 @@ void Scene::addNode(ObjectNode* node)
 	this->rootObjectNode->addChild(node);
 	node->setFather((Node*)this->rootObjectNode);
 }
-
-//void Scene::loadMaterials(const aiScene *pScene, const std::string name)
-//{
-	/*aiString pathTexture;
-	unsigned int flag;
-	//insert materials
-	for (int i = 0; i < pScene->mNumMaterials; i++)
-	{
-	//create a new material
-	Material *m = new Material(pScene->mMaterials[i], this->getCamera(), name);
-	aiString pathTexture;
-	//std::cout << "Texture : " << pScene->mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
-	if (pScene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &pathTexture) == AI_SUCCESS)
-	{
-	//std::cout << pathTexture.data << std::endl;
-	Texture *t = new Texture(pathTexture.data, TEXTURE_DIFFUSE, &flag);
-	if (flag == SEED_SUCCESS)
-	{
-	this->m_textures.push_back(t);
-	m->pushTexture(t);
-	}
-	}
-	if (pScene->mMaterials[i]->GetTexture(aiTextureType_SPECULAR, 0, &pathTexture) == AI_SUCCESS)
-	{
-	Texture *t = new Texture(pathTexture.data, TEXTURE_SPECULAR, &flag);
-	if (flag == SEED_SUCCESS)
-	{
-	this->m_textures.push_back(t);
-	m->pushTexture(t);
-	}
-	}
-
-	this->m_materials.push_back(m);
-	}*/
-//}
 
 bool Scene::setCubeMap(std::string pathDir)
 {

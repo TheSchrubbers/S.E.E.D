@@ -1,5 +1,6 @@
 //SEED INCLUDES
 #include <Seed/Graphics/engine/camera.hpp>
+#include <Seed/Graphics/buffers/UBOBuffer.hpp>
 
 Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float n, float f , float WA, float HA, float s, float ms)
 {
@@ -14,23 +15,27 @@ Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, flo
 	this->speed = s;
 	this->mouseSpeed = ms;
 	this->right = glm::normalize(glm::cross(this->up, this->direction));
-	viewMatrix = glm::lookAt(pos, look, upVector);
-	projectionMatrix = glm::perspective(
+	this->matrix.V = glm::lookAt(pos, look, upVector);
+	this->matrix.P = glm::perspective(
 		FOV,         //angle d'ouverture de la caméra
 		width/height, // ratio de la résolution de l'ecran
 		near,        // la ou commence le frustrum
 		far       // la ou finit le frustrum
 	);
+
+	//create a UBObuffer
+	this->camBuf = new UBOBuffer();
+	this->camBuf->create(sizeof(struct Matrix));
 }
 
 glm::mat4 Camera::getViewMatrix()
 {
-	return viewMatrix;
+	return this->matrix.V;
 }
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-	return projectionMatrix;
+	return this->matrix.P;
 }
 
 glm::vec3 Camera::getPosition()
@@ -104,7 +109,7 @@ void Camera::setProjectionMatrix(const float &F, const int width, const int heig
 	this->FoV = F;
 	this->near = n;
 	this->far = fa;
-	projectionMatrix = glm::perspective(F, (float)width / (float)height, n, fa);
+	this->matrix.P = glm::perspective(F, (float)width / (float)height, n, fa);
 }
 
 void Camera::setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &u)
@@ -112,7 +117,13 @@ void Camera::setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &u)
 	this->position = pos;
 	this->direction = dir;
 	this->up = u;
-	viewMatrix = glm::lookAt(pos, pos + dir, u);
+	this->matrix.V = glm::lookAt(pos, pos + dir, u);
+}
+
+void Camera::setViewMatrix(glm::vec3 &pos)
+{
+	this->position = pos;
+	this->matrix.V = glm::lookAt(pos, pos + this->direction, this->up);
 }
 
 void Camera::setMouseSpeed(const float speed)
@@ -130,8 +141,14 @@ void Camera::setRight(glm::vec3 &r)
 	this->right = r;
 }
 
-void Camera::setViewMatrix(glm::vec3 &pos)
+void Camera::updateUBO()
 {
-	this->position = pos;
-	viewMatrix = glm::lookAt(pos, pos + this->direction, this->up);
+	this->matrix.V_inverse = glm::inverse(this->matrix.V);
+	//send data
+	this->camBuf->update(&matrix, sizeof(struct Matrix));
+}
+
+GLuint Camera::getUBOId()
+{
+	return this->camBuf->getID();
 }

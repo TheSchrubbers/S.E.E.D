@@ -63,17 +63,17 @@ public:
 	* \param size: size of the buffer
 	* \return true if the creation is a success
 	*/
-	void createBuffer(int size);
+	void create(int size);
 	/*!
 	* \brief Update UBOBuffer
 	* \param data pointer to the datas
 	* \param size size of the datas
 	*/
-	void updateBuffer(void* data, int size);
+	void update(void* data, int size);
 	/*!
 	* \brief delete UBOBuffer
 	*/
-	void deleteBuffer();
+	void destroy();
 	/*!
 	* \brief get Id of the UBO buffer
 	* \return ID of the UBO buffer

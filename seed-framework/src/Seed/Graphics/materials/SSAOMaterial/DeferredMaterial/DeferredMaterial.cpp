@@ -68,7 +68,7 @@ void DeferredMaterial::render(Model *model)
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
 		
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
 		//RENDER

@@ -47,7 +47,7 @@ void ParticlesWaterSystemMaterial::render(Model *model)
 
 		//BUFFERS
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamUBO()->getID());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 0);
 

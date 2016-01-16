@@ -11,7 +11,7 @@ UBOBuffer::~UBOBuffer()
 	glDeleteBuffers(1, &(this->UBOID));
 }
 
-void UBOBuffer::createBuffer(int s)
+void UBOBuffer::create(int s)
 {
 	this->size = s;
 	glBindBuffer(GL_UNIFORM_BUFFER, this->UBOID);
@@ -19,7 +19,7 @@ void UBOBuffer::createBuffer(int s)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UBOBuffer::updateBuffer(void* data, int s)
+void UBOBuffer::update(void* data, int s)
 {
 	if (s <= this->size)
 	{
@@ -32,13 +32,13 @@ void UBOBuffer::updateBuffer(void* data, int s)
 	}
 	else
 	{
-		this->createBuffer(s);
-		this->updateBuffer(data, s);
+		this->create(s);
+		this->update(data, s);
 	}
 }
 
 
-void UBOBuffer::deleteBuffer()
+void UBOBuffer::destroy()
 {
 	glDeleteBuffers(1, &(this->UBOID));
 }

@@ -36,8 +36,8 @@ void QuadMaterial::init()
 	}
 
 	this->uboKernels = new UBOBuffer();
-	this->uboKernels->createBuffer(NBKERNEL * sizeof(struct Kernel));
-	this->uboKernels->updateBuffer((void*)&this->kernel[0], NBKERNEL * sizeof(struct Kernel));
+	this->uboKernels->create(NBKERNEL * sizeof(struct Kernel));
+	this->uboKernels->update((void*)&this->kernel[0], NBKERNEL * sizeof(struct Kernel));
 	/*this->uboNoise = new UBOBuffer();
 	this->uboNoise->createBuffer(16 * sizeof(struct Noise));
 	this->uboNoise->updateBuffer((void*)&this->noise[0], 16 * sizeof(struct Noise));*/
@@ -79,7 +79,7 @@ void QuadMaterial::render(Model *model)
 		}
 
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamUBO()->getID());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
 

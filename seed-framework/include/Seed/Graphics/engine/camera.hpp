@@ -40,6 +40,8 @@
 #include <glm/gtx/transform.hpp>
 #include <AntTweakBar.h>
 
+class UBOBuffer;
+
 /*! \class Camera
 * \brief Camera class with matrix transformation attributes
 */
@@ -165,6 +167,16 @@ public:
 	* \param far : reference to the max distance of field of view
 	*/
 	void setProjectionMatrix(const float &Fov, const int width, const int height, const float &near, const float &far);
+	/**
+	 * @brief      Update camera's Uniform Buffer Object
+	 */
+	void updateUBO();
+	/**
+	 * @brief      Get the UBO id of the camera
+	 *
+	 * @return     Id of the UBO camera
+	 */
+	unsigned int getUBOId();
 	/*!
 	* \brief set the mouse speed moving
 	* \param speed : speed of the mouse's move
@@ -181,14 +193,16 @@ public:
 	}
 
 private:
-	/*!
-	* \brief the view Matrix
-	*/
-	glm::mat4 viewMatrix;
-	/*!
-	* \brief the projection matrix
-	*/
-	glm::mat4 projectionMatrix;
+
+	//structure for UBO for camera
+	struct Matrix
+	{
+		glm::mat4 V;
+		glm::mat4 P;
+		glm::mat4 V_inverse;
+	};
+
+	struct Matrix matrix;
 
 	glm::vec3 position, direction, up, right;
 	//horizontal and vertical angle
@@ -196,14 +210,11 @@ private:
 	float mouseSpeed, speed;
 	//field of view
 	float initFoV = 45.0;
+
+	//UBO BUffer of the camera
+	UBOBuffer *camBuf;
 };
 
-//structure for UBO for camera
-struct cameraStruct
-{
-	glm::mat4 V;
-	glm::mat4 P;
-	glm::mat4 V_inverse;
-};
+
 
 #endif

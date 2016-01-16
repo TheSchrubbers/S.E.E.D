@@ -94,11 +94,6 @@ class Scene
 		*/
 		ObjectNode* getObjectNode(const std::string name);
 		/*!
-		* \brief Get the UBO camera
-		* \return UBO camera
-		*/
-		UBOBuffer* getCamUBO();
-		/*!
 		* \brief add node to the scene
 		* \param node: node or hierarchy of node
 		*/
@@ -149,10 +144,6 @@ class Scene
 		*/
 		void lightsRender();
 		/*!
-		* \brief Put the camera in the UBO BUffer
-		*/
-		void cameraUpdate();
-		/*!
 		* \brief collect all the rendered nodes
 		*/
 		void collectRenderedNodes();
@@ -189,7 +180,6 @@ class Scene
 		Node *rootLightNode;
 		Camera *camera;
 		Collector *collector;
-		UBOBuffer *camBuf;
 		CubeMap * cubemap;
 		Model *RenderingQuad;
 		QuadMaterial *RenderingQuadMaterial;

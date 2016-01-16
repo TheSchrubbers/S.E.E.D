@@ -19,10 +19,10 @@ Collector::Collector()
 	{
 		this->lightBuf[i] = new UBOBuffer();
 	}
-	this->lightBuf[0]->createBuffer(sizeof(pointLightStruct));
-	this->lightBuf[1]->createBuffer(sizeof(spotLightStruct));
-	this->lightBuf[2]->createBuffer(sizeof(directionnalLightStruct));
-	this->lightBuf[3]->createBuffer(sizeof(flashLightStruct));
+	this->lightBuf[0]->create(sizeof(pointLightStruct));
+	this->lightBuf[1]->create(sizeof(spotLightStruct));
+	this->lightBuf[2]->create(sizeof(directionnalLightStruct));
+	this->lightBuf[3]->create(sizeof(flashLightStruct));
 	pointLightStruct *p = new pointLightStruct;
 	spotLightStruct *s = new spotLightStruct;
 	directionnalLightStruct *d = new directionnalLightStruct;
@@ -44,10 +44,10 @@ Collector::Collector()
 	f->direction = glm::vec4(0.0);
 	f->position = glm::vec4(0.0);
 	f->size = glm::vec4(0.0);
-	this->lightBuf[0]->updateBuffer(p, sizeof(pointLightStruct));
-	this->lightBuf[1]->updateBuffer(s, sizeof(spotLightStruct));
-	this->lightBuf[2]->updateBuffer(d, sizeof(directionnalLightStruct));
-	this->lightBuf[3]->updateBuffer(f, sizeof(flashLightStruct));
+	this->lightBuf[0]->update(p, sizeof(pointLightStruct));
+	this->lightBuf[1]->update(s, sizeof(spotLightStruct));
+	this->lightBuf[2]->update(d, sizeof(directionnalLightStruct));
+	this->lightBuf[3]->update(f, sizeof(flashLightStruct));
 }
 
 Collector::~Collector()
@@ -235,9 +235,9 @@ void Collector::pushPointLights()
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
 		}
 
-		this->lightBuf[0]->createBuffer(j * sizeof(pointLightStruct));
+		this->lightBuf[0]->create(j * sizeof(pointLightStruct));
 		//send data of lights
-		this->lightBuf[0]->updateBuffer(lights, j * sizeof(pointLightStruct));
+		this->lightBuf[0]->update(lights, j * sizeof(pointLightStruct));
 	}
 }
 
@@ -274,9 +274,9 @@ void Collector::pushSpotLights()
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
 		}
 
-		this->lightBuf[1]->createBuffer(j * sizeof(spotLightStruct));
+		this->lightBuf[1]->create(j * sizeof(spotLightStruct));
 		//send data of lights
-		this->lightBuf[1]->updateBuffer(lights, j * sizeof(spotLightStruct));
+		this->lightBuf[1]->update(lights, j * sizeof(spotLightStruct));
 	}
 }
 
@@ -311,9 +311,9 @@ void Collector::pushDirectionnalLights()
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
 		}
 
-		this->lightBuf[2]->createBuffer(j * sizeof(directionnalLightStruct));
+		this->lightBuf[2]->create(j * sizeof(directionnalLightStruct));
 		//send data of lights
-		this->lightBuf[2]->updateBuffer(lights, j * sizeof(directionnalLightStruct));
+		this->lightBuf[2]->update(lights, j * sizeof(directionnalLightStruct));
 	}
 }
 
@@ -350,9 +350,9 @@ void Collector::pushFlashLights()
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
 		}
 
-		this->lightBuf[3]->createBuffer(j * sizeof(flashLightStruct));
+		this->lightBuf[3]->create(j * sizeof(flashLightStruct));
 		//send data of lights
-		this->lightBuf[3]->updateBuffer(lights, j * sizeof(flashLightStruct));
+		this->lightBuf[3]->update(lights, j * sizeof(flashLightStruct));
 	}
 }
 
