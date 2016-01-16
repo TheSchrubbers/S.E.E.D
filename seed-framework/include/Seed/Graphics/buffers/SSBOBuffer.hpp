@@ -34,11 +34,7 @@
 #ifndef SSBOBUFFER_HPP
 #define SSBOBUFFER_HPP
 
-#include <iostream>
-#include <vector>
-
 #include <GL/glew.h>
-#include <glm/glm.hpp>
 
 /*! \class SSBOBuffer
 * \brief Create, update, delete SSBOBuffers

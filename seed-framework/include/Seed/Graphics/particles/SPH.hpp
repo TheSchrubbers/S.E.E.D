@@ -83,7 +83,7 @@ struct ParticleSPHSSBO
 class SPH : public ParticlesSystem
 {
 	public:
-		SPH(int nb, float radius, float Raffect, Scene* const sce);
+		SPH(int nb, float radius, float Raffect, std::shared_ptr<Scene> sce);
 		~SPH();
 		void print();
 		//void render(Scene *scene);
@@ -117,7 +117,7 @@ class SPH : public ParticlesSystem
 		int type;
 		float deltaT;
 		float zonaradius;
-		Scene *scene;
+		std::shared_ptr<Scene> scene;
 		struct kdtree *kdtree;
 		ParticleSPH* ppp;
 		float rInit;

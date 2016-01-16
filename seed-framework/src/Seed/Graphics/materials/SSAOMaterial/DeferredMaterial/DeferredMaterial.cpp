@@ -4,11 +4,11 @@
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-DeferredMaterial::DeferredMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
+DeferredMaterial::DeferredMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	this->init();
 }
-DeferredMaterial::DeferredMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToMaterials + "DeferredMaterial/Shaders")
+DeferredMaterial::DeferredMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToMaterials + "DeferredMaterial/Shaders")
 {
 	this->init();
 }

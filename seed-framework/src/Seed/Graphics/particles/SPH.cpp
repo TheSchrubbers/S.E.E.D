@@ -41,7 +41,7 @@ bool SPH::half = false;
 bool SPH::SPHGravity = true;
 
 
-SPH::SPH(int nb, float radius, float Raffect, Scene* const sce)
+SPH::SPH(int nb, float radius, float Raffect, std::shared_ptr<Scene> sce)
 {
 	this->nbParticles = nb;
 	this->scene = sce;

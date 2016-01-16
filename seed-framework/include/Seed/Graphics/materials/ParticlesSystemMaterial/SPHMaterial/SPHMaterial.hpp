@@ -51,7 +51,7 @@ class SPHMaterial : public Material
 		* \param reflection: weight of the reflective coefficient
 		* \param refraction: weight of the refractive coefficient
 		*/
-		SPHMaterial(Scene *scene, const std::string name, unsigned int *flag, const float reflec = 0.0, const float refrac = 0.0);
+		SPHMaterial(std::shared_ptr<Scene> scene, const std::string name, unsigned int *flag, const float reflec = 0.0, const float refrac = 0.0);
 		~SPHMaterial();
 
 		void render(Model *model);

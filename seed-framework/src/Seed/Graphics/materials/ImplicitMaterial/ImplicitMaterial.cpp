@@ -5,7 +5,7 @@
 #include <Seed/Graphics/implicitSurface/iSphere.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-ImplicitMaterial::ImplicitMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToImplicitMaterial + "Shaders")
+ImplicitMaterial::ImplicitMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToImplicitMaterial + "Shaders")
 {
 	this->init();
 }

@@ -10,7 +10,7 @@
 #include <glm/gtc/random.hpp>
 
 
-ParticlesWaterSystem::ParticlesWaterSystem(Scene *sce, const int nb, const unsigned int sS, const glm::vec3 pS)
+ParticlesWaterSystem::ParticlesWaterSystem(std::shared_ptr<Scene> sce, const int nb, const unsigned int sS, const glm::vec3 pS)
 {
 	this->nbParticles = nb;
 	this->positionStarter = pS;

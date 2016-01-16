@@ -52,7 +52,7 @@ class DefaultMaterial : public Material
 		* \param refraction: weight of the refractive coefficient
 		* \param flag: pointer of an int to get any errors
 		*/
-		DefaultMaterial(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
+		DefaultMaterial(const aiMaterial *material, std::shared_ptr<Scene> scene, std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
 		/*!
 		* \brief Constructor of class DefaultMaterial
 		* \param scene: address of the scene
@@ -61,7 +61,7 @@ class DefaultMaterial : public Material
 		* \param refraction: weight of the refractive coefficient
 		* \param flag: pointer of an int to get any errors
 		*/
-		DefaultMaterial(Scene *scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
+		DefaultMaterial(std::shared_ptr<Scene> scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
 
 		~DefaultMaterial();
 

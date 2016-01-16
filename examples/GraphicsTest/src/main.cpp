@@ -1,7 +1,6 @@
 ﻿#include <Seed/Graphics/engine/engine.hpp>
 
-void addLara(Scene *scene);
-void addHouse(Scene *scene);
+void addLara(std::shared_ptr<Scene> scene);
 
 int main()
 {
@@ -40,7 +39,7 @@ int main()
 	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
 
-	addLara(&scene); 
+	addLara(std::shared_ptr<Scene>(&scene)); 
 	/*unsigned int error;
 	ObjectNode *cube = scene.importModelFromFile(pathToBasicModels + "Monkey.obj", "cube");
 	DefaultMaterial *material = new DefaultMaterial(&scene, "cube_material", &error);
@@ -91,7 +90,7 @@ int main()
 	return 0;
 }
 
-void addLara(Scene *scene)
+void addLara(std::shared_ptr<Scene> scene)
 {
 	unsigned int error;
 	//import model
@@ -219,33 +218,6 @@ void addLara(Scene *scene)
 
 }
 
-void addHouse(Scene *scene)
-{
-	unsigned int error;
-	//import model
-	ObjectNode *house = scene->importModelFromFile(pathToModels + "GostHouse.obj", "ghost_house");
-
-	ObjectNode *n = house->getNode("Gost_House");
-	if (n)
-	{
-		DefaultMaterial *material = new DefaultMaterial(scene, "GostHouse_material", &error, 0.0, 0.0);
-		scanSeedError(error);
-		material->scaleModel(glm::vec3(0.1f));
-		material->addTexture("House/House_Body.bmp", scene, SEED_TEXTURE_AMBIANT);
-		n->setMaterialRecur(material);
-	}
-	n = house->getNode("plants");
-	if (n)
-	{
-		DefaultMaterial *material = new DefaultMaterial(scene, "Plants_material", &error, 0.0, 0.0);
-		scanSeedError(error);
-		material->scaleModel(glm::vec3(0.1f));
-		material->addTexture("House/grass.bmp", scene, SEED_TEXTURE_AMBIANT);
-		n->setMaterialRecur(material);
-	}
-
-	scene->addNode(house);
-}
 
 //import model
 /*ObjectNode *cube1 = scene.importModelFromFile(pathToModels + "cube.obj", "cube1");

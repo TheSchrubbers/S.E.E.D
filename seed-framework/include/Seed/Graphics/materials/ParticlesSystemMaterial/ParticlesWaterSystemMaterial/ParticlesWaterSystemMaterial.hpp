@@ -49,7 +49,7 @@ class ParticlesWaterSystemMaterial : public Material
 		* \param name: name of the material
 		* \param flag: pointer of an int to get any errors
 		*/
-		ParticlesWaterSystemMaterial(Scene *scene, const int &nb, const std::string name, unsigned int *flag = nullptr);
+		ParticlesWaterSystemMaterial(std::shared_ptr<Scene> scene, const int &nb, const std::string name, unsigned int *flag = nullptr);
 
 		~ParticlesWaterSystemMaterial();
 

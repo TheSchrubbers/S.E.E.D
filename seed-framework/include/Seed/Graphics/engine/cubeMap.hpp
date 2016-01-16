@@ -36,6 +36,7 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <iostream>
+#include <memory>
 //SEED INCLUDES
 #include <Seed/Graphics/engine/Constant.hpp>
 
@@ -57,7 +58,7 @@ public:
 	 * \param scene : scene of the current context
 	 * \param flag: if the constructor is a success
 	 */
-	CubeMap(const std::string path, Scene* scene , unsigned int *flag);
+	CubeMap(const std::string path, std::shared_ptr<Scene> scene , unsigned int *flag);
 	/*!
 	* \brief Destructor of class Texture
 	*/
@@ -80,7 +81,7 @@ private:
 	Shader *shader;
 	GLuint VBOVertices;
 	GLuint VAO;
-	Scene *scene;
+	std::shared_ptr<Scene> scene;
 	unsigned int block_index_camera;
 	/*!
 	* \brief load all the textures face of the cubemap

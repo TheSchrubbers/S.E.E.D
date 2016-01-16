@@ -11,12 +11,12 @@
 #include <boost/filesystem.hpp>
 
 
-CubeMap::CubeMap(const std::string path, Scene* sce, unsigned int *flag)
+CubeMap::CubeMap(const std::string path, std::shared_ptr<Scene> sce, unsigned int *flag)
 {
 	//init variable
 	this->VAO = 0;
 	this->block_index_camera = 0;
-	this->shader = NULL;
+	this->shader = nullptr;
 	this->textureID = 0;
 	this->VBOVertices = 0;
 

@@ -4,11 +4,11 @@
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-DefaultMaterial::DefaultMaterial(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
+DefaultMaterial::DefaultMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	this->init();
 }
-DefaultMaterial::DefaultMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToDefaultMaterial + "Shaders")
+DefaultMaterial::DefaultMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToDefaultMaterial + "Shaders")
 {
 	this->init();
 }

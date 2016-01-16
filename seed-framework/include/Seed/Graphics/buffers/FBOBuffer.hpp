@@ -35,10 +35,7 @@
 #define FBOBUFFER_HPP
 
 //OTHER INCLUDES
-#include <iostream>
-#include <vector>
 #include <GL/glew.h>
-#include <glm/glm.hpp>
 //SEED INCLUDES
 #include <Seed/Graphics/engine/tools.hpp>
 

@@ -291,7 +291,7 @@ void Scene::addNode(ObjectNode* node)
 bool Scene::setCubeMap(std::string pathDir)
 {
 	unsigned int flag;
-	this->cubemap = new CubeMap(pathDir, this, &flag);
+	this->cubemap = new CubeMap(pathDir, std::shared_ptr<Scene>(this), &flag);
 	if (flag == SEED_SUCCESS)
 	{
 		return true;
@@ -309,7 +309,7 @@ void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int 
 	GLfloat square[12];
 	GLuint indices[6];
 	ObjectNode *n = new ObjectNode(this, name);
-	ParticlesWaterSystemMaterial *m = new ParticlesWaterSystemMaterial(this, nb, name + "_Material", flag);
+	ParticlesWaterSystemMaterial *m = new ParticlesWaterSystemMaterial(std::shared_ptr<Scene>(this), nb, name + "_Material", flag);
 	if (flag)
 	{
 		if (*flag == SEED_SUCCESS)

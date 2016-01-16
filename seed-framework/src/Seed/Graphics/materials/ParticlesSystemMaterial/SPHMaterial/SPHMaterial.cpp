@@ -7,7 +7,7 @@
 #include <Seed/Graphics/engine/shader.hpp>
 
 
-SPHMaterial::SPHMaterial(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToSPHMaterial + "Shaders")
+SPHMaterial::SPHMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToSPHMaterial + "Shaders")
 {
 	this->init();
 }

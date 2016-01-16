@@ -46,9 +46,13 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 		Controller::context %= 2;
 	}
 
+	//std::cout << Controller::context << std::endl;
+
 	double xpos, ypos;
 	//get mouse position on the screen
 	glfwGetCursorPos(window, &xpos, &ypos);
+
+	//std::cout << xpos << " " << ypos << std::endl;
 
 	if (Controller::context == 0)
 	{

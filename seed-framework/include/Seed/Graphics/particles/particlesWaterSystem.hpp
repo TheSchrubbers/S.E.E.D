@@ -36,6 +36,7 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <vector>
+#include <memory>
 
 class Scene;
 
@@ -50,7 +51,7 @@ public:
 	* \param number : The number of particles
 	* \param shapeStarter : The shape of the starter : SEED_SPHERE, SEED_POINT, SEED_CIRCLE, SEED_SQUARE
 	*/
-	ParticlesWaterSystem(Scene *scene, const int number, const unsigned int shapeStarter, const glm::vec3 positionStarter);
+	ParticlesWaterSystem(std::shared_ptr<Scene> scene, const int number, const unsigned int shapeStarter, const glm::vec3 positionStarter);
 	~ParticlesWaterSystem();
 	void print();
 private:
@@ -70,7 +71,7 @@ private:
 
 	std::vector<Particle> particles;
 	float h;
-	Scene *scene;
+	std::shared_ptr<Scene> scene;
 	glm::vec3 positionStarter;
 	unsigned int shapeStarter;
 };

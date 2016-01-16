@@ -64,7 +64,7 @@ class Material
 		* \param rafraction: weight of the refractive coefficient
 		* \param name: name of the material
 		*/
-		Material(const aiMaterial *material, Scene *scene, std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
+		Material(const aiMaterial *material, std::shared_ptr<Scene> scene, std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
 		/*!
 		* \brief Constructor of class Material
 		* \param scene: address of the scene
@@ -74,7 +74,7 @@ class Material
 		* \param rafraction: weight of the refractive coefficient
 		* \param pathShaders: path to the directory who contains shaders' files
 		*/
-		Material(Scene *scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0, const std::string pathShaders = "");
+		Material(std::shared_ptr<Scene> scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0, const std::string pathShaders = "");
 
 		~Material();
 
@@ -97,7 +97,7 @@ class Material
 		* \param scene: address of the current scene
 		* \return true if the texture is adding
 		*/
-		void addTexture(const std::string pathTexture, Scene *scene, unsigned int type, unsigned int *flag = NULL);
+		void addTexture(const std::string pathTexture, std::shared_ptr<Scene> scene, unsigned int type, unsigned int *flag = NULL);
 		/*!
 		* \brief setting composants of material
 		* \param a: ambiant composant
@@ -130,7 +130,7 @@ class Material
 		std::vector<Texture*> textures_diffuse;
 		std::vector<Texture*> textures_specular;
 		Texture* texture_normal;
-		Scene *scene;
+		std::shared_ptr<Scene> scene;
 		Camera *camera;
 		std::string name;
 

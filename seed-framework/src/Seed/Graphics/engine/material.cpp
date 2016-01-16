@@ -6,7 +6,7 @@
 #include <Seed/Graphics/engine/cubeMap.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-Material::Material(const aiMaterial *material, Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac)
+Material::Material(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac)
 {
 	this->scene = sce;
 	this->camera = sce->getCamera();
@@ -28,7 +28,7 @@ Material::Material(const aiMaterial *material, Scene *sce, const std::string n, 
 		*flag = SEED_SUCCESS;
 	}
 }
-Material::Material(Scene *sce, const std::string n, unsigned int *flag, const float reflec, const float refrac, const std::string pathShaders)
+Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac, const std::string pathShaders)
 {
 	this->scene = sce;
 	this->camera = sce->getCamera();
@@ -114,7 +114,7 @@ void Material::pushTexture(Texture *t)
 			this->texture_normal = t;
 	}
 }
-void Material::addTexture(const std::string path, Scene *scene, unsigned int type, unsigned int *flag)
+void Material::addTexture(const std::string path, std::shared_ptr<Scene> scene, unsigned int type, unsigned int *flag)
 {
 
 	if (flag == NULL)
@@ -123,7 +123,7 @@ void Material::addTexture(const std::string path, Scene *scene, unsigned int typ
 	}
 	std::string p = pathToTextures + path;
 	//we verify if the texture is already present
-	Texture *t = scene->getCollector()->getTexture(p);
+	Texture *t = this->scene->getCollector()->getTexture(p);
 
 	//if not true
 	if (t == NULL)
