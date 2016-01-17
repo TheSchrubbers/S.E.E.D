@@ -1,6 +1,6 @@
 #include <Seed/Graphics/node/spotLightNode.hpp>
 
-SpotLightNode::SpotLightNode(Scene* sce, const std::string n) : Node(sce, n)
+SpotLightNode::SpotLightNode(std::shared_ptr<Scene> sce, const std::string n) : Node(sce, n)
 {
 	this->spotLight = NULL;
 }

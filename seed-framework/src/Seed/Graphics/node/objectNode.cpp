@@ -8,10 +8,10 @@
 #include <iostream>
 #include <exception>
 
-ObjectNode::ObjectNode(Scene* sce, const std::string n) : Node(sce, n)
+ObjectNode::ObjectNode(std::shared_ptr<Scene> sce, const std::string n) : Node(sce, n)
 {
-	this->model = NULL;
-	this->material = NULL;
+	this->model = nullptr;
+	this->material = nullptr;
 }
 
 ObjectNode::~ObjectNode()

@@ -36,6 +36,7 @@
 #include <vector>
 #include <iostream>
 #include <exception>
+#include <memory>
 
 class Scene;
 class Model;
@@ -54,7 +55,7 @@ class Node
 		* \param scene: address of the scene
 		* \param name: name of the node
 		*/
-		Node(Scene *scene, const std::string name = "node");
+		Node(std::shared_ptr<Scene> scene, const std::string name = "node");
 		Node(){};
 		/*!
 		* \brief Destructor of class Node
@@ -105,7 +106,7 @@ class Node
 
 		std::string name;
 		Node* father;
-		Scene* scene;
+		std::shared_ptr<Scene> scene;
 		bool rendered;
 };
 

@@ -12,7 +12,7 @@ Engine::~Engine()
 	TwTerminate();
 }
 
-void Engine::mainRender(Scene *scene)
+void Engine::mainRender(std::shared_ptr<Scene> scene)
 {
 	double currentTime = 0, lastTime = 0;
 	float deltaTime = 0;

@@ -39,6 +39,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/ai_assert.h>
+#include <memory>
 
 class Collector;
 class ObjectNode;
@@ -63,7 +64,7 @@ class AssimpLoader
 		* \param path: path to the file imported
 		* \param name: name of the node
 		*/
-		ObjectNode* importModelFromFile(const std::string path, Scene *scene, Collector *collector, const std::string name);
+		ObjectNode* importModelFromFile(const std::string path, std::shared_ptr<Scene> scene, Collector *collector, const std::string name);
 	private:
 
 		/*!
@@ -71,13 +72,13 @@ class AssimpLoader
 		* \param pScene: The assimp scene object
 		* \param path : The path to the model file
 		*/
-		ObjectNode* loadObjectInScene(const aiScene *pScene, const std::string path, Scene *scene, Collector *collector, const std::string name);
+		ObjectNode* loadObjectInScene(const aiScene *pScene, const std::string path, std::shared_ptr<Scene> scene, Collector *collector, const std::string name);
 		/*!
 		* \brief Build tree of nodes of the model added
 		* \param nodeFather: an ainode object of the tree of nodes
 		* \param node: an objectNode object of the tree of objectnodes
 		*/
-		void insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father, Scene *scene, Collector *collector);
+		void insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father, std::shared_ptr<Scene> scene, Collector *collector);
 		/*! 
 		* \brief Load meshes in an array and push its in the GPU memory
 		* \param pScene: Address of scene of Assimp structure

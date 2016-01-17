@@ -33,31 +33,30 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 	//speed move direction (keyboard)
 	float speed = cam->getSpeed();
 	//speed view direction (mouse)
-	float mouseSpeed = cam->getMouseSpeed();
+	float mouseSpeed = cam->getMouseSpeed() * 1000.0;
 
 	float FoV = cam->getInitFoV();
 	glm::vec3 direction;
 	glm::vec3 up;
 
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		Controller::context += 1;
 		Controller::context %= 2;
-	}
-
-	//std::cout << Controller::context << std::endl;
+	}*/
 
 	double xpos, ypos;
 	//get mouse position on the screen
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-	//std::cout << xpos << " " << ypos << std::endl;
+	std::cout << xpos << " " << ypos << std::endl;
 
 	if (Controller::context == 0)
 	{
 		//reset position of mouse
 		glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
+
 		//compute angles
 		WAngle += mouseSpeed * float(WIDTH / 2 - xpos);
 		HAngle += mouseSpeed * float(HEIGHT / 2 - ypos);
@@ -164,14 +163,15 @@ void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mod
 		//we get the right and left button of the souris to send these to anttweakbar
 		switch (button)
 		{
-		case GLFW_MOUSE_BUTTON_LEFT:
-			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
-			break;
-		case GLFW_MOUSE_BUTTON_RIGHT:
-			Controller::context += 1;
-			Controller::context %= 2;
-			TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
-			break;
+			case GLFW_MOUSE_BUTTON_LEFT:
+				TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
+				break;
+			case GLFW_MOUSE_BUTTON_RIGHT:
+				/*Controller::context += 1;
+				Controller::context %= 2;*/
+				//Controller::context = 0;
+				TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
+				break;
 		}
 	}
 	//if user release button we do the same thing that above
@@ -179,12 +179,13 @@ void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mod
 	{
 		switch (button)
 		{
-		case GLFW_MOUSE_BUTTON_LEFT:
-			TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
-			break;
-		case GLFW_MOUSE_BUTTON_RIGHT:
-			TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_RIGHT);
-			break;
+			case GLFW_MOUSE_BUTTON_LEFT:
+				TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
+				break;
+			case GLFW_MOUSE_BUTTON_RIGHT:
+				//Controller::context = 1;
+				TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_RIGHT);
+				break;
 		}
 	}
 
@@ -205,67 +206,4 @@ void Controller::initAntWeakBar(std::string name)
 TwBar* Controller::getBar()
 {
 	return this->bar;
-}
-
-void Controller::updateControl(GLFWwindow* window, float &WAngle, float &HAngle, float &mouseSpeed, float &deltaTime, float &speed, glm::vec3 &position, glm::vec3 &direction, glm::vec3 &up, const float &InitFoV, float &FoV)
-{
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	{
-		Controller::context += 1;
-		Controller::context %= 2;
-	}
-
-	double xpos, ypos;
-	//get mouse position on the screen
-	glfwGetCursorPos(window, &xpos, &ypos);
-
-	if (Controller::context == 0)
-	{
-		//reset position of mouse
-		glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
-		//compute angles
-		WAngle += mouseSpeed * deltaTime * float(WIDTH / 2 - xpos);
-		HAngle += mouseSpeed * deltaTime * float(HEIGHT / 2 - ypos);
-
-		//get direction of the camera
-		direction = glm::vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
-		//get right direction of the camera
-		glm::vec3 right(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
-		//get the up direction of the camera
-		up = glm::cross(right, direction);
-
-		if (glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS)
-		{
-			position += direction * deltaTime * speed;
-		}
-		if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS)
-		{
-			position -= direction * deltaTime * speed;
-		}
-		if (glfwGetKey(window, GLFW_KEY_KP_6) == GLFW_PRESS)
-		{
-			position += right * deltaTime * speed;
-		}
-		if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
-		{
-			position -= right * deltaTime * speed;
-		}
-		if (glfwGetKey(window, GLFW_KEY_KP_8) == GLFW_PRESS)
-		{
-			position += up * deltaTime * speed;
-		}
-		if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS)
-		{
-			position -= up * deltaTime * speed;
-		}
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		{
-			Scene::wireframe = !Scene::wireframe;
-		}
-	}
-	else
-	{
-		//send position of the mouse to anttweakbar
-		TwMouseMotion(xpos, ypos);
-	}
 }

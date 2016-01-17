@@ -1,6 +1,6 @@
 #include <Seed/Graphics/node/flashLightNode.hpp>
 
-FlashLightNode::FlashLightNode(Scene* sce, const std::string n) : Node(sce, n)
+FlashLightNode::FlashLightNode(std::shared_ptr<Scene> sce, const std::string n) : Node(sce, n)
 {
 	this->flashLight = NULL;
 }

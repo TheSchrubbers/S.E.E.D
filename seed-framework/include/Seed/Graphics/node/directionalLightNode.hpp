@@ -55,7 +55,7 @@ public:
 	* \param scene: address of the scene
 	* \param name: name of the node
 	*/
-	DirectionnalLightNode(Scene *scene, const std::string name = "DirectionnalLightNode");
+	DirectionnalLightNode(std::shared_ptr<Scene> scene, const std::string name = "DirectionnalLightNode");
 	/*!
 	* \brief Destructor of class Node
 	*/

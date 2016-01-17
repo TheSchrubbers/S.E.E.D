@@ -1,6 +1,6 @@
 #include <Seed/Graphics/node/directionalLightNode.hpp>
 
-DirectionnalLightNode::DirectionnalLightNode(Scene* sce, const std::string n) : Node(sce, n)
+DirectionnalLightNode::DirectionnalLightNode(std::shared_ptr<Scene> sce, const std::string n) : Node(sce, n)
 {
 	this->directionnalLight = NULL;
 }

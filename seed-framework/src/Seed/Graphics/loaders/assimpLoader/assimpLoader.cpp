@@ -14,7 +14,7 @@ AssimpLoader::~AssimpLoader()
 
 }
 
-ObjectNode* AssimpLoader::importModelFromFile(const std::string path, Scene *scene, Collector *collector, const std::string name)
+ObjectNode* AssimpLoader::importModelFromFile(const std::string path, std::shared_ptr<Scene> scene, Collector *collector, const std::string name)
 {
 	Assimp::Importer importer;
 	bool exist = false;
@@ -58,7 +58,7 @@ ObjectNode* AssimpLoader::importModelFromFile(const std::string path, Scene *sce
 	return node;
 }
 
-ObjectNode* AssimpLoader::loadObjectInScene(const aiScene *pScene, const std::string path, Scene *scene, Collector *collector, const std::string name)
+ObjectNode* AssimpLoader::loadObjectInScene(const aiScene *pScene, const std::string path, std::shared_ptr<Scene> scene, Collector *collector, const std::string name)
 {
 	int i = 0;
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
@@ -81,7 +81,7 @@ ObjectNode* AssimpLoader::loadObjectInScene(const aiScene *pScene, const std::st
 	return objectNode;
 }
 
-void AssimpLoader::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father, Scene *scene, Collector *collector)
+void AssimpLoader::insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father, std::shared_ptr<Scene> scene, Collector *collector)
 {
 	int i = 0;
 	//attribute address's meshe to the node if this is a leaf

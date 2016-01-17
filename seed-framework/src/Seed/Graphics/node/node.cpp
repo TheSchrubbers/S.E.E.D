@@ -4,7 +4,7 @@
 //OTHER INCLUDES
 #include <queue>
 
-Node::Node(Scene* sce, const std::string n)
+Node::Node(std::shared_ptr<Scene> sce, const std::string n)
 {
 	this->father = NULL;
 	this->name = n;

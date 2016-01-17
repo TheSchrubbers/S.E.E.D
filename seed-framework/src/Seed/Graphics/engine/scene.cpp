@@ -28,8 +28,8 @@ bool Scene::specularMapView = false;
 
 Scene::Scene()
 {
-	this->rootObjectNode = new ObjectNode(this, "RootObjectNode");
-	this->rootLightNode = new Node(this, "RootLightNode");
+	this->rootObjectNode = new ObjectNode(std::shared_ptr<Scene>(this), "RootObjectNode");
+	this->rootLightNode = new Node(std::shared_ptr<Scene>(this), "RootLightNode");
 	this->collector = new Collector();
 	
 	this->cubemap = nullptr;
@@ -50,7 +50,7 @@ Scene::~Scene()
 
 ObjectNode* Scene::importModelFromFile(const std::string path, const std::string name)
 {
-	return this->assimpLoader->importModelFromFile(path, this, this->collector, name);
+	return this->assimpLoader->importModelFromFile(path, std::shared_ptr<Scene>(this), this->collector, name);
 }
 
 void Scene::setCamera(Camera *cam)
@@ -128,7 +128,7 @@ void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, const glm::v
 		}
 	}
 	//create a new node and push it like the children of node lights
-	PointLightNode *node = new PointLightNode(this, n);
+	PointLightNode *node = new PointLightNode(std::shared_ptr<Scene>(this), n);
 	this->collector->m_pointLightNodes.push_back(node);
 	node->setLight(new PointLight(n, pos, K2, c, dist));
 	this->rootLightNode->addChild((Node*)node);
@@ -150,7 +150,7 @@ void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::
 		}
 	}
 	//create a new node and push it like the children of node lights
-	SpotLightNode *node = new SpotLightNode(this, n);
+	SpotLightNode *node = new SpotLightNode(std::shared_ptr<Scene>(this), n);
 	this->collector->m_spotLightNodes.push_back(node);
 	node->setLight(new SpotLight(n, pos, dir, K2, c, a, dist));
 	this->rootLightNode->addChild((Node*)node);
@@ -172,7 +172,7 @@ void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, const
 		}
 	}
 	//create a new node and push it like the children of node lights
-	DirectionnalLightNode *node = new DirectionnalLightNode(this, n);
+	DirectionnalLightNode *node = new DirectionnalLightNode(std::shared_ptr<Scene>(this), n);
 	this->collector->m_directionnalLightNodes.push_back(node);
 	node->setLight(new DirectionnalLight(n, dir, K2, c));
 	this->rootLightNode->addChild((Node*)node);
@@ -194,7 +194,7 @@ void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 
 		}
 	}
 	//create a new node and push it like the children of node lights
-	FlashLightNode *node = new FlashLightNode(this, n);
+	FlashLightNode *node = new FlashLightNode(std::shared_ptr<Scene>(this), n);
 	this->collector->m_flashLightNodes.push_back(node);
 	node->setLight(new FlashLight(n, pos, dir, K2, c, dist));
 	this->rootLightNode->addChild((Node*)node);
@@ -308,7 +308,7 @@ void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int 
 {
 	GLfloat square[12];
 	GLuint indices[6];
-	ObjectNode *n = new ObjectNode(this, name);
+	ObjectNode *n = new ObjectNode(std::shared_ptr<Scene>(this), name);
 	ParticlesWaterSystemMaterial *m = new ParticlesWaterSystemMaterial(std::shared_ptr<Scene>(this), nb, name + "_Material", flag);
 	if (flag)
 	{

@@ -63,7 +63,7 @@ class Engine
 		*/
 		~Engine();
 
-		void mainRender(Scene *scene);
+		void mainRender(std::shared_ptr<Scene> scene);
 
 		bool initSystem();
 

@@ -54,7 +54,7 @@ public:
 	* \param scene: address of the scene
 	* \param name: name of the node
 	*/
-	SpotLightNode(Scene *scene, const std::string name = "spotLightNode");
+	SpotLightNode(std::shared_ptr<Scene> scene, const std::string name = "spotLightNode");
 	/*!
 	* \brief Destructor of class Node
 	*/

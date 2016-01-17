@@ -50,7 +50,7 @@ class ObjectNode : public Node
 		* \param scene: address of the scene
 		* \param name: name of the node
 		*/
-		ObjectNode(Scene *scene, const std::string name = "objectNode");
+		ObjectNode(std::shared_ptr<Scene> scene, const std::string name = "objectNode");
 		/*!
 		* \brief Destructor of class Node
 		*/

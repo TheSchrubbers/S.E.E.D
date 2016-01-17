@@ -55,7 +55,7 @@ class PointLightNode : public Node
 		* \param scene: address of the scene
 		* \param name: name of the node
 		*/
-		PointLightNode(Scene *scene, const std::string name = "pointLightNode");
+		PointLightNode(std::shared_ptr<Scene> scene, const std::string name = "pointLightNode");
 		/*!
 		* \brief Destructor of class Node
 		*/

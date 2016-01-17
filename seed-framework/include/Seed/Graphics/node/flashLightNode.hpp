@@ -55,7 +55,7 @@ public:
 	* \param scene: address of the scene
 	* \param name: name of the node
 	*/
-	FlashLightNode(Scene *scene, const std::string name = "FlashLightNode");
+	FlashLightNode(std::shared_ptr<Scene> scene, const std::string name = "FlashLightNode");
 	/*!
 	* \brief Destructor of class Node
 	*/

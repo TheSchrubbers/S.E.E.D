@@ -21,25 +21,25 @@ int main()
 	}
 
 	//create scene
-	Scene scene;
+	std::shared_ptr<Scene> scene = std::make_shared<Scene>();
 	//create camera
 	Camera camera(position, glm::vec3(0.0, 0.0, 0.0));
 
 	engine.initAntWeakBar("TOOLS", &camera);
 
 	//adding camera to the scene
-	scene.setCamera(&camera);
+	scene->setCamera(&camera);
 
 	//scene.setCubeMap(pathToTextures + "CubeMap/Skybox");
 
-	scene.addPointLight(glm::vec3(3.0,8.0,-5.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 50, "light_1");
-	scene.addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)), glm::vec3(0.1f, 0.8f, 0.8f));
+	scene->addPointLight(glm::vec3(3.0,8.0,-5.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 50, "light_1");
+	scene->addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 0.0, 5.0)), glm::vec3(0.1f, 0.8f, 0.8f));
 	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);
 	
 	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
 
-	addLara(std::shared_ptr<Scene>(&scene)); 
+	addLara(scene); 
 	/*unsigned int error;
 	ObjectNode *cube = scene.importModelFromFile(pathToBasicModels + "Monkey.obj", "cube");
 	DefaultMaterial *material = new DefaultMaterial(&scene, "cube_material", &error);
@@ -78,15 +78,12 @@ int main()
 	//n->setMaterial(mat);
 	//scene.addNode(n);
 
-	scene.afficher();
+	scene->afficher();
 
 	//collect all the rendered nodes
-	scene.collectRenderedNodes();
+	scene->collectRenderedNodes();
 	//active loop main render
-	engine.mainRender(&scene);
-
-	//delete cube;
-
+	engine.mainRender(scene);
 	return 0;
 }
 
@@ -217,32 +214,3 @@ void addLara(std::shared_ptr<Scene> scene)
 	scene->addNode(lara);
 
 }
-
-
-//import model
-/*ObjectNode *cube1 = scene.importModelFromFile(pathToModels + "cube.obj", "cube1");
-
-if (cube1)
-{
-DefaultMaterial *material = new DefaultMaterial(&scene, "cube1_material", 0.0, 0.0, &error);
-scanSeedError(error);
-material->addTexture("bois.png", &scene, TEXTURE_AMBIANT, &error);
-scanSeedError(error);
-cube1->setMaterialRecur(material);
-}
-
-scene.addNode(cube1);*/
-
-/*ObjectNode *cube2 = scene.importModelFromFile(pathToModels + "cube.obj", "cube2");
-
-if (cube2)
-{
-DefaultMaterial *material = new DefaultMaterial(&scene, "cube2_material", &error);
-scanSeedError(error);
-material->addTexture("texture1.png", &scene, TEXTURE_AMBIANT, &error);
-scanSeedError(error);
-cube2->setMaterialRecur(material);
-cube2->getMaterial()->translate(glm::vec3(0.0, 2.0, 0.0));
-}
-
-scene.addNode(cube2);*/
