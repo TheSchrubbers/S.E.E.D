@@ -91,6 +91,8 @@ class AssimpLoader
 		* \param name: name of the material
 		*/
 		//void loadMaterials(const aiScene *pScene, std::string name);
+
+		int offset;
 };
 
 #endif

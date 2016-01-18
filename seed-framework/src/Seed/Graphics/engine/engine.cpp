@@ -3,6 +3,7 @@
 
 Engine::Engine()
 {
+	initLog();
 }
 
 Engine::~Engine()

@@ -104,7 +104,7 @@ std::string Model::getPathName()
 
 void Model::afficher()
 {
-	//std::cout << "Model : \n nb de vertices : " << this << "\n nb de normales : " << this->m_normals.size() << "\n nb de tangents " << this->m_tangents.size() << "\n nb de text coord " << this->m_textCoords.size() << "\n nb faces " << this->m_faces.size() << std::endl;
+	std::cout << "Model : \n pathname : " << this->pathMesh << " \n nb de vertices : " << this->geometry->getNumVertices() << "\n nb faces " << this->geometry->getNumFaces() << std::endl;
 }
 
 void Model::loadInGPU(GLuint frequency)

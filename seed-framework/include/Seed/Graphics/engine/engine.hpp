@@ -44,8 +44,11 @@
 #include <Seed/Graphics/materials/SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp>
 #include <Seed/Graphics/node/objectNode.hpp>
 #include <Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.hpp>
+#include <Seed/Graphics/materials/ColorMaterial/ColorMaterial.hpp>
 #include <Seed/Graphics/particles/SPH.hpp>
 #include <Seed/Graphics/materials/ParticlesSystemMaterial/SPHMaterial/SPHMaterial.hpp>
+#include <Seed/Graphics/engine/tools.hpp>
+//DEFINES
 #define GLFW_INCLUDE_GLCOREARB
 
 /*! \class Engine

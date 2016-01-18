@@ -20,6 +20,7 @@
 #include <Seed/Graphics/model/geometry.hpp>
 #include <Seed/Graphics/loaders/assimpLoader/assimpLoader.hpp>
 
+
 //STATIC ATTRIBUTS
 bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
@@ -39,7 +40,7 @@ Scene::Scene()
 	//this->constructQuad();
 	//this->RenderingQuadMaterial = new QuadMaterial(this, "QuadMaterial");
 
-	//this->FBObuffer = new FBOBuffer();
+	this->FBObuffer = new FBOBuffer();
 }
 
 Scene::~Scene()
@@ -69,8 +70,6 @@ ObjectNode* Scene::getRootObjectNode()
 	return this->rootObjectNode;
 }
 
-
-
 ObjectNode* Scene::getObjectNode(const std::string name)
 {
 	//we use an queue to scan the tree of nodes
@@ -94,7 +93,7 @@ ObjectNode* Scene::getObjectNode(const std::string name)
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void Scene::afficher()
@@ -106,6 +105,8 @@ void Scene::afficher()
 		ObjectNode* n = nodes.top();
 		nodes.pop();
 		std::cout << n->getName() << " : Model : " << (n->getModel() ? 1 : 0) << ", Material : " << (n->getMaterial() ? 1 : 0) << std::endl;
+		if (n->getModel())
+			n->getModel()->afficher();
 		for (int i = 0; i < n->getChildren()->size(); i++)
 		{
 			nodes.push(n->getChildren()->at(i));
@@ -220,6 +221,21 @@ Collector* Scene::getCollector()
 {
 	return this->collector;
 }
+
+/*void Scene::ShadowMappingRender()
+{
+	//update camera
+	this->camera->updateUBO();
+	//we get all the rendered nodes(models, materials...)
+	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+	this->lightsRender();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//each node rendering
+	for (int i = 0; i < renderedNodes->size(); i++)
+	{
+		renderedNodes->at(i)->render();
+	}
+}*/
 
 void Scene::render()
 {
@@ -350,3 +366,8 @@ FBOBuffer* Scene::getFBOBuffer()
 {
 	return this->FBObuffer;
 }
+
+/*void Scene::constructShadowMap()
+{
+
+}*/

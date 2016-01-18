@@ -3,6 +3,7 @@
 //OTHER INCLUDES
 #include <glm/gtx/intersect.hpp>
 #include <glm/gtx/transform.hpp>
+#include <fstream>
 #include <iostream>
 
 void printMat4(glm::mat4 & mat)
@@ -160,6 +161,21 @@ float norm(const glm::vec3 &A)
 float norm(const glm::vec4 &A)
 {
 	return A.x * A.x + A.y * A.y + A.z * A.z;
+}
+
+void writeLog(std::string msg)
+{
+	std::ofstream log("log.txt", std::ios::app);
+	if (log.is_open())
+	{
+		log << msg << "\n";
+		log.close();	
+	}
+}
+
+void initLog()
+{
+	std::ofstream log("log.txt", std::ios::trunc);
 }
 
 

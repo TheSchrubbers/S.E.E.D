@@ -121,6 +121,11 @@ public:
 	*/
 	Model* getModelIndexed(int index);
 	/*!
+	* \brief number of models int the collector
+	* \return number of models
+	*/
+	int getNbModels();
+	/*!
 	* \brief return material assigned of the index
 	* \param index index of the material in the collected materials
 	* \return material assigned

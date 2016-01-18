@@ -168,7 +168,12 @@ class Scene
 		*\brief Render nodes who be must rendered
 		*/
 		void render();
+		/*!
+		* \brief Render SSAO
+		*/
 		void SSAOrender();
+		//void ShadowMappingRender()
+		//void constructShadowMap();
 		FBOBuffer* getFBOBuffer();
 		void afficher();
 

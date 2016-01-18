@@ -33,7 +33,7 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 	//speed move direction (keyboard)
 	float speed = cam->getSpeed();
 	//speed view direction (mouse)
-	float mouseSpeed = cam->getMouseSpeed() * 1000.0;
+	float mouseSpeed = cam->getMouseSpeed();
 
 	float FoV = cam->getInitFoV();
 	glm::vec3 direction;
@@ -49,8 +49,6 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 	double xpos, ypos;
 	//get mouse position on the screen
 	glfwGetCursorPos(window, &xpos, &ypos);
-
-	std::cout << xpos << " " << ypos << std::endl;
 
 	if (Controller::context == 0)
 	{
@@ -167,8 +165,8 @@ void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mod
 				TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
 				break;
 			case GLFW_MOUSE_BUTTON_RIGHT:
-				/*Controller::context += 1;
-				Controller::context %= 2;*/
+				Controller::context += 1;
+				Controller::context %= 2;
 				//Controller::context = 0;
 				TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
 				break;

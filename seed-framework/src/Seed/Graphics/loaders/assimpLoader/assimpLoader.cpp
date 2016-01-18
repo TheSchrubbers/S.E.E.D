@@ -1,7 +1,11 @@
+//SEED INCLUDES
 #include <Seed/Graphics/loaders/assimpLoader/assimpLoader.hpp>
 #include <Seed/Graphics/engine/collector.hpp>
 #include <Seed/Graphics/model/model.hpp>
 #include <Seed/Graphics/node/objectNode.hpp>
+#include <Seed/Graphics/engine/tools.hpp>
+
+//OTHER INCLUDES
 #include <GL/glew.h>
 
 AssimpLoader::AssimpLoader()
@@ -16,6 +20,7 @@ AssimpLoader::~AssimpLoader()
 
 ObjectNode* AssimpLoader::importModelFromFile(const std::string path, std::shared_ptr<Scene> scene, Collector *collector, const std::string name)
 {
+	this->offset = collector->getNbModels();
 	Assimp::Importer importer;
 	bool exist = false;
 
@@ -28,7 +33,7 @@ ObjectNode* AssimpLoader::importModelFromFile(const std::string path, std::share
 	}
 	else
 	{
-		std::cout << "ERROR LOADING MODEL : Couldn't open file: " << path << std::endl;
+		writeLog("ERROR LOADING MODEL : Couldn't open file: " + path);
 		return nullptr;
 	}
 
@@ -43,15 +48,19 @@ ObjectNode* AssimpLoader::importModelFromFile(const std::string path, std::share
 		//if pScene exists, the mesh is assigning with node
 		if (pScene)
 		{
-			if ((node = loadObjectInScene(pScene, path, scene, collector, name)) == NULL)
+			if ((node = loadObjectInScene(pScene, path, scene, collector, name)) == nullptr)
 			{
-				std::cout << "ERROR LOADING MODEL : error parsing " << path << std::endl << importer.GetErrorString() << std::endl;
+				writeLog("ERROR LOADING MODEL : error parsing " + path + "\n" + importer.GetErrorString());
 				return nullptr;
+			}
+			else
+			{
+				writeLog("LOADING MODEL SUCCESS : " + path);
 			}
 		}
 		else
 		{
-			std::cout << "ERROR ASSIMP LOADING MODEL : Couln't import Mesh" << std::endl;
+			writeLog("ERROR ASSIMP LOADING MODEL : Couln't import Mesh");
 			return nullptr;
 		}
 	}
@@ -87,12 +96,7 @@ void AssimpLoader::insertRecurNode(const aiScene *pScene, const aiNode *nodeFath
 	//attribute address's meshe to the node if this is a leaf
 	if (nodeFather->mNumMeshes == 1)
 	{
-		father->setModel(collector->getModelIndexed(nodeFather->mMeshes[0]));
-		/*unsigned int indexMaterial = pScene->mMeshes[nodeFather->mMeshes[0]]->mMaterialIndex;
-		if (indexMaterial >= 0)
-		{
-			father->setMaterial(this->m_materials[pScene->mMeshes[nodeFather->mMeshes[0]]->mMaterialIndex]);
-		}*/
+		father->setModel(collector->getModelIndexed(nodeFather->mMeshes[0] + this->offset));
 	}
 	//recursive method for exploring children's nodes and do the same thing
 	for (int i = 0; i < nodeFather->mNumChildren; i++)

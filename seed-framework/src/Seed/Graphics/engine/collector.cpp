@@ -68,12 +68,6 @@ void Collector::collectRenderedObjectNodes(ObjectNode* node)
 			{
 				this->collectRenderedObjectNodes(children->at(i));
 			}
-			//if the node has material and model
-			/*if (node->hasMaterial())
-			{
-				if (node->hasModel())
-				this->nodesObjectRenderer.push_back(node);
-			}*/
 			if (!node->hasChildren())
 			{
 				this->nodesObjectRenderer.push_back(node);
@@ -160,6 +154,10 @@ void Collector::collectLights(std::vector<Light*> lights)
 	}
 }
 */
+int Collector::getNbModels()
+{
+	return this->m_models.size();
+}
 Model* Collector::getModelIndexed(int index)
 {
 	return this->m_models[index];

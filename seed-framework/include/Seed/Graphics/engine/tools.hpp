@@ -177,5 +177,8 @@ float norm(const glm::vec3 &A);
  */
 float norm(const glm::vec4 &A);
 
+//FILE LOG
+void writeLog(std::string msg);
+void initLog();
 
 #endif

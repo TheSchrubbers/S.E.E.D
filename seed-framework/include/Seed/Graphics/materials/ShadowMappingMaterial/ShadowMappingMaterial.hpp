@@ -21,8 +21,8 @@
 */
 
 /*!
-* \file FBOBuffer.hpp
-* \brief Frame Buffer Object
+* \file ShadowMappingMaterial.hpp
+* \brief Material of a node
 * \author Jérémy RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
@@ -30,49 +30,42 @@
 * \license Zlib License.
 */
 
+#ifndef SHADOWMAPPINGMATERIAL_HPP
+#define SHADOWMAPPINGMATERIAL_HPP
 
-#ifndef FBOBUFFER_HPP
-#define FBOBUFFER_HPP
-
-//OTHER INCLUDES
-#include <GL/glew.h>
 //SEED INCLUDES
-#include <Seed/Graphics/engine/tools.hpp>
+#include <Seed/Graphics/engine/material.hpp>
 
-/*! \class FBOBuffer
-* \brief Create, update, delete FBOBuffers
+/*! \class ShadowMappingMaterial
+* \brief Material
 */
-class FBOBuffer
+class ShadowMappingMaterial : public Material
 {
-public:
-	/*!
-	* \brief Constructor of class FBOBuffer
-	*/
-	FBOBuffer();
-	/*!
-	* \brief Destructor of class FBOBuffer
-	*/
-	~FBOBuffer();
-	/*!
-	* \brief delete FBOBuffer
-	*/
-	void deleteBuffer();
-	/*!
-	* \brief get Id of the FBO buffer
-	* \return ID of the FBO buffer
-	*/
-	GLuint getID();
-	void createTexture(unsigned int format, unsigned int type, unsigned int attachment);
-	void bindWrite();
-	void bindRead(GLuint texID);
-	void release();
-	//void activeTextures(GLuint texID);
-	void releaseTextures();
-	void printTextures();
+	public:
 
-private:
-	GLuint FBOID;
-	std::vector<GLuint> GTextures;
+		/*!
+		* \brief Constructor of class ShadowMappingMaterial
+		* \param scene: address of the scene
+		* \param name name of the material
+		* \param color Color of the object
+		* \param reflection weight of the reflective coefficient
+		* \param refraction weight of the refractive coefficient
+		* \param flag pointer of an int to get any errors
+		*/
+		ShadowMappingMaterial(std::shared_ptr<Scene> scene, unsigned int *flag = nullptr);
+
+		~ShadowMappingMaterial();
+
+		void firstPass(Model *model);
+		void secondPass(Model *model);
+		void print(){};
+
+	private:
+
+		void init();
+		GLuint block_index_lights[4];
+		GLuint block_index_camera;
+		glm::mat4 M;
 };
 
 #endif
