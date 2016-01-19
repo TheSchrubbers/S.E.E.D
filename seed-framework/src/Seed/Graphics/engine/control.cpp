@@ -12,6 +12,7 @@ Controller::Controller(GLFWwindow *window)
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetMouseButtonCallback(window, mouse_buttonID_callback);
 	this->context = 0;
+	glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
 }
 
 Controller::~Controller()

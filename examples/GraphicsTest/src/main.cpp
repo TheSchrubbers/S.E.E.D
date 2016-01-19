@@ -99,12 +99,12 @@ int main()
 	cylinder3->setMaterialRecur(material8);
 	scene->addNode(cylinder3);
 
-	ObjectNode *plan = scene->importModelFromFile(pathToBasicModels + "plan.obj", "plan");
-	ColorMaterial *material4 = new ColorMaterial(scene, "sphere_material", glm::vec3(0.5, 0.5, 0.5), &error);
+	/*ObjectNode *plan = scene->importModelFromFile(pathToBasicModels + "plan.obj", "plan");
+	ColorMaterial *material4 = new ColorMaterial(scene, "plan_material", glm::vec3(0.5, 0.5, 0.5), &error);
 	material4->scaleModel(glm::vec3(10.0));
 	material4->translateModel(glm::vec3(0.0, -1.0, 0.0));
 	plan->setMaterialRecur(material4);
-	scene->addNode(plan);
+	scene->addNode(plan);*/
 
 	/*SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
 	ObjectNode *n = scene.importModelFromFile(pathToBasicModels + "UVsphereLow.obj", "UVSphere");
