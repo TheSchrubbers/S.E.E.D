@@ -133,8 +133,8 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		glGetShaderInfoLog(ShaderID, InfoLogLength, NULL, &SEM[0]);
 		if (&SEM[0])
 		{
-			std::cout << "Shader : " << s << std::endl;
-			fprintf(stdout, "%s\n", &SEM[0]);
+			writeLog("Shader : " + s);
+			writeLog(&SEM[0]);
 		}
 		ShaderErrorMessage = &SEM;
 		return ShaderID;

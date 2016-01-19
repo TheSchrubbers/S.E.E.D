@@ -112,7 +112,7 @@ bool CubeMap::loadTextures(const std::string pathDirectory)
 	}
 	else
 	{
-		std::cout << "File " << pathDirectory << " not found." << std::endl;
+		writeLog("ERROR -> CubeMap : File " + pathDirectory + " not found.");
 	}
 	return false;
 
@@ -123,7 +123,6 @@ bool CubeMap::loadFace(int type, const std::string *path, parserImage *img)
 	//load image
 	if (img->readImage(*path))
 	{
-		//std::cout << "Loading texture " << *path << std::endl;
 		switch (type)
 		{
 			case 0:
@@ -149,7 +148,7 @@ bool CubeMap::loadFace(int type, const std::string *path, parserImage *img)
 	}
 	else
 	{
-		std::cout << "Error opening file " << *path << std::endl;
+		writeLog("ERROR -> CubeMap: Error opening file " + *path);
 		return false;
 	}
 }

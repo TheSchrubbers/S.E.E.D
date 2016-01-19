@@ -38,6 +38,10 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 		}
 	}
 
+	//glfwWaitEvents();
+	//glfwSwapInterval(0.1);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 	//main loop to render
 	do
 	{
@@ -76,7 +80,7 @@ bool Engine::initSystem()
 	// Initialise GLFW
 	if (!glfwInit())
 	{
-		std::cout << "Failed to initialize GLFW" << std::endl;
+		writeLog("Failed to initialize GLFW");
 		return false;
 	}
 	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
@@ -88,7 +92,7 @@ bool Engine::initSystem()
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Moteur3d", NULL, NULL);
 
 	if (window == NULL){
-		std::cout << "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" << std::endl;
+		writeLog("Failed to open GLFW window. Not 4.3 compatible.");
 		glfwTerminate();
 		return false;
 	}
@@ -96,7 +100,7 @@ bool Engine::initSystem()
 	glewExperimental = GL_TRUE; // Needed in core profile 
 
 	if (glewInit() != GLEW_OK) {
-		std::cout << "Failed to initialize GLEW, version of opengl must be greater or equal than opengl 3.2\n" << std::endl;
+		writeLog("Failed to initialize GLEW, version of opengl must be greater or equal than opengl 4.3");
 		return false;
 	}
 	return true;
