@@ -14,21 +14,8 @@ Material::Material(const aiMaterial *material, std::shared_ptr<Scene> sce, const
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
 	this->texture_normal = nullptr;
-	this->shader = nullptr;
-	if (flag)
-	{
-		flag = new unsigned int;
-	}
-	if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
-	{
-		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
-	}
-	else
-	{
-		*flag = SEED_SUCCESS;
-	}
 }
-Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac, const std::string pathShaders)
+Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac)
 {
 	this->scene = sce;
 	this->camera = sce->getCamera();
@@ -36,34 +23,11 @@ Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
 	this->texture_normal = nullptr;
-	this->shader = nullptr;
-	//if user doesn't give path to the shaders, we take the default shaders
-	if (pathShaders == "")
-	{
-		if (flag)
-		{
-			flag = new unsigned int;
-		}
-		// if default shaders not found, error in the flag else success
-		if (!this->addShaders(pathToDefaultMaterial + "Shaders/"))
-		{
-			*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
-		}
-		else
-		{
-			*flag = SEED_SUCCESS;
-		}
-	}
-	else
-	{
-		this->addShaders(pathShaders);
-	}
 }
 
 Material::~Material()
 {
 	unsigned int i = 0;
-	delete this->shader;
 	delete this->camera;
 	for (i = 0; i < textures_ambiant.size(); i++)
 	{
@@ -77,24 +41,6 @@ Material::~Material()
 	{
 		delete textures_specular[i];
 	}
-}
-
-bool Material::addShaders(const std::string pathDir)
-{
-	unsigned int *flag = new unsigned int;
-	//load shaders
-	this->shader = new Shader(pathDir, flag);
-
-	//if shaders not loading we try with default shaders
-	if (*flag != SEED_SUCCESS)
-	{
-		delete shader;
-		shader = new Shader(pathToDefaultMaterial + "Shader", flag);
-		//if default shaders not found return false
-		if (*flag != SEED_SUCCESS)
-			return false;
-	}
-	return true;
 }
 
 void Material::pushTexture(Texture *t)
@@ -244,9 +190,4 @@ void Material::printTextures()
 		std::cout << textures_specular[i]->getTextureID() << ", ";
 	}
 	std::cout << std::endl;
-}
-
-bool Material::activateShader()
-{
-	return this->shader->useProgram();
 }

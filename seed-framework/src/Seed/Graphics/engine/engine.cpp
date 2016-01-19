@@ -20,6 +20,24 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 
 	glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
 
+	//get all the nodes with a model
+	std::stack<ObjectNode*> n;
+	std::vector<ObjectNode*> nodes;
+	n.push(scene->getRootObjectNode());
+	while (!n.empty())
+	{
+		ObjectNode *n2 = n.top();
+		n.pop();
+		for (int i = 0; i < n2->getChildren()->size(); i++)
+		{
+			n.push(n2->getChildren()->at(i));
+		}
+		if (n2->getModel())
+		{
+			nodes.push_back(n2);
+		}
+	}
+
 	//main loop to render
 	do
 	{
@@ -36,7 +54,8 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 		this->controller->updateControl(this->window, scene->getCamera(), deltaTime);
 
 		//node->getMaterial()->setLight(a, d, s);
-		scene->render();
+		scene->render(nodes);
+		//scene->ShadowMappingRender();
 		//scene->SSAOrender();
 
 		//Draw anttweakbar

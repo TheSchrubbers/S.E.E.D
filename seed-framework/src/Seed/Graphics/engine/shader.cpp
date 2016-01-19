@@ -99,7 +99,7 @@ GLuint Shader::loadShaders(const std::string directory_file_path)
 			return ProgramID;
 		}
 	}
-	std::cout << "Error, path of shaders' directory unfound, " << directory_file_path << std::endl;;
+	writeLog("Error -> Path of shaders : directory unfound, " + directory_file_path);
 	return 0;
 }
 
@@ -120,8 +120,6 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		}
 		ShaderStream.close();
 
-		std::cout << "Shader : " << s << std::endl;
-		
 		char const * SourcePointer = ShaderCode.c_str();
 
 		//compile shader
@@ -134,13 +132,16 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		std::vector<char> SEM(InfoLogLength);
 		glGetShaderInfoLog(ShaderID, InfoLogLength, NULL, &SEM[0]);
 		if (&SEM[0])
+		{
+			std::cout << "Shader : " << s << std::endl;
 			fprintf(stdout, "%s\n", &SEM[0]);
+		}
 		ShaderErrorMessage = &SEM;
 		return ShaderID;
 	}
 	else
 	{
-		std::cout << "ERROR: error the vertexshader file \"" << s << "\" is not found." << std::endl;
+		writeLog("ERROR: error the vertexshader file \"" + s + "\" is not found.");
 		return 0;
 	}
 }
@@ -184,7 +185,7 @@ bool Shader::loadVertexFragmentShaders(const std::string vertex_file_path, const
 	}
 	else
 	{
-		std::cout << "ERROR: error the vertexshader file \"" << vertex_file_path << "\" is not found." << std::endl;
+		writeLog("ERROR: error the vertexshader file \"" + vertex_file_path + "\" is not found.");
 		return 0;
 	}
 
@@ -200,7 +201,7 @@ bool Shader::loadVertexFragmentShaders(const std::string vertex_file_path, const
 	}
 	else
 	{
-		std::cout << "ERROR: error the fragment shader file \"" << fragment_file_path << "\" is not found." << std::endl;
+		writeLog("ERROR: error the fragment shader file \"" + fragment_file_path + "\" is not found.");
 		return 0;
 	}
 

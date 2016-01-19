@@ -52,6 +52,7 @@ class CubeMap;
 class QuadMaterial;
 class FBOBuffer;
 class AssimpLoader;
+class ShadowMappingMaterial;
 
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
@@ -167,12 +168,12 @@ class Scene
 		/*!
 		*\brief Render nodes who be must rendered
 		*/
-		void render();
+		void render(std::vector<ObjectNode*> nodes);
 		/*!
 		* \brief Render SSAO
 		*/
 		void SSAOrender();
-		//void ShadowMappingRender()
+		void ShadowMappingRender(std::vector<ObjectNode*> nodes);
 		//void constructShadowMap();
 		FBOBuffer* getFBOBuffer();
 		void afficher();
@@ -188,8 +189,12 @@ class Scene
 		CubeMap * cubemap;
 		Model *RenderingQuad;
 		QuadMaterial *RenderingQuadMaterial;
-		FBOBuffer* FBObuffer;
+		//FBOBuffer* FBObuffer;
 		AssimpLoader * assimpLoader;
+
+		//SHADOW MAPPING
+		ShadowMappingMaterial *shadowMappingMaterial;
+		FBOBuffer* FBObuffer;
 		
 		/*!
 		* \brief get the number of meshes and materials, build an tree of nodes

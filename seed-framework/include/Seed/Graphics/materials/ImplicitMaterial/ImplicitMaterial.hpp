@@ -83,6 +83,8 @@ class ImplicitMaterial : public Material
 		GLuint edgeTableTex, edgeTable, triTableTex, triTable, dataFieldTex;
 		float *dataField;
 		std::vector<std::shared_ptr<Point>> pts;
+
+		std::shared_ptr<Shader> shader;
 };
 
 #endif

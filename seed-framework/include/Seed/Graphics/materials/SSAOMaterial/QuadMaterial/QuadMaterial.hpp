@@ -88,6 +88,8 @@ class QuadMaterial : public Material
 		GLuint block_index_camera;
 		Noise noise[16];
 		Texture *t;
+
+		std::shared_ptr<Shader> shader;
 };
 
 #endif

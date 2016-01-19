@@ -4,10 +4,15 @@
 #include <Seed/Graphics/buffers/UBOBuffer.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-ColorMaterial::ColorMaterial(std::shared_ptr<Scene> sce, const std::string n, glm::vec3 col, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToMaterials + "ColorMaterial/Shaders")
+ColorMaterial::ColorMaterial(std::shared_ptr<Scene> sce, const std::string n, glm::vec3 col, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	this->color = col;
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToMaterials + "ColorMaterial/Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void ColorMaterial::init()
@@ -35,7 +40,7 @@ ColorMaterial::~ColorMaterial()
 
 void ColorMaterial::render(Model *model)
 {
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 		//UNIFORMS
 		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));

@@ -7,9 +7,14 @@
 #include <Seed/Graphics/engine/shader.hpp>
 
 
-SPHMaterial::SPHMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToSPHMaterial + "Shaders")
+SPHMaterial::SPHMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToSPHMaterial + "Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void SPHMaterial::init()
@@ -50,7 +55,7 @@ void SPHMaterial::render(Model *model)
 		SPH::reset = false;
 	}
 	this->sph->algorithm();
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 		//UNIFORMS
 		//set the uniform variable MVP

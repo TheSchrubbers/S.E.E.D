@@ -10,6 +10,7 @@ Node::Node(std::shared_ptr<Scene> sce, const std::string n)
 	this->name = n;
 	this->rendered = true;
 	this->scene = sce;
+	this->isShadowMapped = false;
 }
 
 Node::~Node()
@@ -72,4 +73,14 @@ bool Node::hasChildren()
 		return true;
 	}
 	return false;
+}
+
+void Node::setShadowMapped(bool b)
+{
+	this->isShadowMapped = b;
+}
+
+bool Node::getShadowMapped()
+{
+	return this->isShadowMapped;
 }

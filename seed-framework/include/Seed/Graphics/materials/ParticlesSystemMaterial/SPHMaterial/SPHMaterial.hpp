@@ -65,6 +65,8 @@ class SPHMaterial : public Material
 		void init();
 		uniform block_index_lights[4], block_index_camera, NMID, uniformSSBOID;
 		SPH *sph;
+
+		std::shared_ptr<Shader> shader;
 };
 
 #endif

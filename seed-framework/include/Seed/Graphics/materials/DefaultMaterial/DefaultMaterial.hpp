@@ -83,6 +83,8 @@ class DefaultMaterial : public Material
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
 		glm::mat4 M;
+
+		std::shared_ptr<Shader> shader;
 };
 
 #endif

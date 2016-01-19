@@ -19,6 +19,7 @@
 #include <Seed/Graphics/buffers/FBOBuffer.hpp>
 #include <Seed/Graphics/model/geometry.hpp>
 #include <Seed/Graphics/loaders/assimpLoader/assimpLoader.hpp>
+#include <Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.hpp>
 
 
 //STATIC ATTRIBUTS
@@ -37,10 +38,18 @@ Scene::Scene()
 
 	this->assimpLoader = new AssimpLoader();
 
-	//this->constructQuad();
+	unsigned int error;
+	this->shadowMappingMaterial = new ShadowMappingMaterial(std::shared_ptr<Scene>(this), &error);
+	if (error != SEED_SUCCESS)
+	{
+		delete shadowMappingMaterial;
+	}
+
+	this->constructQuad();
 	//this->RenderingQuadMaterial = new QuadMaterial(this, "QuadMaterial");
 
 	this->FBObuffer = new FBOBuffer();
+	this->FBObuffer->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 }
 
 Scene::~Scene()
@@ -222,32 +231,61 @@ Collector* Scene::getCollector()
 	return this->collector;
 }
 
-/*void Scene::ShadowMappingRender()
+void Scene::ShadowMappingRender(std::vector<ObjectNode*> nodes)
 {
-	//update camera
-	this->camera->updateUBO();
-	//we get all the rendered nodes(models, materials...)
-	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
-	this->lightsRender();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//FIRST PASS
+	this->FBObuffer->bindWrite();
+	glClear(GL_DEPTH_BUFFER_BIT);
 	//each node rendering
-	for (int i = 0; i < renderedNodes->size(); i++)
+	for (int i = 0; i < nodes.size(); i++)
 	{
-		renderedNodes->at(i)->render();
+		Model* m = nodes[i]->getModel();
+		//rendered each node which have model and check shadow mapping
+		if (m && nodes[i]->getShadowMapped())
+		{
+			this->shadowMappingMaterial->firstPass(m);
+		}
 	}
-}*/
+	this->FBObuffer->release();
 
-void Scene::render()
+	//SECOND PASS
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->FBObuffer->bindRead(GL_TEXTURE0);
+	//each node rendering
+	/*for (int i = 0; i < nodes.size(); i++)
+	{
+		Model* m = nodes[i]->getModel();
+		//rendered each node which have model and check shadow mapping
+		if (m && nodes[i]->getShadowMapped())
+		{
+			this->shadowMappingMaterial->secondPass(m);
+		}
+	}*/
+	this->shadowMappingMaterial->secondPass(this->RenderingQuad);
+	this->FBObuffer->releaseTextures();
+
+}
+
+void Scene::render(std::vector<ObjectNode*> nodes)
 {
 	//update camera
 	this->camera->updateUBO();
-	//we get all the rendered nodes(models, materials...)
-	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+
+	//update each light
 	this->lightsRender();
+
+	//Get all the rendered nodes(models, materials...)
+	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+
+	//Shadow mapping rendering
+	//this->ShadowMappingRender(nodes);
+
+	//Each node material rendering	
 	if (Scene::wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//each node rendering
 	for (int i = 0; i < renderedNodes->size(); i++)
@@ -370,4 +408,4 @@ FBOBuffer* Scene::getFBOBuffer()
 /*void Scene::constructShadowMap()
 {
 
-}*/
+}*/	

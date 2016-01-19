@@ -6,11 +6,21 @@
 
 DefaultMaterial::DefaultMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToDefaultMaterial + "Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
-DefaultMaterial::DefaultMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToDefaultMaterial + "Shaders")
+DefaultMaterial::DefaultMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToSPHMaterial + "Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void DefaultMaterial::init()
@@ -40,7 +50,7 @@ DefaultMaterial::~DefaultMaterial()
 
 void DefaultMaterial::render(Model *model)
 {
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 		//UNIFORMS
 		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));

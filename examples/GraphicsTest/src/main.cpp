@@ -38,11 +38,13 @@ int main()
 	
 	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
+	//Scene::fbo->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 
 	//addLara(scene); 
 	unsigned int error;
 	ObjectNode *monkey = scene->importModelFromFile(pathToBasicModels + "Monkey.obj", "monkey");
 	ColorMaterial *material = new ColorMaterial(scene, "monkey_material", glm::vec3(1.0,0.0,0.0), &error);
+	//ShadowMappingMaterial *material = new ShadowMappingMaterial(scene, &error);
 	scanSeedError(error);
 	material->translateModel(glm::vec3(3.0, 0.0, 2.0));
 	material->scaleModel(glm::vec3(0.7));

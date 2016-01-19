@@ -7,11 +7,18 @@
 #include <Seed/Graphics/model/instancedModel.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(std::shared_ptr<Scene> sce, const int &nb, const std::string n, unsigned int *flag) : Material(sce, n, flag, 0.0, 0.0, pathToParticlesWaterSystemMaterial + "Shaders")
+ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(std::shared_ptr<Scene> sce, const int &nb, const std::string n, unsigned int *flag) : Material(sce, n, flag, 0.0, 0.0)
 {
 	this->nbParticles = nb;
-	this->init();
-	ParticlesWaterSystem *system = new ParticlesWaterSystem(sce, this->nbParticles, SEED_POINT, glm::vec3(0.0));
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToParticlesWaterSystemMaterial + "Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+	{
+		this->init();
+		ParticlesWaterSystem *system = new ParticlesWaterSystem(sce, this->nbParticles, SEED_POINT, glm::vec3(0.0));
+	}
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void ParticlesWaterSystemMaterial::init()
@@ -30,7 +37,7 @@ ParticlesWaterSystemMaterial::~ParticlesWaterSystemMaterial()
 void ParticlesWaterSystemMaterial::render(Model *model)
 {
 	InstancedModel *m = dynamic_cast<InstancedModel*>(model);
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 		//UNIFORMS
 		//set the uniform variable MVP

@@ -5,9 +5,14 @@
 #include <Seed/Graphics/implicitSurface/iSphere.hpp>
 #include <Seed/Graphics/engine/shader.hpp>
 
-ImplicitMaterial::ImplicitMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToImplicitMaterial + "Shaders")
+ImplicitMaterial::ImplicitMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToImplicitMaterial + "Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void ImplicitMaterial::init()
@@ -73,7 +78,7 @@ ImplicitMaterial::~ImplicitMaterial(){}
 
 void ImplicitMaterial::render()
 {
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 		//UNIFORMS
 		//this->M *= glm::rotate(0.005f, glm::vec3(0, 1, 0));

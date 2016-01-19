@@ -73,6 +73,7 @@ ObjectNode* AssimpLoader::loadObjectInScene(const aiScene *pScene, const std::st
 	//A MODIFIER PARSER LE FICHIER POUR SAVOIR LE NOM SINON DONNER UN NOM GENERIQUE
 	//adding child's objectnode to the root objectnode
 	ObjectNode *objectNode = new ObjectNode(scene, name);
+	objectNode->setShadowMapped(true);
 	//set the root node like father node
 	//node->setFather(this->rootNode);
 	//set this node like son's node to the root node
@@ -112,6 +113,7 @@ void AssimpLoader::insertRecurNode(const aiScene *pScene, const aiNode *nodeFath
 		}
 		father->addChild(n);
 		n->setFather(father);
+		n->setShadowMapped(true);
 		this->insertRecurNode(pScene, nodeFather->mChildren[i], n, scene, collector);
 	}
 }

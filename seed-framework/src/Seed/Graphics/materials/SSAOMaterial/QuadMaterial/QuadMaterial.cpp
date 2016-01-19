@@ -10,11 +10,21 @@
 
 QuadMaterial::QuadMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToMaterials + "QuadMaterial/Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
-QuadMaterial::QuadMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToMaterials + "QuadMaterial/Shaders")
+QuadMaterial::QuadMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToMaterials + "QuadMaterial/Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void QuadMaterial::init()
@@ -61,7 +71,7 @@ QuadMaterial::~QuadMaterial()
 
 void QuadMaterial::render(Model *model)
 {
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);

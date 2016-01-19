@@ -3,6 +3,8 @@
 #include <Seed/Graphics/engine/material.hpp>
 #include <Seed/Graphics/model/model.hpp>
 #include <Seed/Graphics/engine/scene.hpp>
+#include <Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.hpp>
+#include <Seed/Graphics/buffers/FBOBuffer.hpp>
 //OTHER INCLUDES
 #include <vector>
 #include <iostream>

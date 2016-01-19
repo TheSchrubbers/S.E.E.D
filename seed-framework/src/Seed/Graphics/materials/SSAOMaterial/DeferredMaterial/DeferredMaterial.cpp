@@ -6,11 +6,21 @@
 
 DeferredMaterial::DeferredMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToMaterials + "DeferredMaterial/Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
-DeferredMaterial::DeferredMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac, pathToMaterials + "DeferredMaterial/Shaders")
+DeferredMaterial::DeferredMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
-	this->init();
+	//load shaders
+	this->shader = std::make_shared<Shader>(pathToMaterials + "DeferredMaterial/Shaders", flag);
+	if (*flag == SEED_SUCCESS)
+		this->init();
+	else
+		writeLog("Material : " + n + " loading fails");
 }
 
 void DeferredMaterial::init()
@@ -41,7 +51,7 @@ DeferredMaterial::~DeferredMaterial()
 void DeferredMaterial::render(Model *model)
 {
 	//TEXTURES
-	if (this->activateShader())
+	if (this->shader->useProgram())
 	{
 
 		//OPTIONS

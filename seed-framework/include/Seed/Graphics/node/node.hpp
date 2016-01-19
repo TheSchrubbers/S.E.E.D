@@ -98,6 +98,16 @@ class Node
 		* \return boolean if the node has children
 		*/
 		bool hasChildren();
+		/*!
+		* \brief Set node to be shadow mapped
+		* \param isShadowMapping True if node shadow mapped
+		*/
+		void setShadowMapped(bool isShadowMapped);
+		/*!
+		* \brief Get bool's node shadow mapping
+		* \return bool if the node was shadow mapped
+		*/
+		bool getShadowMapped();
 
 	private:
 		std::vector<Node*> m_children;
@@ -107,7 +117,7 @@ class Node
 		std::string name;
 		Node* father;
 		std::shared_ptr<Scene> scene;
-		bool rendered;
+		bool rendered, isShadowMapped;
 };
 
 #endif

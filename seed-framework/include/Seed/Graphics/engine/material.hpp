@@ -72,17 +72,10 @@ class Material
 		* \param flag: pointer of an int to get any errors
 		* \param reflection: weight of the reflective coefficient
 		* \param rafraction: weight of the refractive coefficient
-		* \param pathShaders: path to the directory who contains shaders' files
 		*/
-		Material(std::shared_ptr<Scene> scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0, const std::string pathShaders = "");
+		Material(std::shared_ptr<Scene> scene, const std::string name, unsigned int *flag = nullptr, const float reflec = 0.0, const float refrac = 0.0);
 
 		~Material();
-
-		/*!
-		* \brief Load shaders from the directory "Shaders" in directory of this material
-		* \param pathDir: path to the directory of the shaders
-		*/
-		bool addShaders(const std::string pathDir);
 
 		//virtual void render(Model *model) = 0;
 		//virtual void render();
@@ -125,7 +118,6 @@ class Material
 
 	protected:
 
-		Shader *shader;
 		std::vector<Texture*> textures_ambiant;
 		std::vector<Texture*> textures_diffuse;
 		std::vector<Texture*> textures_specular;
@@ -133,12 +125,6 @@ class Material
 		std::shared_ptr<Scene> scene;
 		Camera *camera;
 		std::string name;
-
-		/*!
-		* \brief activate shaders
-		* \return true if the shader is activated
-		*/
-		bool activateShader();
 
 		struct compLight
 		{

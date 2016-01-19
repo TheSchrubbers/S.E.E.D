@@ -42,12 +42,15 @@
 #include <Seed/Graphics/engine/scene.hpp>
 #include <Seed/Graphics/materials/DefaultMaterial/DefaultMaterial.hpp>
 #include <Seed/Graphics/materials/SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp>
+#include <Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.hpp>
 #include <Seed/Graphics/node/objectNode.hpp>
 #include <Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.hpp>
 #include <Seed/Graphics/materials/ColorMaterial/ColorMaterial.hpp>
 #include <Seed/Graphics/particles/SPH.hpp>
 #include <Seed/Graphics/materials/ParticlesSystemMaterial/SPHMaterial/SPHMaterial.hpp>
 #include <Seed/Graphics/engine/tools.hpp>
+#include <Seed/Graphics/buffers/FBOBuffer.hpp>
+#include <Seed/Graphics/engine/collector.hpp>
 //DEFINES
 #define GLFW_INCLUDE_GLCOREARB
 

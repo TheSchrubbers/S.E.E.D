@@ -59,20 +59,25 @@ void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned i
 	glGenTextures(1, &GTexture);
 	glBindTexture(GL_TEXTURE_2D, GTexture);
 	//create texture
-	glTexImage2D(GL_TEXTURE_2D, 0, format, WIDTH, HEIGHT, 0, format, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, WIDTH, HEIGHT, 0, format, type, nullptr);
 	//we want to get the nearest value which corresponds of th fragment value
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->FBOID);
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, this->FBOID, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, this->FBOID);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, GTexture, 0);
+
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 	
 	//Print errors!
 	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (error != GL_FRAMEBUFFER_COMPLETE)
 		writeLog("ERROR FBO failed : " + error);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	this->GTextures.push_back(GTexture);
 }

@@ -76,6 +76,8 @@ class ColorMaterial : public Material
 		GLuint colorID;
 		glm::mat4 M;
 		glm::vec3 color;
+
+		std::shared_ptr<Shader> shader;
 };
 
 #endif

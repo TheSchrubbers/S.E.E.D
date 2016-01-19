@@ -63,9 +63,20 @@ class ShadowMappingMaterial : public Material
 	private:
 
 		void init();
+
+		/*!
+		* \brief Load shaders from the directory "Shaders" in directory of this material
+		* \param pathDir: path to the directory of the shaders
+		*/
+		bool addShaders(const std::string pathDir);
+
+
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
+		std::shared_ptr<Shader> shader1, shader2;
 		glm::mat4 M;
+		glm::mat4 WVPlight;
+		GLuint WVPlightID;
 };
 
 #endif
