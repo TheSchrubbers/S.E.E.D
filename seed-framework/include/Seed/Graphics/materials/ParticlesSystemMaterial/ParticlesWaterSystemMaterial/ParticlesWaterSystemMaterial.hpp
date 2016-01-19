@@ -63,7 +63,6 @@ class ParticlesWaterSystemMaterial : public Material
 		//GLuint block_index_lights[4];
 		GLuint block_index_camera;
 		int nbParticles;
-		glm::mat4 M;
 
 		std::shared_ptr<Shader> shader;
 };

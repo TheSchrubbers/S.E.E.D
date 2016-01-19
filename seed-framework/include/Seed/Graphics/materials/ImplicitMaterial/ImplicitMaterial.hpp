@@ -79,7 +79,6 @@ class ImplicitMaterial : public Material
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
 		GLuint VBOVertices, VBONormals, VAO;
-		glm::mat4 M;
 		GLuint edgeTableTex, edgeTable, triTableTex, triTable, dataFieldTex;
 		float *dataField;
 		std::vector<std::shared_ptr<Point>> pts;

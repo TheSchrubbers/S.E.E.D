@@ -191,3 +191,8 @@ void Material::printTextures()
 	}
 	std::cout << std::endl;
 }
+
+glm::mat4 Material::getModelMatrix()
+{
+	return this->M;
+}

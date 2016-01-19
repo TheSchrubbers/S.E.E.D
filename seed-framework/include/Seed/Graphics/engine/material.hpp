@@ -106,6 +106,10 @@ class Material
 		* \brief Release textures
 		*/
 		void releaseTextures();
+		/**
+		 * \brief get Model matrix
+		 */
+		glm::mat4 getModelMatrix();
 
 		/*!
 		* \brief Print textures
@@ -139,6 +143,7 @@ class Material
 		};
 
 		glm::mat4 Normal_Matrix;
+		glm::mat4 M;
 		uniform MID, NMID, matID, NMACTIVEID,SMACTIVEID, SMVIEWID;
 		compLight complight;
 		Mat mat;

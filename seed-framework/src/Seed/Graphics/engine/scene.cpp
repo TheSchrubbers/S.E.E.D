@@ -243,7 +243,8 @@ void Scene::ShadowMappingRender(std::vector<ObjectNode*> nodes)
 		//rendered each node which have model and check shadow mapping
 		if (m && nodes[i]->getShadowMapped())
 		{
-			this->shadowMappingMaterial->firstPass(m);
+			glm::mat4 M = nodes[i]->getMaterial()->getModelMatrix();
+			this->shadowMappingMaterial->firstPass(m, M);
 		}
 	}
 	this->FBObuffer->release();
@@ -261,7 +262,8 @@ void Scene::ShadowMappingRender(std::vector<ObjectNode*> nodes)
 			this->shadowMappingMaterial->secondPass(m);
 		}
 	}*/
-	this->shadowMappingMaterial->secondPass(this->RenderingQuad);
+	glm::mat4 M = glm::mat4(1.0);
+	this->shadowMappingMaterial->secondPass(this->RenderingQuad, M);
 	this->FBObuffer->releaseTextures();
 
 }
@@ -278,10 +280,10 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
 
 	//Shadow mapping rendering
-	//this->ShadowMappingRender(nodes);
+	this->ShadowMappingRender(nodes);
 
 	//Each node material rendering	
-	if (Scene::wireframe)
+	/*if (Scene::wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
@@ -296,7 +298,7 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	if (this->cubemap)
 		this->cubemap->draw();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);*/
 }
 
 void Scene::SSAOrender()

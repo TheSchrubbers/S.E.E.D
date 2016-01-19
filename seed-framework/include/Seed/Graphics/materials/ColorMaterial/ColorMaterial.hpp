@@ -74,7 +74,6 @@ class ColorMaterial : public Material
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
 		GLuint colorID;
-		glm::mat4 M;
 		glm::vec3 color;
 
 		std::shared_ptr<Shader> shader;

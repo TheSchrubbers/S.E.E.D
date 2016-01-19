@@ -56,8 +56,8 @@ class ShadowMappingMaterial : public Material
 
 		~ShadowMappingMaterial();
 
-		void firstPass(Model *model);
-		void secondPass(Model *model);
+		void firstPass(Model *model, glm::mat4 &M);
+		void secondPass(Model *model, glm::mat4 &M);
 		void print(){};
 
 	private:
@@ -74,7 +74,6 @@ class ShadowMappingMaterial : public Material
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
 		std::shared_ptr<Shader> shader1, shader2;
-		glm::mat4 M;
 		glm::mat4 WVPlight;
 		GLuint WVPlightID;
 };

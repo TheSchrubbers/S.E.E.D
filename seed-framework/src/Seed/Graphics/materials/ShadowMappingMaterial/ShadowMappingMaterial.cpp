@@ -40,10 +40,9 @@ ShadowMappingMaterial::~ShadowMappingMaterial()
 {
 }
 
-void ShadowMappingMaterial::firstPass(Model *model)
+void ShadowMappingMaterial::firstPass(Model *model, glm::mat4 &ModelMatrix)
 {
 	GLuint programID = this->shader1->getID();
-	this->M = glm::mat4(1.0);
 	glm::mat4 V = glm::lookAt(glm::vec3(0.0,2.0,3.0), glm::vec3(0.0), glm::vec3(0.0,1.0,0.0));
 	glm::mat4 P = glm::perspective(
 		45.0f,         //angle d'ouverture de la caméra
@@ -52,17 +51,15 @@ void ShadowMappingMaterial::firstPass(Model *model)
 		7.5f// la ou finit le frustrum
 		);
 	//glm::mat4 P = glm::ortho(-10.0, 10.0, -10.0, 10.0, 1.0, 7.5);
-	this->WVPlight = P * V;
+	this->WVPlight = P * V * ModelMatrix;
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
-	this->MID = glGetUniformLocation(programID, "M");
 	this->WVPlightID = glGetUniformLocation(programID, "WVP");
 	if (this->shader1->useProgram())
 	{
 		//UNIFORMS
-		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
+		this->Normal_Matrix = glm::transpose(glm::inverse(ModelMatrix));
 		//set the uniform variable MVP
-		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(this->WVPlightID, 1, GL_FALSE, &(this->WVPlight[0][0]));
 
 		glEnable(GL_BLEND);
@@ -80,10 +77,9 @@ void ShadowMappingMaterial::firstPass(Model *model)
 	}
 }
 
-void ShadowMappingMaterial::secondPass(Model *model)
+void ShadowMappingMaterial::secondPass(Model *model, glm::mat4 &ModelMatrix)
 {
 	GLuint programID = this->shader2->getID();
-	this->M = glm::mat4(1.0);
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
 	this->MID = glGetUniformLocation(programID, "M");
@@ -98,9 +94,9 @@ void ShadowMappingMaterial::secondPass(Model *model)
 	if (this->shader2->useProgram())
 	{
 		//UNIFORMS
-		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
+		this->Normal_Matrix = glm::transpose(glm::inverse(ModelMatrix));
 		//set the uniform variable MVP
-		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
+		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &ModelMatrix[0][0]);
 		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
 		glUniform1i(glGetUniformLocation(programID, "gShadowMap"), 0);
