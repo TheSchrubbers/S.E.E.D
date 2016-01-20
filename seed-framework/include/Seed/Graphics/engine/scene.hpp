@@ -178,7 +178,8 @@ class Scene
 		FBOBuffer* getFBOBuffer();
 		void afficher();
 
-		static bool wireframe, specularMapActive, specularMapView, normalMappingActive;
+		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, shadowMapActive;
+		static float bias;
 		
 	private:
 

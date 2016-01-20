@@ -148,6 +148,10 @@ void Engine::initAntWeakBar(std::string name, const Camera* camera)
 	TwAddButton(this->controller->getBar(), "RESET", CallbackButtonNextFrame, NULL, " label='Next frame' group=control ");
 	TwAddVarRW(this->controller->getBar(), "HALF", TW_TYPE_BOOL8, &(SPH::half), " label='Half' help='Print half particles' group=control ");
 	TwAddVarRW(this->controller->getBar(), "GRAVITY", TW_TYPE_BOOL8, &(SPH::SPHGravity), " label='Gravity' help='EnabledGravity' group=control ");
+	//Shadow map
+	TwAddVarRW(this->controller->getBar(), "SHADOWMAP", TW_TYPE_BOOL8, &(Scene::shadowMapActive), " label='ShadowMap' help='Active/Desactive shadowmap' group=ShadowMap");
+	TwAddVarRW(this->controller->getBar(), "BIAS", TW_TYPE_FLOAT, &(Scene::bias), " label='Bias' help='Bias of shadowMap' min=0.0005 max=0.005 step=0.0001 group=ShadowMap ");
+
 	TwDefine(" TOOLS/parameters   group=SPH");
 	TwDefine(" TOOLS/Split-Merge   group=SPH");
 	TwDefine(" TOOLS/read   group=SPH");

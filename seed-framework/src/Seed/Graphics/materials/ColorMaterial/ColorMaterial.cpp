@@ -32,6 +32,9 @@ void ColorMaterial::init()
 	this->block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
 	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
 	this->colorID = glGetUniformLocation(programID, "color");
+	this->VLightID = glGetUniformLocation(programID, "VPLight");
+	this->biasID = glGetUniformLocation(programID, "bias");
+	this->shadowsActiveID = glGetUniformLocation(programID, "shadowsActive");
 }
 
 ColorMaterial::~ColorMaterial()
@@ -50,8 +53,21 @@ void ColorMaterial::render(Model *model)
 		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);
+		glUniform1i(this->SMVIEWID, Scene::specularMapView);
+		glUniform1i(this->shadowsActiveID, Scene::shadowMapActive);
+		glUniform1f(this->biasID, Scene::bias);
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
 		glUniform3f(this->colorID, this->color.x, this->color.y, this->color.z);
+		glm::mat4 VLight = glm::lookAt(glm::vec3(0.0,3.0,8.0), glm::vec3(0.0), glm::vec3(0.0,1.0,0.0));
+		/*glm::mat4 PLight = glm::perspective(
+		45.0f,         //angle d'ouverture de la caméra
+		(float)WIDTH/(float)HEIGHT, // ratio de la résolution de l'ecran
+		1.0f,        // la ou commence le frustrum
+		100.0f// la ou finit le frustrum
+		);*/
+		glm::mat4 PLight = glm::ortho(-10.0, 10.0, -10.0, 10.0, 1.0, 20.0);
+		glm::mat4 VPLight = PLight * VLight;
+		glUniformMatrix4fv(this->VLightID, 1, GL_FALSE, &(VPLight[0][0]));
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera
 		glEnable(GL_CULL_FACE);
@@ -69,10 +85,15 @@ void ColorMaterial::render(Model *model)
 			//bind UBO lighting with program shader
 			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
 		}
+
 		//bind UBO buffer camera
 		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
 		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
+
+		//TEXTURES
+		glUniform1i(glGetUniformLocation(this->shader->getID(), "gShadowMap"), 0);
+		
 		//RENDER
 		//render model
 		model->render();

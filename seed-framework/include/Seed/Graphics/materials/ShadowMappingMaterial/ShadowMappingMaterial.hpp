@@ -74,8 +74,8 @@ class ShadowMappingMaterial : public Material
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
 		std::shared_ptr<Shader> shader1, shader2;
-		glm::mat4 WVPlight;
-		GLuint WVPlightID;
+		glm::mat4 PLight, VLight, VPLight, WVPLight;
+		GLuint WVPlightID, VlightID;
 };
 
 #endif

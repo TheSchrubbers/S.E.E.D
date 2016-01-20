@@ -73,7 +73,7 @@ class ColorMaterial : public Material
 		void init();
 		GLuint block_index_lights[4];
 		GLuint block_index_camera;
-		GLuint colorID;
+		GLuint colorID, VLightID, biasID, shadowsActiveID;
 		glm::vec3 color;
 
 		std::shared_ptr<Shader> shader;

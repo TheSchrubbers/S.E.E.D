@@ -27,6 +27,8 @@ bool Scene::wireframe = false;
 bool Scene::normalMappingActive = true;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
+bool Scene::shadowMapActive = true;
+float Scene::bias = 0.0005;
 
 Scene::Scene()
 {
@@ -250,21 +252,22 @@ void Scene::ShadowMappingRender(std::vector<ObjectNode*> nodes)
 	this->FBObuffer->release();
 
 	//SECOND PASS
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	this->FBObuffer->bindRead(GL_TEXTURE0);
 	//each node rendering
-	/*for (int i = 0; i < nodes.size(); i++)
+	for (int i = 0; i < nodes.size(); i++)
 	{
 		Model* m = nodes[i]->getModel();
 		//rendered each node which have model and check shadow mapping
 		if (m && nodes[i]->getShadowMapped())
 		{
-			this->shadowMappingMaterial->secondPass(m);
+			glm::mat4 M = nodes[i]->getMaterial()->getModelMatrix();
+			this->shadowMappingMaterial->secondPass(m, M);
 		}
 	}*/
-	glm::mat4 M = glm::mat4(1.0);
+	/*glm::mat4 M = glm::mat4(1.0);
 	this->shadowMappingMaterial->secondPass(this->RenderingQuad, M);
-	this->FBObuffer->releaseTextures();
+	this->FBObuffer->releaseTextures();*/
 
 }
 
@@ -283,22 +286,29 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	this->ShadowMappingRender(nodes);
 
 	//Each node material rendering	
-	/*if (Scene::wireframe)
+	if (Scene::wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->FBObuffer->bindRead(GL_TEXTURE0);
 	//each node rendering
-	for (int i = 0; i < renderedNodes->size(); i++)
+	/*for (int i = 0; i < renderedNodes->size(); i++)
 	{
 		renderedNodes->at(i)->render();
+	}*/
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		nodes[i]->render();
 	}
+
+	this->FBObuffer->releaseTextures();
 
 	if (this->cubemap)
 		this->cubemap->draw();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);*/
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Scene::SSAOrender()

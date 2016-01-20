@@ -53,6 +53,7 @@ int main()
 	scanSeedError(error);
 	material2->rotateModel(glm::vec3(0.0, 0.2, 0.0));
 	material2->scaleModel(glm::vec3(0.7));
+	material2->translateModel(glm::vec3(0.0,-0.3,0.0));
 	cube->setMaterialRecur(material2);
 	scene->addNode(cube);
 
