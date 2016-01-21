@@ -49,8 +49,9 @@ public:
 	* \brief Constructor of class Light
 	* \param name name of the light
 	* \param color color of the light
+	* \param isSendingShadow bbol if the light is sending shadows
 	*/
-	Light(const std::string &name, const glm::vec3 &color);
+	Light(const std::string &name, const glm::vec3 &color, const bool isSendingShadow = true);
 	/*!
 	* \brief Destructor of class Light
 	*/
@@ -61,15 +62,38 @@ public:
 	*/
 	glm::vec3 getColor();
 	/*!
+	* \brief Get the bool if the light sent shadows
+	* \return bool if the light sent shadows
+	*/
+	bool isSendShadow();
+	/*!
+	* \brief Set light if it's sending shadow
+	* \param sendShadow bool
+	*/
+	void setShadow(bool isSendingShadow);
+	/*!
 	* \brief get the name of the light
 	* \return the name of hte light
 	*/
 	std::string getName();
+	/*!
+	* \brief get viewMatrix of the light
+	* \return viewMatrix of the light
+	*/
+	glm::mat4 getV();
+	/*!
+	* \brief get projectionMatrix of the light
+	* \return projectionMatrix of the light
+	*/
+	glm::mat4 getP();
+
 	virtual void afficher() = 0;
 
-private:
+protected:
 	std::string name;
 	glm::vec3 color;
+	bool shadow;
+	glm::mat4 V, P;
 	
 };
 

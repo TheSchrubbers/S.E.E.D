@@ -147,6 +147,26 @@ public:
 	* \return the lighting rendered collected nodes
 	*/
 	std::vector<Node*> * getLightingRenderedCollectedNodes();
+	/*! 
+	* \brief get pointlight nodes
+	* \return point light nodes
+	*/
+	std::vector<PointLightNode*> * getPointLightNodes();
+	/*!
+	* \brief get directionnallight nodes
+	* \return directionnal light nodes
+	*/
+	std::vector<DirectionnalLightNode*> * getDirectionnalLightNodes();
+	/*!
+	* \brief get flashlight nodes
+	* \return flash light nodes
+	*/
+	std::vector<FlashLightNode*> * getFlashLightNodes();
+	/*!
+	* \brief get spotlight nodes
+	* \return spot light nodes
+	*/
+	std::vector<SpotLightNode*> * getSpotLightNodes();
 	/*!
 	* \brief verify if the path corresponds with one mesh
 	* \param path: the path to the mesh
@@ -175,6 +195,7 @@ public:
 	*/
 	UBOBuffer* getLightUBO(int i);;
 
+	private:
 
 	std::vector<ObjectNode*> nodesObjectRenderer;
 	std::vector<Node*> nodesLightRenderer;

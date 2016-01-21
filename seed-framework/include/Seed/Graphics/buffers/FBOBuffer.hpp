@@ -62,17 +62,41 @@ public:
 	* \return ID of the FBO buffer
 	*/
 	GLuint getID();
+	/*!
+	* \brief Switch depth texture
+	* \param i texture i
+	*/
+	void switchDepthTexture(int i);
+	/*!
+	* \brief Create an texture
+	* \param format Format of the texture (GL_DEPTH_COMPONENT, GL_COLOR_COMPONENT...)
+	* \param type Type of the texture (GL_RGBA, RGB, ...)
+	* \param attachment Location which the texture is attached in FBO (GL_DEPTH_ATTACHMENT, GL_COLOR_ATTACHMENT0,...)
+	*/
 	void createTexture(unsigned int format, unsigned int type, unsigned int attachment);
+	/*!
+	* \brief Bind FBO to write in the textures attaching
+	*/
 	void bindWrite();
+	/*!
+	* \brief Bind FBO for read attaching textures
+	* \param texID Id of the attaching texture
+	*/
 	void bindRead(GLuint texID);
+	/*!
+	* \brief Release the FBO
+	*/
 	void release();
 	//void activeTextures(GLuint texID);
+	/*!
+	* \brief Release all the attaching textures
+	*/
 	void releaseTextures();
 	void printTextures();
 
 private:
-	GLuint FBOID;
-	std::vector<GLuint> GTextures;
+	GLuint ID;
+	std::vector<GLuint> GDepthTextures;
 };
 
 #endif

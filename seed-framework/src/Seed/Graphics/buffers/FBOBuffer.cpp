@@ -2,7 +2,7 @@
 
 FBOBuffer::FBOBuffer()
 {
-	glGenFramebuffers(1, &(this->FBOID));
+	glGenFramebuffers(1, &(this->ID));
 	/*glGenFramebuffers(1, &(this->FBOID));
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->FBOID);
 	//Gposition buffer
@@ -50,7 +50,7 @@ FBOBuffer::FBOBuffer()
 
 FBOBuffer::~FBOBuffer()
 {
-	glDeleteFramebuffers(1, &(this->FBOID));
+	glDeleteFramebuffers(1, &(this->ID));
 }
 
 void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned int attachment)
@@ -63,10 +63,12 @@ void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned i
 	//we want to get the nearest value which corresponds of th fragment value
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, this->FBOID);
+	glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, GTexture, 0);
 
 	glDrawBuffer(GL_NONE);
@@ -79,37 +81,55 @@ void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned i
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	this->GTextures.push_back(GTexture);
+	if (attachment == GL_DEPTH_ATTACHMENT)
+		this->GDepthTextures.push_back(GTexture);
 }
 
 
 void FBOBuffer::deleteBuffer()
 {
-	glDeleteFramebuffers(1, &(this->FBOID));
+	glDeleteFramebuffers(1, &(this->ID));
 }
 
 GLuint FBOBuffer::getID()
 {
-	return this->FBOID;
+	return this->ID;
 }
 
 void FBOBuffer::bindWrite()
 {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->FBOID);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->ID);
 }
 
 void FBOBuffer::bindRead(GLuint GtexID)
 {
-	for (int i = 0; i < this->GTextures.size(); i++)
+	for (int i = 0; i < this->GDepthTextures.size(); i++)
 	{
 		glActiveTexture(GtexID + i);
-		glBindTexture(GL_TEXTURE_2D, GTextures[i]);
+		glBindTexture(GL_TEXTURE_2D, GDepthTextures[i]);
 	}
 }
 
 void FBOBuffer::release()
 {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+void FBOBuffer::switchDepthTexture(int i)
+{
+	//bind FBO buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+	//switching texture
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, GDepthTextures[i], 0);
+	//tell to opengl, there is no color texture to render
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	//check errors
+	GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (error != GL_FRAMEBUFFER_COMPLETE)
+		writeLog("ERROR FBO failed : " + error);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 /*void FBOBuffer::activeTextures(GLuint programID)

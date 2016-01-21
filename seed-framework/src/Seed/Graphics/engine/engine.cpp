@@ -17,16 +17,21 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 {
 	double currentTime = 0, lastTime = 0;
 	float deltaTime = 0;
+	std::vector<PointLightNode*> * pointLightNodes;
+	std::vector<FlashLightNode*> * flashLightNodes;
+	std::vector<DirectionnalLightNode*> *  directionnalLightNodes;
+	std::vector<SpotLightNode*> * spotLightNodes;
+	std::stack<ObjectNode*> n;
+	std::vector<ObjectNode*> nodes;
+	ObjectNode *n2 = nullptr;
 
 	glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
 
 	//get all the nodes with a model
-	std::stack<ObjectNode*> n;
-	std::vector<ObjectNode*> nodes;
 	n.push(scene->getRootObjectNode());
 	while (!n.empty())
 	{
-		ObjectNode *n2 = n.top();
+		n2 = n.top();
 		n.pop();
 		for (int i = 0; i < n2->getChildren()->size(); i++)
 		{
@@ -42,7 +47,40 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 	//glfwSwapInterval(0.1);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-	//main loop to render
+	//set FBO buffer textures for shadow mapping
+	pointLightNodes = scene->getCollector()->getPointLightNodes();
+	for (int i = 0; i < pointLightNodes->size(); i++)
+	{
+		if (pointLightNodes->at(i)->getLight()->isSendShadow())
+		{
+			scene->getFBOBuffer()->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+		}
+	}
+	directionnalLightNodes = scene->getCollector()->getDirectionnalLightNodes();
+	for (int i = 0; i < directionnalLightNodes->size(); i++)
+	{
+		if (directionnalLightNodes->at(i)->getLight()->isSendShadow())
+		{
+			scene->getFBOBuffer()->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+		}
+	}
+	spotLightNodes = scene->getCollector()->getSpotLightNodes();
+	for (int i = 0; i < spotLightNodes->size(); i++)
+	{
+		if (spotLightNodes->at(i)->getLight()->isSendShadow())
+		{
+			scene->getFBOBuffer()->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+		}
+	}
+	flashLightNodes = scene->getCollector()->getFlashLightNodes();
+	for (int i = 0; i < flashLightNodes->size(); i++)
+	{
+		if (flashLightNodes->at(i)->getLight()->isSendShadow())
+		{
+			scene->getFBOBuffer()->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+		}
+	} 
+	// main loop to render
 	do
 	{
 		// Clear the depthbuffer and the colourbuffer
@@ -57,10 +95,7 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 		//update mouse control and keyboard control
 		this->controller->updateControl(this->window, scene->getCamera(), deltaTime);
 
-		//node->getMaterial()->setLight(a, d, s);
 		scene->render(nodes);
-		//scene->ShadowMappingRender();
-		//scene->SSAOrender();
 
 		//Draw anttweakbar
 		TwDraw();
@@ -74,6 +109,12 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 		glfwSwapBuffers(this->window);
 
 	} while (glfwGetKey(this->window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(this->window) == 0);
+
+	pointLightNodes = nullptr;
+	spotLightNodes = nullptr;
+	directionnalLightNodes = nullptr;
+	flashLightNodes = nullptr;
+	n2 = nullptr;
 }
 bool Engine::initSystem()
 {

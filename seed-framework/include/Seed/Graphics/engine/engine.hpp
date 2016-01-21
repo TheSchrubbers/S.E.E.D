@@ -51,6 +51,14 @@
 #include <Seed/Graphics/engine/tools.hpp>
 #include <Seed/Graphics/buffers/FBOBuffer.hpp>
 #include <Seed/Graphics/engine/collector.hpp>
+#include <Seed/Graphics/node/pointLightNode.hpp>
+#include <Seed/Graphics/node/directionalLightNode.hpp>
+#include <Seed/Graphics/node/spotLightNode.hpp>
+#include <Seed/Graphics/node/flashLightNode.hpp>
+#include <Seed/Graphics/lights/directionnalLight.hpp>
+#include <Seed/Graphics/lights/flashLight.hpp>
+#include <Seed/Graphics/lights/pointLight.hpp>
+#include <Seed/Graphics/lights/spotLight.hpp>
 //DEFINES
 #define GLFW_INCLUDE_GLCOREARB
 

@@ -359,3 +359,20 @@ UBOBuffer* Collector::getLightUBO(int i)
 	if (i < 4)
 		return this->lightBuf[i];
 }
+
+std::vector<PointLightNode*> * Collector::getPointLightNodes()
+{
+	return &(this->m_pointLightNodes);
+}
+std::vector<DirectionnalLightNode*> * Collector::getDirectionnalLightNodes()
+{
+	return &(this->m_directionnalLightNodes);
+}
+std::vector<FlashLightNode*> * Collector::getFlashLightNodes()
+{
+	return &(this->m_flashLightNodes);
+}
+std::vector<SpotLightNode*> * Collector::getSpotLightNodes()
+{
+	return &(this->m_spotLightNodes);
+}

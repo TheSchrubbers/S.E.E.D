@@ -51,7 +51,7 @@ Scene::Scene()
 	//this->RenderingQuadMaterial = new QuadMaterial(this, "QuadMaterial");
 
 	this->FBObuffer = new FBOBuffer();
-	this->FBObuffer->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+	//this->FBObuffer->createTexture(GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 }
 
 Scene::~Scene()
@@ -83,6 +83,7 @@ ObjectNode* Scene::getRootObjectNode()
 
 ObjectNode* Scene::getObjectNode(const std::string name)
 {
+	ObjectNode *n = nullptr;
 	//we use an queue to scan the tree of nodes
 	std::queue<ObjectNode*> nodes;
 	//push the root node
@@ -90,7 +91,7 @@ ObjectNode* Scene::getObjectNode(const std::string name)
 	//we scan all the nodes
 	while (!nodes.empty())
 	{
-		ObjectNode *n = nodes.front();
+		n = nodes.front();
 		nodes.pop();
 		if (n->getName() == name)
 		{
@@ -104,6 +105,7 @@ ObjectNode* Scene::getObjectNode(const std::string name)
 			}
 		}
 	}
+	n = nullptr;
 	return nullptr;
 }
 
@@ -111,9 +113,10 @@ void Scene::afficher()
 {
 	std::stack<ObjectNode*> nodes;
 	nodes.push(this->rootObjectNode);
+	ObjectNode* n = nullptr;
 	while (!nodes.empty())
 	{
-		ObjectNode* n = nodes.top();
+		n = nodes.top();
 		nodes.pop();
 		std::cout << n->getName() << " : Model : " << (n->getModel() ? 1 : 0) << ", Material : " << (n->getMaterial() ? 1 : 0) << std::endl;
 		if (n->getModel())
@@ -123,94 +126,111 @@ void Scene::afficher()
 			nodes.push(n->getChildren()->at(i));
 		}
 	}
+	n = nullptr;
 }
 
 void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, const glm::vec3 &K2, int dist, std::string n)
 {
 	int j = 0;
+	std::vector<PointLightNode*> *pointLightNodes = this->collector->getPointLightNodes();
+	PointLightNode *node = nullptr;
 	//search if the given name is the same of a light in the list of lights
-	for (int i = 0; i < this->collector->m_pointLightNodes.size(); i++)
+	for (int i = 0; i < pointLightNodes->size(); i++)
 	{
 		j++;
 		//if it's true we modify the given name
-		if (n == this->collector->m_pointLightNodes[i]->getName())
+		if (n == pointLightNodes->at(i)->getName())
 		{
 			n += ("_" + std::to_string(j));
 			i = 0;
 		}
 	}
 	//create a new node and push it like the children of node lights
-	PointLightNode *node = new PointLightNode(std::shared_ptr<Scene>(this), n);
-	this->collector->m_pointLightNodes.push_back(node);
+	node = new PointLightNode(std::shared_ptr<Scene>(this), n);
+	pointLightNodes->push_back(node);
 	node->setLight(new PointLight(n, pos, K2, c, dist));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
+	node = nullptr;
+	pointLightNodes = nullptr;
 }
 
 void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, const glm::vec3 &K2, int a, int dist, std::string n)
 {
 	int j = 0;
+	std::vector<SpotLightNode*> * spotLightNodes = this->collector->getSpotLightNodes();
+	SpotLightNode *node = nullptr;
 	//search if the given name is the same of a light in the list of lights
-	for (int i = 0; i < this->collector->m_spotLightNodes.size(); i++)
+	for (int i = 0; i < spotLightNodes->size(); i++)
 	{
 		j++;
 		//if it's true we modify the given name
-		if (n == this->collector->m_spotLightNodes[i]->getName())
+		if (n == spotLightNodes->at(i)->getName())
 		{
 			n += ("_" + std::to_string(j));  
 			i = 0;
 		}
 	}
 	//create a new node and push it like the children of node lights
-	SpotLightNode *node = new SpotLightNode(std::shared_ptr<Scene>(this), n);
-	this->collector->m_spotLightNodes.push_back(node);
+	node = new SpotLightNode(std::shared_ptr<Scene>(this), n);
+	spotLightNodes->push_back(node);
 	node->setLight(new SpotLight(n, pos, dir, K2, c, a, dist));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
+	node = nullptr;
+	spotLightNodes = nullptr;
 }
 
 void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, const glm::vec3 &K2, std::string n)
 {
 	int j = 0;
+	std::vector<DirectionnalLightNode*> *directionnalLightNodes = this->collector->getDirectionnalLightNodes();
+	DirectionnalLightNode *node = nullptr;
 	//search if the given name is the same of a light in the list of lights
-	for (int i = 0; i < this->collector->m_directionnalLightNodes.size(); i++)
+	for (int i = 0; i < directionnalLightNodes->size(); i++)
 	{
 		j++;
 		//if it's true we modify the given name
-		if (n == this->collector->m_directionnalLightNodes[i]->getName())
+		if (n == directionnalLightNodes->at(i)->getName())
 		{
 			n += ("_" + std::to_string(j));
 			i = 0;
 		}
 	}
 	//create a new node and push it like the children of node lights
-	DirectionnalLightNode *node = new DirectionnalLightNode(std::shared_ptr<Scene>(this), n);
-	this->collector->m_directionnalLightNodes.push_back(node);
+	node = new DirectionnalLightNode(std::shared_ptr<Scene>(this), n);
+	directionnalLightNodes->push_back(node);
 	node->setLight(new DirectionnalLight(n, dir, K2, c));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
+	node = nullptr;
+	directionnalLightNodes = nullptr;
 }
 
 void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 &c, const glm::vec3 &K2, int dist, std::string n)
 {
 	int j = 0;
+	std::vector<FlashLightNode*> *flashLightNodes = this->collector->getFlashLightNodes();
+	FlashLightNode *node = nullptr;
 	//search if the given name is the same of a light in the list of lights
-	for (int i = 0; i < this->collector->m_flashLightNodes.size(); i++)
+	for (int i = 0; i < flashLightNodes->size(); i++)
 	{
 		j++;
 		//if it's true we modify the given name
-		if (n == this->collector->m_flashLightNodes[i]->getName())
+		if (n == flashLightNodes->at(i)->getName())
 		{
 			n += ("_" + std::to_string(j));
 			i = 0;
 		}
 	}
 	//create a new node and push it like the children of node lights
-	FlashLightNode *node = new FlashLightNode(std::shared_ptr<Scene>(this), n);
-	this->collector->m_flashLightNodes.push_back(node);
+	node = new FlashLightNode(std::shared_ptr<Scene>(this), n);
+	flashLightNodes->push_back(node);
 	node->setLight(new FlashLight(n, pos, dir, K2, c, dist));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
+	node = nullptr;
+	flashLightNodes = nullptr;
 }
 
 void Scene::lightsRender()
@@ -235,40 +255,123 @@ Collector* Scene::getCollector()
 
 void Scene::ShadowMappingRender(std::vector<ObjectNode*> nodes)
 {
-	//FIRST PASS
-	this->FBObuffer->bindWrite();
-	glClear(GL_DEPTH_BUFFER_BIT);
-	//each node rendering
-	for (int i = 0; i < nodes.size(); i++)
+	glm::mat4 M;
+	Model* m = nullptr;
+	PointLight *pL = nullptr;
+	SpotLight *sL = nullptr;
+	FlashLight *fL = nullptr;
+	DirectionnalLight *dL = nullptr;
+	glm::mat4 VP;
+	int k = 0;
+	for (int i = 0; i < this->collector->getPointLightNodes()->size(); i++)
 	{
-		Model* m = nodes[i]->getModel();
-		//rendered each node which have model and check shadow mapping
-		if (m && nodes[i]->getShadowMapped())
+		pL = this->collector->getPointLightNodes()->at(i)->getLight();
+		if (pL->isSendShadow())
 		{
-			glm::mat4 M = nodes[i]->getMaterial()->getModelMatrix();
-			this->shadowMappingMaterial->firstPass(m, M);
+			VP = pL->getP() * pL->getV();
+			//switching texture
+			this->getFBOBuffer()->switchDepthTexture(k);
+			//FIRST PASS
+			this->FBObuffer->bindWrite();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			//each node rendering
+			for (int j = 0; j < nodes.size(); j++)
+			{
+				m = nodes[j]->getModel();
+				//rendered each node which have model and check shadow mapping
+				if (m && nodes[j]->getShadowMapped())
+				{
+					M = nodes[j]->getMaterial()->getModelMatrix();
+					this->shadowMappingMaterial->firstPass(m, M, VP);
+				}
+			}
+			k++;
+			this->FBObuffer->release();
 		}
 	}
-	this->FBObuffer->release();
-
-	//SECOND PASS
-	/*glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	this->FBObuffer->bindRead(GL_TEXTURE0);
-	//each node rendering
-	for (int i = 0; i < nodes.size(); i++)
+	for (int i = 0; i < this->collector->getDirectionnalLightNodes()->size(); i++)
 	{
-		Model* m = nodes[i]->getModel();
-		//rendered each node which have model and check shadow mapping
-		if (m && nodes[i]->getShadowMapped())
+		dL = this->collector->getDirectionnalLightNodes()->at(i)->getLight();
+		if (dL->isSendShadow())
 		{
-			glm::mat4 M = nodes[i]->getMaterial()->getModelMatrix();
-			this->shadowMappingMaterial->secondPass(m, M);
+			VP = dL->getP() * dL->getV();
+			//switching texture
+			this->getFBOBuffer()->switchDepthTexture(k);
+			//FIRST PASS
+			this->FBObuffer->bindWrite();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			//each node rendering
+			for (int j = 0; j < nodes.size(); j++)
+			{
+				m = nodes[j]->getModel();
+				//rendered each node which have model and check shadow mapping
+				if (m && nodes[j]->getShadowMapped())
+				{
+					M = nodes[j]->getMaterial()->getModelMatrix();
+					this->shadowMappingMaterial->firstPass(m, M, VP);
+				}
+			}
+			k++;
+			this->FBObuffer->release();
 		}
-	}*/
-	/*glm::mat4 M = glm::mat4(1.0);
-	this->shadowMappingMaterial->secondPass(this->RenderingQuad, M);
-	this->FBObuffer->releaseTextures();*/
-
+	}
+	for (int i = 0; i < this->collector->getSpotLightNodes()->size(); i++)
+	{
+		sL = this->collector->getSpotLightNodes()->at(i)->getLight();
+		if (sL->isSendShadow())
+		{
+			VP = sL->getP() * sL->getV();
+			//switching texture
+			this->getFBOBuffer()->switchDepthTexture(k);
+			//FIRST PASS
+			this->FBObuffer->bindWrite();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			//each node rendering
+			for (int j = 0; j < nodes.size(); j++)
+			{
+				m = nodes[j]->getModel();
+				//rendered each node which have model and check shadow mapping
+				if (m && nodes[j]->getShadowMapped())
+				{
+					M = nodes[j]->getMaterial()->getModelMatrix();
+					this->shadowMappingMaterial->firstPass(m, M, VP);
+				}
+			}
+			k++;
+			this->FBObuffer->release();
+		}
+	}
+	for (int i = 0; i < this->collector->getFlashLightNodes()->size(); i++)
+	{
+		fL = this->collector->getFlashLightNodes()->at(i)->getLight();
+		if (fL->isSendShadow())
+		{
+			VP = fL->getP() * fL->getV();
+			//switching texture
+			this->getFBOBuffer()->switchDepthTexture(k);
+			//FIRST PASS
+			this->FBObuffer->bindWrite();
+			glClear(GL_DEPTH_BUFFER_BIT);
+			//each node rendering
+			for (int j = 0; j < nodes.size(); j++)
+			{
+				m = nodes[j]->getModel();
+				//rendered each node which have model and check shadow mapping
+				if (m && nodes[j]->getShadowMapped())
+				{
+					M = nodes[j]->getMaterial()->getModelMatrix();
+					this->shadowMappingMaterial->firstPass(m, M, VP);
+				}
+			}
+			k++;
+			this->FBObuffer->release();
+		}
+	}
+	m = nullptr;
+	pL = nullptr;
+	sL = nullptr;
+	fL = nullptr;
+	dL = nullptr;
 }
 
 void Scene::render(std::vector<ObjectNode*> nodes)
@@ -280,7 +383,7 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	this->lightsRender();
 
 	//Get all the rendered nodes(models, materials...)
-	std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
+	//std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
 
 	//Shadow mapping rendering
 	this->ShadowMappingRender(nodes);
@@ -374,6 +477,8 @@ void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int 
 {
 	GLfloat square[12];
 	GLuint indices[6];
+	Geometry *g = nullptr;
+	InstancedModel *mo = nullptr;
 	ObjectNode *n = new ObjectNode(std::shared_ptr<Scene>(this), name);
 	ParticlesWaterSystemMaterial *m = new ParticlesWaterSystemMaterial(std::shared_ptr<Scene>(this), nb, name + "_Material", flag);
 	if (flag)
@@ -381,7 +486,7 @@ void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int 
 		if (*flag == SEED_SUCCESS)
 		{
 			n->setMaterial(m);
-			Geometry *g = new Geometry();
+			g = new Geometry();
 			square[0] = 0.0f; square[1] = 1.0f; square[2] = 0.0f;
 			square[3] = 1.0f; square[4] = 1.0f; square[5] = 0.0f;
 			square[6] = 1.0f; square[7] = 0.0f; square[8] = 0.0f;
@@ -390,11 +495,15 @@ void Scene::addWaterSystemParticles(const glm::vec3 &positionStarter, const int 
 			indices[3] = 0; indices[4] = 2; indices[5] = 3;
 			g->setVertices(square, 12, 3);
 			g->setFaces(GL_TRIANGLES, indices, 6);
-			InstancedModel *mo = new InstancedModel(g);
+			mo = new InstancedModel(g);
 			n->setModel(mo);
 			this->addNode(n);
 		}
 	}
+		g = nullptr;
+		mo = nullptr;
+		n = nullptr;
+		m = nullptr;
 }
 
 void Scene::constructQuad()
@@ -410,6 +519,7 @@ void Scene::constructQuad()
 	Geometry *g = new Geometry();
 	g->setVertices(vertices, 18, 3);
 	this->RenderingQuad = new Model(g, GL_STATIC_DRAW);
+	g = nullptr;
 }
 
 FBOBuffer* Scene::getFBOBuffer()

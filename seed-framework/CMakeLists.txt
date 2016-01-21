@@ -68,11 +68,19 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 #Seed's graphics library
-add_library(
-    Seed-Graphics
-    SHARED
-    ${GRAPHICS_SRC}
-)
+if(WIN32)
+	add_library(
+   	Seed-Graphics
+    	STATIC
+    	${GRAPHICS_SRC}
+	)
+else(WIN32)
+	add_library(
+   	Seed-Graphics
+    	SHARED
+    	${GRAPHICS_SRC}
+	)
+endif(WIN32)
 
 if(WIN32)
 	target_link_libraries(Seed-Graphics ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)

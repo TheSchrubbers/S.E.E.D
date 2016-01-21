@@ -1,6 +1,6 @@
 #version 440
 
-#define MAX_NUM_TOTAL_LIGHTS 20
+#define MAX_NUM_TOTAL_LIGHTS 3
 #define M_PI 3.1415926535897932384626433832795
 
 //Structs
@@ -88,7 +88,9 @@ vec3 computeContributingDirectionnalLights(DirectionnalLight pl, vec3 No, vec3 C
 vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec, float shadow);
 vec3 Phong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation, float shadow);
 vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation);
-float processShadow(vec4 lightInSpace);
+float processPerspectiveShadow(vec4 lightInSpace);
+float processOrthographicShadow(vec4 lightInSpace);
+float LinearizeDepth(float depth);
 
 void main()
 {
@@ -96,7 +98,7 @@ void main()
 	float shadow = 0.0;
 	if(shadowsActive)
 	{
-		shadow = processShadow(PInLightSpace);
+		shadow = processPerspectiveShadow(PInLightSpace);
 	}
 	vec3 Reflect;
 	vec4 skyboxColor;
@@ -130,13 +132,13 @@ void main()
 		PLContributing += computeContributingSpotLights(spotLights[i], Normal, C, P, difColor.xyz, specColor, shadow);
 	}
 	//if the object has a positive reflective coefficient, it contributes
-	if (mat.x > 0.0)
+	/*if (mat.x > 0.0)
 	{
 		PLContributing = mat.x * skyboxColor.xyz + (1.0 - mat.x) * PLContributing;
-	}
+	}*/
 
 	//final color
-	Color = vec4(vec3(shadowsActive), 1.0);//vec4(PLContributing, 1.0);
+	Color = vec4(PLContributing, 1.0);
 }
 
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec, float shadow)
@@ -145,7 +147,7 @@ vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, ve
 	//compute the lenght of the vector
 	float distance = length(pl.position.xyz - Po);
 	//compute the attenuation of the light
-	float attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance), shadow);
+	float attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
 	//vector light
 	vec3 L = normalize(pl.position.xyz - Po);
 
@@ -220,18 +222,77 @@ vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap,
 	return Ia + Id + Is;
 }
 
-float processShadow(vec4 lightInSpace)
+float processPerspectiveShadow(vec4 lightInSpace)
 {
+	float shadowDepth;
 	vec3 l = lightInSpace.xyz / lightInSpace.w;
 	l = l * 0.5 + 0.5;
-	//corresponding depth point in shadowmap pass
-	float shadowDepth = texture(gShadowMap, l.xy).x;
-	//bias between 0.005 and 0.05
-	float bias = max(0.05 * (1.0 - dot(N, LShadow)), 0.005);
-	float shadow = 0.5;
-	if(shadowDepth < (l.z - bias))
+	l.z = LinearizeDepth(l.z) / 30.0;
+
+	float shadow = 0.0;
+
+	if(l.z <= 1.0)
 	{
-		shadow = 1.0;
+		//size of a texel on the gshadowmaptexture
+		vec2 texelSize = 1.0 / textureSize(gShadowMap, 0);
+		//use BLUR to smooth shadow
+		for(int i = -1; i <= 1; ++i)
+		{
+			for(int j = -1; j <= 1; ++j)
+			{
+				//corresponding depth point in shadowmap pass
+				shadowDepth = texture(gShadowMap, l.xy + vec2(i, j) * texelSize).x;
+				shadowDepth = LinearizeDepth(shadowDepth) / 30.0;
+				if(shadowDepth < (l.z - bias))
+				{
+					shadow += 1.0;
+				}		
+			}
+		}
+		shadow /= 9.0;
+		//bias between 0.005 and 0.05
+		//float bias = max(0.05 * (1.0 - dot(N, LShadow)), 0.005);
+		
 	}
 	return shadow;
+}
+
+float processOrthographicShadow(vec4 lightInSpace)
+{
+	float shadowDepth;
+	vec3 l = lightInSpace.xyz / lightInSpace.w;
+	l = l * 0.5 + 0.5;
+
+	float shadow = 0.0;
+
+	if(l.z <= 1.0)
+	{
+		//size of a texel on the gshadowmaptexture
+		vec2 texelSize = 1.0 / textureSize(gShadowMap, 0);
+		//use BLUR to smooth shadow
+		for(int i = -1; i <= 1; ++i)
+		{
+			for(int j = -1; j <= 1; ++j)
+			{
+				//corresponding depth point in shadowmap pass
+				shadowDepth = texture(gShadowMap, l.xy + vec2(i, j) * texelSize).x;
+				if(shadowDepth < (l.z - bias))
+				{
+					shadow += 1.0;
+				}		
+			}
+		}
+		shadow /= 9.0;
+		//bias between 0.005 and 0.05
+		//float bias = max(0.05 * (1.0 - dot(N, LShadow)), 0.005);
+		
+	}
+	return shadow;
+}
+
+
+float LinearizeDepth(float depth)
+{
+	float z = depth * 2.0 - 1.0;
+	return (2.0 * 1.0 * 30.0) / (30.0 + 1.0 - z * (30.0 - 1.0));
 }

@@ -59,18 +59,19 @@ void ColorMaterial::render(Model *model)
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
 		glUniform3f(this->colorID, this->color.x, this->color.y, this->color.z);
 		glm::mat4 VLight = glm::lookAt(glm::vec3(0.0,3.0,8.0), glm::vec3(0.0), glm::vec3(0.0,1.0,0.0));
-		/*glm::mat4 PLight = glm::perspective(
-		45.0f,         //angle d'ouverture de la caméra
-		(float)WIDTH/(float)HEIGHT, // ratio de la résolution de l'ecran
-		1.0f,        // la ou commence le frustrum
-		100.0f// la ou finit le frustrum
-		);*/
-		glm::mat4 PLight = glm::ortho(-10.0, 10.0, -10.0, 10.0, 1.0, 20.0);
+		glm::mat4 PLight = glm::perspective(
+			180.0f,         //angle d'ouverture de la caméra
+			(float)WIDTH/(float)HEIGHT, // ratio de la résolution de l'ecran
+			1.0f,        // la ou commence le frustrum
+			30.0f// la ou finit le frustrum
+		);
+		//glm::mat4 PLight = glm::ortho(-10.0, 10.0, -10.0, 10.0, 1.0, 30.0);
 		glm::mat4 VPLight = PLight * VLight;
 		glUniformMatrix4fv(this->VLightID, 1, GL_FALSE, &(VPLight[0][0]));
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera
 		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 		// Enable depth test
 		glEnable(GL_DEPTH_TEST);
 
