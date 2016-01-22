@@ -9,7 +9,9 @@ Engine::Engine()
 Engine::~Engine()
 {
 	// Close OpenGL window and terminate GLFW
+	glfwDestroyWindow(window);
 	glfwTerminate();
+
 	TwTerminate();
 }
 
@@ -87,8 +89,7 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Black background
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		//get events glfw
-		glfwPollEvents();
+		
 		//get current time
 		currentTime = glfwGetTime();
 
@@ -108,6 +109,9 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 		//on nettoie les buffers
 		glfwSwapBuffers(this->window);
 
+		//get events glfw
+		glfwPollEvents();
+
 	} while (glfwGetKey(this->window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(this->window) == 0);
 
 	pointLightNodes = nullptr;
@@ -124,26 +128,29 @@ bool Engine::initSystem()
 		writeLog("Failed to initialize GLFW");
 		return false;
 	}
-	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL
 
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Moteur3d", NULL, NULL);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Moteur3d", nullptr, nullptr);
 
-	if (window == NULL){
+	if (window == nullptr){
 		writeLog("Failed to open GLFW window. Not 4.3 compatible.");
 		glfwTerminate();
 		return false;
 	}
 	glfwMakeContextCurrent(window); // Initialize GLEW 
+	glfwSwapInterval(1);
+
 	glewExperimental = GL_TRUE; // Needed in core profile 
 
 	if (glewInit() != GLEW_OK) {
 		writeLog("Failed to initialize GLEW, version of opengl must be greater or equal than opengl 4.3");
 		return false;
 	}
+
 	return true;
 }
 

@@ -48,11 +48,16 @@ class DirectionnalLight : public Light
 public:
 	/*!
 	* \brief Constructor of class DirectionnalLight
-	* \param name: name of the light
-	* \param color: color of the light
-	* \param direction: direction of the light
+	* \param name Name of the light
+	* \param color Color of the light
+	* \param position Position of the light
+	* \param direction Direction of the light
+	* \param K Attenuation coefficient of light
+	* \param color Color of the light
+	* \param near Near frustrum of the light
+	* \param far Far frustrum of the light
 	*/
-	DirectionnalLight(const std::string &name, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0));
+	DirectionnalLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &near = 1.0f, const float &far = 10.0f);
 	/*!
 	* \brief Destructor of class DirectionnalLight
 	*/

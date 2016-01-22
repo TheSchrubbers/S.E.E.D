@@ -32,11 +32,9 @@ int main()
 
 	//scene.setCubeMap(pathToTextures + "CubeMap/Skybox");
 
-	scene->addPointLight(glm::vec3(0.0,0.0,8.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 50, "light_1");
-	scene->addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, -5.0)), glm::vec3(0.1f, 0.8f, 0.8f));
-	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);
-	
-	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
+	scene->addPointLight(glm::vec3(0.0,3.0,8.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 1.0f, 13.0f, "light_1");
+	//scene->addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, -5.0)), glm::vec3(0.1f, 0.8f, 0.8f));
+	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
 	//addLara(scene); 
 	unsigned int error;
@@ -103,12 +101,6 @@ int main()
 	material4->translateModel(glm::vec3(0.0, -1.0, 0.0));
 	plan->setMaterialRecur(material4);
 	scene->addNode(plan);
-
-	/*SPHMaterial *m = new SPHMaterial(&scene, "SPHMaterial", nullptr);
-	ObjectNode *n = scene.importModelFromFile(pathToBasicModels + "UVsphereLow.obj", "UVSphere");
-	n->setMaterialRecur(m);
-
-	scene.addNode(n);*/
 
 	//ObjectNode *n = new ObjectNode(&scene);
 	//ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");

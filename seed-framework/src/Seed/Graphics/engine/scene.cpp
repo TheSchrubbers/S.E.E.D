@@ -129,7 +129,7 @@ void Scene::afficher()
 	n = nullptr;
 }
 
-void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, const glm::vec3 &K2, int dist, std::string n)
+void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, const glm::vec3 &K2, const float &near, const float &far, std::string n)
 {
 	int j = 0;
 	std::vector<PointLightNode*> *pointLightNodes = this->collector->getPointLightNodes();
@@ -144,18 +144,18 @@ void Scene::addPointLight(const glm::vec3 &pos, const glm::vec3 &c, const glm::v
 			n += ("_" + std::to_string(j));
 			i = 0;
 		}
-	}
+	}	
 	//create a new node and push it like the children of node lights
-	node = new PointLightNode(std::shared_ptr<Scene>(this), n);
-	pointLightNodes->push_back(node);
-	node->setLight(new PointLight(n, pos, K2, c, dist));
+	node = new PointLightNode  (std::shared_ptr<Scene>(this), n);	
+	pointLightNodes->push_back(node);	
+	node->setLight(new PointLight(n, pos, K2, c, near, far));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 	node = nullptr;
 	pointLightNodes = nullptr;
 }
 
-void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, const glm::vec3 &K2, int a, int dist, std::string n)
+void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &c, const glm::vec3 &K2, int a, const float &near, const float &far, std::string n)
 {
 	int j = 0;
 	std::vector<SpotLightNode*> * spotLightNodes = this->collector->getSpotLightNodes();
@@ -174,14 +174,14 @@ void Scene::addSpotLight(const glm::vec3 &pos, const glm::vec3 &dir, const glm::
 	//create a new node and push it like the children of node lights
 	node = new SpotLightNode(std::shared_ptr<Scene>(this), n);
 	spotLightNodes->push_back(node);
-	node->setLight(new SpotLight(n, pos, dir, K2, c, a, dist));
+	node->setLight(new SpotLight(n, pos, dir, K2, c, a, near, far));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 	node = nullptr;
 	spotLightNodes = nullptr;
 }
 
-void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, const glm::vec3 &K2, std::string n)
+void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &pos, const glm::vec3 &dir, const glm::vec3 &K2, const float &near, const float &far, std::string n)
 {
 	int j = 0;
 	std::vector<DirectionnalLightNode*> *directionnalLightNodes = this->collector->getDirectionnalLightNodes();
@@ -200,14 +200,14 @@ void Scene::addDirectionnalLight(const glm::vec3 &c, const glm::vec3 &dir, const
 	//create a new node and push it like the children of node lights
 	node = new DirectionnalLightNode(std::shared_ptr<Scene>(this), n);
 	directionnalLightNodes->push_back(node);
-	node->setLight(new DirectionnalLight(n, dir, K2, c));
+	node->setLight(new DirectionnalLight(n, pos, dir, K2, c, near, far));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 	node = nullptr;
 	directionnalLightNodes = nullptr;
 }
 
-void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 &c, const glm::vec3 &K2, int dist, std::string n)
+void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 &c, const glm::vec3 &K2, const float &angle, const float &near, const float &far, std::string n)
 {
 	int j = 0;
 	std::vector<FlashLightNode*> *flashLightNodes = this->collector->getFlashLightNodes();
@@ -226,7 +226,7 @@ void Scene::addFlashLight(const glm::vec3 &pos, const glm::vec3 &dir, glm::vec3 
 	//create a new node and push it like the children of node lights
 	node = new FlashLightNode(std::shared_ptr<Scene>(this), n);
 	flashLightNodes->push_back(node);
-	node->setLight(new FlashLight(n, pos, dir, K2, c, dist));
+	node->setLight(new FlashLight(n, pos, dir, K2, c, angle, near, far));
 	this->rootLightNode->addChild((Node*)node);
 	node->setFather(this->rootLightNode);
 	node = nullptr;

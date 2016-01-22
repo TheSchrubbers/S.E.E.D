@@ -32,6 +32,10 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+//DEFINES
+//#define GLFW_INCLUDE_GLCOREARB
+//#define GLFW_INCLUDE_GLU
+//
 //OTHER INCLUDES
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -59,8 +63,6 @@
 #include <Seed/Graphics/lights/flashLight.hpp>
 #include <Seed/Graphics/lights/pointLight.hpp>
 #include <Seed/Graphics/lights/spotLight.hpp>
-//DEFINES
-#define GLFW_INCLUDE_GLCOREARB
 
 /*! \class Engine
 * \brief class Engine, init the system and the scene

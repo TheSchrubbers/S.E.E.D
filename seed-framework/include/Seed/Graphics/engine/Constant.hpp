@@ -4,8 +4,8 @@
 #include <iostream>
 #include <map>
 
-const int WIDTH = 1024;
-const int HEIGHT = 768;
+const float WIDTH = 1024.0f;
+const float HEIGHT = 768.0f;
 
 const std::string pathToDefaultMaterial = "ressources/Materials/DefaultMaterial/";
 const std::string pathToImplicitMaterial = "ressources/Materials/ImplicitMaterial/";

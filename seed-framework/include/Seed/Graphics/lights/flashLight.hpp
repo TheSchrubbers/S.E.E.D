@@ -48,11 +48,16 @@ class FlashLight : public Light
 public:
 	/*!
 	* \brief Constructor of class FlashLight
-	* \param name: name of the light
-	* \param color: color of the light
-	* \param position: position of the light
+	* \param name Name of the light
+	* \param position Position of the light
+	* \param direction Direction of the flashlight
+	* \param K Coefficient of attenuation of the light
+	* \param color Color of the light
+	* \param angle Wide-angle of the light
+	* \param near Near frustrum of the light
+	* \param far Far frustrum of the light
 	*/
-	FlashLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0), const float &angle = 30.0f, const int &distance = 50);
+	FlashLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &angle = 30.0f, const float &near = 0.1f, const float &far = 10.0f);
 	/*!
 	* \brief Destructor of class FlashLight
 	*/

@@ -48,12 +48,14 @@ class PointLight : public Light
 public:
 	/*!
 	* \brief Constructor of class PointLight
-	* \param name: name of the light
-	* \param color: color of the light
-	* \param position: position of the light
-	* \param K: Coefficient for the light (Ambiant, Diffuse, Specular)
+	* \param name name of the light
+	* \param color color of the light
+	* \param position position of the light
+	* \param K Coefficient for the light (Ambiant, Diffuse, Specular)
+	* \param near Near frustrum
+	* \param far Far frustrum
 	*/
-	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0), const int &distance = 50);
+	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &near = 0.1f, const float &far = 10.0f);
 	/*!
 	* \brief Destructor of class PointLight
 	*/

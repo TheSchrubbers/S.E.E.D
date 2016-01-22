@@ -1,8 +1,9 @@
-
 //SEED INCLUDES
+#include <Seed/Graphics/engine/tools.hpp>
 #include <Seed/Graphics/engine/control.hpp>
 #include <Seed/Graphics/engine/scene.hpp>
 #include <Seed/Graphics/engine/camera.hpp>
+
 
 int Controller::context = 0;
 
@@ -27,77 +28,88 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 	//horizontal and vertical angle
 	float WAngle = cam->getWAngle();
 	float HAngle = cam->getHAngle();
-	//field of view
-	const float initFoV = cam->getInitFoV();
-	float near = cam->getNear();
-	float far = cam->getFar();
 	//speed move direction (keyboard)
 	float speed = cam->getSpeed();
 	//speed view direction (mouse)
 	float mouseSpeed = cam->getMouseSpeed();
-
-	float FoV = cam->getInitFoV();
-	glm::vec3 direction;
+	glm::vec3 direction = cam->getDirection();
 	glm::vec3 up;
+	glm::vec3 right;
 
-
-	/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	{
-		Controller::context += 1;
-		Controller::context %= 2;
-	}*/
+	bool dragMouse = false, keyInput = false;
 
 	double xpos, ypos;
 	//get mouse position on the screen
 	glfwGetCursorPos(window, &xpos, &ypos);
 
+
 	if (Controller::context == 0)
 	{
-		//reset position of mouse
-		glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
+		if(xpos != WIDTH / 2.0f || ypos != HEIGHT / 2.0f)
+		{
+			dragMouse = true;
+			//reset position of mouse
+			glfwSetCursorPos(window, WIDTH / 2.0f, HEIGHT / 2.0f);
 
-		//compute angles
-		WAngle += mouseSpeed * float(WIDTH / 2 - xpos);
-		HAngle += mouseSpeed * float(HEIGHT / 2 - ypos);
+			//compute angles
+			WAngle += mouseSpeed * ((WIDTH / 2.0f) - xpos);
+			HAngle += mouseSpeed * ((HEIGHT / 2.0f) - ypos);
 
-		//get direction of the camera
-		direction = glm::vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
-		//get right direction of the camera
-		glm::vec3 right(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
-		//get the up direction of the camera
-		up = glm::normalize(glm::cross(right, direction));
+			//get direction of the camera
+			direction = glm::vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
 
+			//get right direction of the camera
+			right = glm::vec3(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
+			//get the up direction of the camera
+			up = glm::normalize(glm::cross(right, direction));
+		}
+
+		//get inputs key
 		if (glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS)
 		{
 			position += direction * speed;
+			keyInput = true;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS)
 		{
 			position -= direction * speed;
+			keyInput = true;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_KP_6) == GLFW_PRESS)
 		{
 			position += right * speed;
+			keyInput = true;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
 		{
 			position -= right * speed;
+			keyInput = true;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_KP_8) == GLFW_PRESS)
 		{
 			position += up * speed;
+			keyInput = true;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS)
 		{
 			position -= up * speed;
+			keyInput = true;
 		}
-		//set the angle of the direction vector of the camera
-		cam->setHAngle(HAngle);
-		cam->setWAngle(WAngle);
-		//update ViewMatrix
-		cam->setViewMatrix(position, direction, up);
-		//update Projection Matrix
-		cam->setProjectionMatrix(FoV, WIDTH, HEIGHT, near, far);
+
+
+		if(dragMouse)
+		{
+			//set the angle of the direction vector of the camera
+			cam->setHAngle(HAngle);
+			cam->setWAngle(WAngle);
+			//update ViewMatrix
+			cam->setViewMatrix(position, direction, up);
+			
+		}
+		else if(keyInput)
+		{
+			cam->setViewMatrix(position);
+		}
 	}
 	else
 	{

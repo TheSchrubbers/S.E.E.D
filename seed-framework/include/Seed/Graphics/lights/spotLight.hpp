@@ -48,12 +48,16 @@ class SpotLight : public Light
 public:
 	/*!
 	* \brief Constructor of class SpotLight
-	* \param name: name of the light
-	* \param color: color of the light
-	* \param angle: angle of the light
-	* \param position: position of the light
+	* \param name name of the light
+	* \param position position of the spotlight
+	* \param direction Direction of the spotlight
+	* \param K Coefficient of attenuation of the light
+	* \param color Color of the light
+	* \param angle Angle of the light
+	* \param near Near frustrum
+	* \param far Far frustrum
 	*/
-	SpotLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0), const float &angle = 30.0f, const int &distance = 50);
+	SpotLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &angle = 30.0f, const float &near = 0.1f, const float &far = 30.0f);
 	/*!
 	* \brief Destructor of class SpotLight
 	*/
