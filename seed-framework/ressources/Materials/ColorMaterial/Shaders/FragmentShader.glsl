@@ -2,6 +2,7 @@
 
 #define MAX_NUM_TOTAL_LIGHTS 3
 #define M_PI 3.1415926535897932384626433832795
+#define NB_SHADOW_TEXTURES 2
 
 //Structs
 struct PointLight
@@ -11,6 +12,7 @@ struct PointLight
 	vec4 attenuation;
 	ivec4 size;
 	vec4 K;
+	mat4 VP;
 };
 struct SpotLight
 {
@@ -20,6 +22,7 @@ struct SpotLight
 	vec4 attenuation;
 	ivec4 size;
 	vec4 K;
+	mat4 VP;
 };
 struct DirectionnalLight
 {
@@ -27,6 +30,7 @@ struct DirectionnalLight
 	vec4 color;
 	ivec4 size;
 	vec4 K;
+	mat4 VP;
 };
 struct FlashLight
 {
@@ -36,6 +40,7 @@ struct FlashLight
 	vec4 attenuation;
 	ivec4 size;
 	vec4 K;
+	mat4 VP;
 };
 
 struct Light
@@ -66,7 +71,7 @@ layout(std140, binding = 3) uniform FlashLightsBuffer
 in vec3 C;
 in vec3 P;
 in vec3 N;
-in vec4 PInLightSpace;
+in vec4 PInLightSpace[NB_SHADOW_TEXTURES];
 in vec3 LShadow;
 flat in uint sizeLights;
 
@@ -77,6 +82,7 @@ out vec4 Color;
 uniform Light light;
 uniform samplerCube skybox;
 uniform sampler2D gShadowMap;
+uniform sampler2D gShadowMap2;
 uniform vec2 mat;
 uniform vec3 color;
 uniform bool shadowsActive;
@@ -88,8 +94,8 @@ vec3 computeContributingDirectionnalLights(DirectionnalLight pl, vec3 No, vec3 C
 vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec, float shadow);
 vec3 Phong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation, float shadow);
 vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation);
-float processPerspectiveShadow(vec4 lightInSpace);
-float processOrthographicShadow(vec4 lightInSpace);
+float processPerspectiveShadow(vec4 lightInSpace, sampler2D shadowTexture);
+float processOrthographicShadow(vec4 lightInSpace, sampler2D shadowTexture);
 float LinearizeDepth(float depth);
 
 void main()
@@ -98,7 +104,9 @@ void main()
 	float shadow = 0.0;
 	if(shadowsActive)
 	{
-		shadow = processPerspectiveShadow(PInLightSpace);
+		shadow += processPerspectiveShadow(PInLightSpace[0], gShadowMap);
+		shadow += processPerspectiveShadow(PInLightSpace[1], gShadowMap2);
+		shadow /= 2.0f;
 	}
 	vec3 Reflect;
 	vec4 skyboxColor;
@@ -139,6 +147,7 @@ void main()
 
 	//final color
 	Color = vec4(PLContributing, 1.0);
+	//Color =vec4(vec3(shadow), 1.0);
 }
 
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec, float shadow)
@@ -147,7 +156,8 @@ vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, ve
 	//compute the lenght of the vector
 	float distance = length(pl.position.xyz - Po);
 	//compute the attenuation of the light
-	float attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	//float attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	float attenuation = 1.0f / (1.0f + distance * distance * pl.attenuation.x);
 	//vector light
 	vec3 L = normalize(pl.position.xyz - Po);
 
@@ -166,7 +176,8 @@ vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3
 	float attenuation = 0, distance = 0;
 	vec3 Ia;
 	distance = length(pl.position.xyz - Po);
-	attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	//attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	attenuation = 1.0f / (1.0f + distance * distance* pl.attenuation.x);
 	if (a < pl.attenuation.w)
 	{
 		// Compute attenuation
@@ -174,7 +185,7 @@ vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3
 		vec3 L = normalize(pl.position.xyz - Po);
 		return BlinnPhong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, attenuation);
 	}
-	Ia = attenuation * light.ambiant * diff;
+	Ia = light.ambiant * diff;
 	return vec3(Ia);
 }
 
@@ -191,7 +202,7 @@ vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3
 vec3 Phong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation, float shadow)
 {
 	//compute ambiant contributing
-	vec3 Ia = attenuation * Lcoef.x * diffMap;
+	vec3 Ia = Lcoef.x * diffMap;
 	//compute diffuse contributing
 	vec3 Id = LColor.xyz * Lcoef.y * diffMap * max(dot(L, No), 0);
 	vec3 R = normalize(reflect(L, No));
@@ -222,7 +233,7 @@ vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap,
 	return Ia + Id + Is;
 }
 
-float processPerspectiveShadow(vec4 lightInSpace)
+float processPerspectiveShadow(vec4 lightInSpace, sampler2D  gShadow)
 {
 	float shadowDepth;
 	vec3 l = lightInSpace.xyz / lightInSpace.w;
@@ -234,14 +245,14 @@ float processPerspectiveShadow(vec4 lightInSpace)
 	if(l.z <= 1.0)
 	{
 		//size of a texel on the gshadowmaptexture
-		vec2 texelSize = 1.0 / textureSize(gShadowMap, 0);
+		vec2 texelSize = 1.0 / textureSize(gShadow, 0);
 		//use BLUR to smooth shadow
 		for(int i = -1; i <= 1; ++i)
 		{
 			for(int j = -1; j <= 1; ++j)
 			{
 				//corresponding depth point in shadowmap pass
-				shadowDepth = texture(gShadowMap, l.xy + vec2(i, j) * texelSize).x;
+				shadowDepth = texture(gShadow, l.xy + vec2(i, j) * texelSize).x;
 				shadowDepth = LinearizeDepth(shadowDepth) / 30.0;
 				if(shadowDepth < (l.z - bias))
 				{
