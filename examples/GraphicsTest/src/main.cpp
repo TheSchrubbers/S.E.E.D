@@ -108,7 +108,7 @@ int main()
 	//n->setMaterial(mat);
 	//scene.addNode(n);
 
-	scene->afficher();
+	//scene->afficher();
 
 	//collect all the rendered nodes
 	scene->collectRenderedNodes();

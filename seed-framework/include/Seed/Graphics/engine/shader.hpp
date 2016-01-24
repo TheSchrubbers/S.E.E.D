@@ -54,6 +54,8 @@ private:
 
 	GLuint loadShaders(const std::string directory_file_path);
 	GLuint loadCompileShader(std::string s, GLuint type, GLint &Result, int &InfoLogLength, std::vector<char> *ShaderErrorMessage);
+	std::string parsingIncludes(std::string code);
+	std::string replaceCodeByInclude(std::string code, std::vector<std::string> includes, std::vector<int> beg, std::vector<int> end);
 };
 
 #endif

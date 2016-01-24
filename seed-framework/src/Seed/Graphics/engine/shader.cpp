@@ -99,7 +99,7 @@ GLuint Shader::loadShaders(const std::string directory_file_path)
 			return ProgramID;
 		}
 	}
-	writeLog("Error -> Path of shaders : directory unfound, " + directory_file_path);
+	writeLog("			Error -> Path of shaders : directory unfound, " + directory_file_path);
 	return 0;
 }
 
@@ -118,6 +118,8 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 		{
 			ShaderCode += "\n" + Line;
 		}
+		//Parsing code includes
+		ShaderCode = this->parsingIncludes(ShaderCode);
 		ShaderStream.close();
 
 		char const * SourcePointer = ShaderCode.c_str();
@@ -141,7 +143,7 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 	}
 	else
 	{
-		writeLog("ERROR: error the vertexshader file \"" + s + "\" is not found.");
+		writeLog("			ERROR -> Vertexshader file \"" + s + "\", not found.");
 		return 0;
 	}
 }
@@ -182,10 +184,12 @@ bool Shader::loadVertexFragmentShaders(const std::string vertex_file_path, const
 		while (getline(VertexShaderStream, Line))
 			VertexShaderCode += "\n" + Line;
 		VertexShaderStream.close();
+		//Parsing code includes
+		VertexShaderCode = this->parsingIncludes(VertexShaderCode);
 	}
 	else
 	{
-		writeLog("ERROR: error the vertexshader file \"" + vertex_file_path + "\" is not found.");
+		writeLog("			ERROR -> Vertexshader file \"" + vertex_file_path + "\", not found.");
 		return 0;
 	}
 
@@ -198,10 +202,12 @@ bool Shader::loadVertexFragmentShaders(const std::string vertex_file_path, const
 		while (getline(FragmentShaderStream, Line))
 			FragmentShaderCode += "\n" + Line;
 		FragmentShaderStream.close();
+		//Parsing code includes
+		FragmentShaderCode = this->parsingIncludes(FragmentShaderCode);
 	}
 	else
 	{
-		writeLog("ERROR: error the fragment shader file \"" + fragment_file_path + "\" is not found.");
+		writeLog("			ERROR -> Fragment shader file \"" + fragment_file_path + "\", not found.");
 		return 0;
 	}
 
@@ -271,10 +277,12 @@ bool Shader::loadUniqueShader(const std::string vertex_file_path)
 		while (getline(VertexShaderStream, Line))
 			VertexShaderCode += "\n" + Line;
 		VertexShaderStream.close();
+		//Parsing code includes
+		VertexShaderCode = this->parsingIncludes(VertexShaderCode);
 	}
 	else
 	{
-		std::cout << "ERROR: error the vertexshader file \"" << vertex_file_path << "\" is not found." << std::endl;
+		std::cout << "			ERROR -> Vertexshader file \"" << vertex_file_path << "\", not found." << std::endl;
 		return 0;
 	}
 
@@ -312,4 +320,111 @@ bool Shader::loadUniqueShader(const std::string vertex_file_path)
 	this->programID = ProgramID;
 
 	return true;
+}
+
+
+std::string Shader::parsingIncludes(std::string code)
+{
+	int size = code.size(), b, e;
+	std::vector<std::string> includes;
+	std::vector<int> beg;
+	std::vector<int> end;
+	//check all the code
+	for (int i = 0; i < size; i++)
+	{
+		//if the following characters are -> #include
+		if(code[i] == '#' && i+7 < size && code[i+1] == 'i' && code[i+2] == 'n' && code[i+3] == 'c' && code[i+4] == 'l' && code[i+5] == 'u' && code[i+6] == 'd' && code[i+7] == 'e')
+		{
+			b = i;
+			int j = i + 8;
+			//avoid spaces
+			while(j < size && code[j] != '\"' && code[j] == ' ')
+			{
+				j++;
+			}
+			j++;
+			std::string tmp;
+			//check the name on inlude
+			while(j < size && code[j] != '\"')
+			{
+				tmp.push_back(code[j]);
+				j++;
+			}
+			e = j+1;
+			//add the name to the list of includes
+			includes.push_back(tmp);
+			beg.push_back(b);
+			end.push_back(e);
+			i = j+1;
+		}
+	}
+
+	code = replaceCodeByInclude(code, includes, beg, end);
+
+	return code;
+}
+
+std::string Shader::replaceCodeByInclude(std::string code, std::vector<std::string> includes, std::vector<int> beg, std::vector<int> end)
+{
+	int b = 0;
+	int e = 0;
+	std::string out;
+	std::string part = "";
+	std::string line = "";
+	int size = includes.size();
+	if(size > 0)
+	{
+		//begin of the code
+		for(int j = 0; j < beg[0]; j++)
+		{
+			out += code[j];
+		}
+		//first include
+		std::ifstream file(pathToMaterials + "Common/" + includes[0], std::ios::in);
+		if (file.is_open())
+		{
+			while (getline(file, line))
+				part += "\n" + line;
+			file.close();
+			out += part;
+			part.clear();
+		}
+		else
+		{
+			writeLog("			ERROR -> Path to a common code shader doesn't exist : " + includes[0]);
+			return code;
+		}
+		//other includes
+		for(int i = 1; i < includes.size(); i++)
+		{
+			//part of code
+			for(int j = end[i-1]; j < beg[i]; j++)
+			{
+				out += code[j];
+			}
+			//include code
+			std::ifstream file(pathToMaterials + "Common/" + includes[i], std::ios::in);
+			if (file.is_open())
+			{
+				while (getline(file, line))
+					part += "\n" + line;
+				file.close();
+				out += part;
+				part.clear();
+			}
+			else
+			{
+				writeLog("			ERROR -> Path to a common code shader doesn't exist : " + includes[i]);
+				return code;
+			}
+		}
+		//end of code
+		for(int j = end[size-1]; j < code.size(); j++)
+		{
+			out += code[j];
+		}
+		return out;
+	}
+	return code;
+	
 }
