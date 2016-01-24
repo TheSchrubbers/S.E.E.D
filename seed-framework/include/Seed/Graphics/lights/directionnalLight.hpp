@@ -57,7 +57,7 @@ public:
 	* \param near Near frustrum of the light
 	* \param far Far frustrum of the light
 	*/
-	DirectionnalLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &near = 1.0f, const float &far = 10.0f);
+	DirectionnalLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &near = 1.0f, const float &far = 32.0f);
 	/*!
 	* \brief Destructor of class DirectionnalLight
 	*/
@@ -87,6 +87,7 @@ struct directionnalLightStruct
 	glm::vec4 color;
 	glm::ivec4 size;
 	glm::vec4 K;
+	glm::mat4 VP;
 };
 
 #endif

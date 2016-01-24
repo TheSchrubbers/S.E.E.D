@@ -54,8 +54,9 @@ public:
 	* \param K Coefficient for the light (Ambiant, Diffuse, Specular)
 	* \param near Near frustrum
 	* \param far Far frustrum
+	* \param attenuation Attenuation of the light [0.0, 1.0]
 	*/
-	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &near = 0.1f, const float &far = 10.0f);
+	PointLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &near = 1.0f, const float &far = 32.0f, const float &attenuation = 0.0f);
 	/*!
 	* \brief Destructor of class PointLight
 	*/
@@ -67,9 +68,9 @@ public:
 	glm::vec3 getPosition();
 	/*!
 	* \brief get the attenuation of the light
-	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
+	* \return the attenuation's coefficient
 	*/
-	glm::vec3 getAttenuation();
+	float getAttenuation();
 	/*!
 	* \brief Get the light coefficients
 	* \return K(Ambiant, Diffuse, Specular)
@@ -81,6 +82,7 @@ public:
 private:
 	glm::vec3 position, K;
 	float constant, quadratic, linear;
+	float attenuation;
 };
 
 //structure for UBO of light
@@ -91,6 +93,7 @@ struct pointLightStruct
 	glm::vec4 attenuation;
 	glm::ivec4 size;
 	glm::vec4 K;
+	glm::mat4 VP;
 };
 
 #endif

@@ -228,9 +228,10 @@ void Collector::pushPointLights()
 			p = this->m_pointLightNodes[i]->getLight();
 			lights[i].color = glm::vec4(p->getColor(), 1.0);
 			lights[i].position = glm::vec4(p->getPosition(), 1.0);
-			lights[i].attenuation = glm::vec4(p->getAttenuation(), 0.0);
+			lights[i].attenuation = glm::vec4(glm::vec3(p->getAttenuation()), 0.0);
 			lights[i].size = glm::ivec4(j, 0, 0, 0);
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
+			lights[i].VP = p->getP() * p->getV();
 		}
 
 		this->lightBuf[0]->create(j * sizeof(pointLightStruct));
@@ -267,9 +268,10 @@ void Collector::pushSpotLights()
 			lights[i].color = glm::vec4(p->getColor(), 1.0);
 			lights[i].position = glm::vec4(p->getPosition(), 1.0);
 			lights[i].direction = glm::vec4(p->getDirection(), 0.0);
-			lights[i].attenuation = glm::vec4(p->getAttenuation(), p->getAngle());
+			lights[i].attenuation = glm::vec4(glm::vec3(p->getAttenuation()), p->getAngle());
 			lights[i].size = glm::ivec4(j, 0, 0, 0);
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
+			lights[i].VP = p->getP() * p->getV();
 		}
 
 		this->lightBuf[1]->create(j * sizeof(spotLightStruct));
@@ -307,6 +309,7 @@ void Collector::pushDirectionnalLights()
 			lights[i].color = glm::vec4(p->getColor(), 1.0);
 			lights[i].size = glm::ivec4(j, 0, 0, 0);
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
+			lights[i].VP = p->getP() * p->getV();
 		}
 
 		this->lightBuf[2]->create(j * sizeof(directionnalLightStruct));
@@ -343,9 +346,10 @@ void Collector::pushFlashLights()
 			lights[i].position = glm::vec4(p->getPosition(), 1.0);
 			lights[i].direction = glm::vec4(p->getDirection(), 0.0);
 			lights[i].color = glm::vec4(p->getColor(), 1.0);
-			lights[i].attenuation = glm::vec4(p->getAttenuation(), 0.0);
+			lights[i].attenuation = glm::vec4(glm::vec3(p->getAttenuation()), 0.0);
 			lights[i].size = glm::ivec4(j, 0, 0, 0);
 			lights[i].K = glm::vec4(p->getK(), 0.0f);
+			lights[i].VP = p->getP() * p->getV();
 		}
 
 		this->lightBuf[3]->create(j * sizeof(flashLightStruct));

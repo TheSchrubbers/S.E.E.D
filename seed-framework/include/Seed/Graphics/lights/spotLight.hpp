@@ -56,8 +56,9 @@ public:
 	* \param angle Angle of the light
 	* \param near Near frustrum
 	* \param far Far frustrum
+	* \param attenuation Attenuation of the light [0.0, 1.0]
 	*/
-	SpotLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &angle = 30.0f, const float &near = 0.1f, const float &far = 30.0f);
+	SpotLight(const std::string &name, const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &K, const glm::vec3 &color = glm::vec3(1.0f), const float &angle = 30.0f, const float &near = 0.1f, const float &far = 30.0f, const float &attenuation = 0.0f);
 	/*!
 	* \brief Destructor of class SpotLight
 	*/
@@ -74,9 +75,9 @@ public:
 	glm::vec3 getDirection();
 	/*!
 	* \brief get the attenuation of the light
-	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
+	* \return the attenuation's coefficient
 	*/
-	glm::vec3 getAttenuation();
+	float getAttenuation();
 	/*!
 	* \brief get the angle of opening of the light
 	* \return the constant, the linear and the quadratic param in a glm::vec3 int this order
@@ -96,6 +97,7 @@ private:
 	float angle;
 	float constant, quadratic, linear;
 	glm::vec3 K;
+	float attenuation;
 };
 
 //structure for UBO of light
@@ -107,6 +109,7 @@ struct spotLightStruct
 	glm::vec4 attenuation;
 	glm::ivec4 size;
 	glm::vec4 K;
+	glm::mat4 VP;
 };
 
 #endif

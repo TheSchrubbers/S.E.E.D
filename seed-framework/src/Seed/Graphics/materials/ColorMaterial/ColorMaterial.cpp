@@ -94,6 +94,7 @@ void ColorMaterial::render(Model *model)
 
 		//TEXTURES
 		glUniform1i(glGetUniformLocation(this->shader->getID(), "gShadowMap"), 0);
+		glUniform1i(glGetUniformLocation(this->shader->getID(), "gShadowMap2"), 1);
 		
 		//RENDER
 		//render model

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) <2015> <Antoine Richard and Jérémy Riffet, S.E.E.D>
+* Copyright (c) <2015> <Antoine Richard and JÃ©rÃ©my Riffet, S.E.E.D>
 *
 * This software is provided 'as-is', without any express or implied
 * warranty. In no event will the authors be held liable for any damages
@@ -22,10 +22,10 @@
 
 /*!
 * \file scene.hpp
-* \author Jérémy RIFFET
+* \author JÃ©rÃ©my RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
-* Antoine "Avzgui" Richard and Jérémy "Chtimy" Riffet, S.E.E.D
+* Antoine "Avzgui" Richard and JÃ©rÃ©my "Chtimy" Riffet, S.E.E.D
 * \license Zlib License.
 */
 
@@ -103,36 +103,43 @@ class Scene
 		* \brief Adding pointLight to the scene
 		* \param position: position of the pointlight in the scene
 		* \param color: color of the pointlight
-		* \param distance: distance of the field of light
-		* \param name of the pointlight
+		* \param near Near frustrum of light
+		* \param far Far frustrum of light
+		* \param attenuation Attenuation of the light [0.0, 1.0]
+		* \param name Name of the pointlight
 		*/
-		void addPointLight(const glm::vec3 &position, const glm::vec3 &color, const glm::vec3 &K, const float &near = 0.1f, const float &far = 10.0, std::string name = "PointLight");
+		void addPointLight(const glm::vec3 &position, const glm::vec3 &color, const glm::vec3 &K, const float &near = 1.0f, const float &far = 32.0, const float &attenuation = 0.0f, std::string name = "PointLight");
 		/*!
 		* \brief Adding spotLight to the scene
 		* \param position: position of the spotlight in the scene
 		* \param direction: direction of the spotLight
 		* \param color: color of the spotlight
 		* \param angle: opening angle of the spotlight
-		* \param distance: distance of the field of light
+		* \param near Near frustrum of light
+		* \param far Far frustrum of light
+		* \param attenuation Attenuation of the light [0.0, 1.0]
 		* \param name of the spotlight
 		*/
-		void addSpotLight(const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color, const glm::vec3 &K, int angle = 30,  const float &near = 0.1f, const float &far = 10.0f, std::string name = "SpotLight");
+		void addSpotLight(const glm::vec3 &position, const glm::vec3 &direction, const glm::vec3 &color, const glm::vec3 &K, int angle = 30, const float &near = 1.0f, const float &far = 32.0f, const float &attenuation = 0.0f, std::string name = "SpotLight");
 		/*!
 		* \brief Adding directionnalLight to the scene
 		* \param color: color of the directionnallight
 		* \param direction: direction of the light
 		* \param name of the directionnallight
 		*/
-		void addDirectionnalLight(const glm::vec3 &color, const glm::vec3 &pos, const glm::vec3 &direction, const glm::vec3 &K, const float &near = 0.1f, const float &far = 10.0f, std::string name = "DirectionnalLight");
+		void addDirectionnalLight(const glm::vec3 &color, const glm::vec3 &pos, const glm::vec3 &direction, const glm::vec3 &K, const float &near = 1.0f, const float &far = 32.0f, std::string name = "DirectionnalLight");
 		/*!
 		* \brief Adding flashLight to the scene
 		* \param position: position of the flashlight in the scene
 		* \param direction: direction of the flashLight
 		* \param color: color of the flashlight
-		* \param distance: distance of the field of light
+		* \param near Near frustrum of light
+		* \param far Far frustrum of light
+		* \param angle: opening angle of the spotlight
+		* \param attenuation Attenuation of the light [0.0, 1.0]
 		* \param name of the flashlight
 		*/
-		void addFlashLight(const glm::vec3 &position, const glm::vec3 &direction, glm::vec3 &color, const glm::vec3 &K, const float &angle, const float &near = 0.1f, const float &far = 10.0f, std::string name = "FlashLight");
+		void addFlashLight(const glm::vec3 &position, const glm::vec3 &direction, glm::vec3 &color, const glm::vec3 &K, const float &near = 1.0f, const float &far = 32.0f, const float &angle = 45.0, const float &attenuation = 0.0f, std::string name = "FlashLight");
 		/*!
 		* \brief Adding a Water system particles
 		* \param position: position of starter of the particles

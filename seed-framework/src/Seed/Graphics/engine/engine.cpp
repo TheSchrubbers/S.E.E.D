@@ -44,9 +44,6 @@ void Engine::mainRender(std::shared_ptr<Scene> scene)
 			nodes.push_back(n2);
 		}
 	}
-
-	//glfwWaitEvents();
-	//glfwSwapInterval(0.1);
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	//set FBO buffer textures for shadow mapping

@@ -33,8 +33,8 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 	//speed view direction (mouse)
 	float mouseSpeed = cam->getMouseSpeed();
 	glm::vec3 direction = cam->getDirection();
-	glm::vec3 up;
-	glm::vec3 right;
+	glm::vec3 up = cam->getUp();
+	glm::vec3 right = cam->getRight();
 
 	bool dragMouse = false, keyInput = false;
 
@@ -96,12 +96,12 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 			keyInput = true;
 		}
 
-
 		if(dragMouse)
 		{
 			//set the angle of the direction vector of the camera
 			cam->setHAngle(HAngle);
 			cam->setWAngle(WAngle);
+			cam->setRight(right);
 			//update ViewMatrix
 			cam->setViewMatrix(position, direction, up);
 			

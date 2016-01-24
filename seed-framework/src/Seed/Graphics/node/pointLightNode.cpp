@@ -18,7 +18,6 @@ bool PointLightNode::hasLight()
 
 void PointLightNode::setLight(PointLight *light)
 {
-	std::cout << "test" << std::endl;
 	this->pointLight = light;
 }
 
