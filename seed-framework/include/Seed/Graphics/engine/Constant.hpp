@@ -7,12 +7,7 @@
 const float WIDTH = 1024.0f;
 const float HEIGHT = 768.0f;
 
-const std::string pathToDefaultMaterial = "ressources/Materials/DefaultMaterial/";
-const std::string pathToImplicitMaterial = "ressources/Materials/ImplicitMaterial/";
 const std::string pathToTextures = "ressources/Textures/";
-const std::string pathToCubeMapMaterial = "ressources/Materials/CubeMapMaterial/";
-const std::string pathToParticlesWaterSystemMaterial = "ressources/Materials/ParticlesSystemMaterial/ParticlesWaterSystemMaterial/";
-const std::string pathToSPHMaterial = "ressources/Materials/ParticlesSystemMaterial/SPHMaterial/";
 const std::string pathToModels = "ressources/Models/";
 const std::string pathToBasicModels = "ressources/Models/BasicMesh/";
 const std::string pathToMaterials = "ressources/Materials/";
@@ -25,6 +20,7 @@ const float Attenuation[3][12] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 
 #define SEED_TEXTURE_DIFFUSE 11
 #define SEED_TEXTURE_SPECULAR 12
 #define SEED_TEXTURE_NORMAL 13
+#define SEED_TEXTURE_DEPTHMAP 14
 #define SEED_CUBEMAP 18
 
 #define SEED_BMP_FORMAT 20

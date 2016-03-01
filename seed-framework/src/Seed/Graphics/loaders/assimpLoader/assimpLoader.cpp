@@ -44,7 +44,7 @@ ObjectNode* AssimpLoader::importModelFromFile(const std::string path, std::share
 	{
 		//imports model in pScene, the model is triangulate, with tangents informations and merges same vertices
 		//A REDEFINIR!!
-		const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Fast);
+		const aiScene *pScene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Quality);//aiProcessPreset_TargetRealtime_Fast);
 		//if pScene exists, the mesh is assigning with node
 		if (pScene)
 		{

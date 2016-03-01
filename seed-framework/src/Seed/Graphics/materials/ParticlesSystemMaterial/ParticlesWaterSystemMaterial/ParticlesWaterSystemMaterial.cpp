@@ -11,7 +11,7 @@ ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(std::shared_ptr<Scene
 {
 	this->nbParticles = nb;
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToParticlesWaterSystemMaterial + "Shaders", flag);
+	this->shader = std::make_shared<Shader>(pathToMaterials + "ParticlesSystemMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
 	{
 		this->init();

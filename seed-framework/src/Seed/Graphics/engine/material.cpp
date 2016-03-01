@@ -14,6 +14,7 @@ Material::Material(const aiMaterial *material, std::shared_ptr<Scene> sce, const
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
 	this->texture_normal = nullptr;
+	this->texture_depthMap = nullptr;
 }
 Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac)
 {
@@ -23,12 +24,14 @@ Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int
 	this->mat.Ks = reflec;
 	this->mat.Kr = refrac;
 	this->texture_normal = nullptr;
+	this->texture_depthMap = nullptr;
 }
 
 Material::~Material()
 {
+	this->scene = nullptr;
+	this->camera = nullptr;
 	unsigned int i = 0;
-	delete this->camera;
 	for (i = 0; i < textures_ambiant.size(); i++)
 	{
 		delete textures_ambiant[i];
@@ -41,6 +44,8 @@ Material::~Material()
 	{
 		delete textures_specular[i];
 	}
+	delete this->texture_normal;
+	delete this->texture_depthMap;
 }
 
 void Material::pushTexture(Texture *t)
@@ -58,12 +63,16 @@ void Material::pushTexture(Texture *t)
 			break;
 		case SEED_TEXTURE_NORMAL:
 			this->texture_normal = t;
+			break;
+		case SEED_TEXTURE_DEPTHMAP:
+			this->texture_depthMap = t;
+			break;
 	}
 }
 void Material::addTexture(const std::string path, std::shared_ptr<Scene> scene, unsigned int type, unsigned int *flag)
 {
 
-	if (flag == NULL)
+	if (flag == nullptr)
 	{
 		flag = new unsigned int;
 	}
@@ -72,7 +81,7 @@ void Material::addTexture(const std::string path, std::shared_ptr<Scene> scene, 
 	Texture *t = this->scene->getCollector()->getTexture(p);
 
 	//if not true
-	if (t == NULL)
+	if (t == nullptr)
 	{
 		//we get a new Texture
 		t = new Texture(p, type, flag);
@@ -118,7 +127,7 @@ void Material::activeTextures(GLuint programID)
 	{
 		glActiveTexture(GL_TEXTURE0 + j);
 		this->textures_diffuse[i]->bind();
-		glUniform1i(glGetUniformLocation(programID, ("samplerDiffuseTexture0" + std::to_string(i)).c_str()), i + j);
+		glUniform1i(glGetUniformLocation(programID, ("samplerDiffuseTexture" + std::to_string(i)).c_str()), i + j);
 		j++;
 	}
 	for (i = 0; i < this->textures_specular.size(); i++)
@@ -135,6 +144,13 @@ void Material::activeTextures(GLuint programID)
 		glUniform1i(glGetUniformLocation(programID, "samplerNormalTexture"), j);
 		j++;
 	}
+	if (this->texture_depthMap)
+	{
+		glActiveTexture(GL_TEXTURE0 + j);
+		this->texture_depthMap->bind();
+		glUniform1i(glGetUniformLocation(programID, "samplerDepthMapTexture"), j);
+		j++;
+	}
 	CubeMap *c;
 	if (c = this->scene->getCubeMap())
 	{
@@ -142,7 +158,7 @@ void Material::activeTextures(GLuint programID)
 		c->bind();
 		glUniform1i(glGetUniformLocation(programID, "skybox"), j);
 	}
-	c = NULL;
+	c = nullptr;
 }
 
 void Material::releaseTextures()
@@ -170,6 +186,7 @@ void Material::releaseTextures()
 	{
 		c->release();
 	}
+	c = nullptr;
 }
 
 void Material::printTextures()

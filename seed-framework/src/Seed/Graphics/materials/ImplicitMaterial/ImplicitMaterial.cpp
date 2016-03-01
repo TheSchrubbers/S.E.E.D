@@ -8,7 +8,7 @@
 ImplicitMaterial::ImplicitMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToImplicitMaterial + "Shaders", flag);
+	this->shader = std::make_shared<Shader>(pathToMaterials + "ImplicitMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
 		this->init();
 	else

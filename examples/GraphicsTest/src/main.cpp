@@ -33,12 +33,12 @@ int main()
 	//scene.setCubeMap(pathToTextures + "CubeMap/Skybox");
 
 	scene->addPointLight(glm::vec3(0.0,3.0,8.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 1.0f, 30.0f, 0.0f, "light_1");
-	scene->addPointLight(glm::vec3(0.0,5.0,-8.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 1.0f, 30.0f, 0.0f, "light_2");
+	//scene->addPointLight(glm::vec3(0.0,5.0,-8.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 1.0f, 30.0f, 0.0f, "light_2");
 	//scene->addDirectionnalLight(glm::vec3(1.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, -5.0)), glm::vec3(0.1f, 0.8f, 0.8f));
 	//scene.addSpotLight(glm::vec3(0.0, 3.0, 5.0), glm::normalize(glm::vec3(0.0) - glm::vec3(0.0, 3.0, 5.0)), glm::vec3(1.0), 10);	//scene.addWaterSystemParticles(glm::vec3(0.0), SEED_POINT, 50, "WaterSystemParticles");
 
 	//addLara(scene); 
-	unsigned int error;
+	/*unsigned int error;
 	ObjectNode *monkey = scene->importModelFromFile(pathToBasicModels + "Monkey.obj", "monkey");
 	ColorMaterial *material = new ColorMaterial(scene, "monkey_material", glm::vec3(1.0,0.0,0.0), &error);
 	scanSeedError(error);
@@ -101,7 +101,21 @@ int main()
 	material4->scaleModel(glm::vec3(10.0));
 	material4->translateModel(glm::vec3(0.0, -1.0, 0.0));
 	plan->setMaterialRecur(material4);
-	scene->addNode(plan);
+	scene->addNode(plan);*/
+	unsigned int error;
+
+	ObjectNode *brique = scene->importModelFromFile(pathToBasicModels + "plan2.obj", "briques");
+	brique->setShadowMapped(false);
+	DefaultMaterial *parallax = new DefaultMaterial(scene, "parallax_material", &error, 0.02, 0.0);
+	//ColorMaterial *parallax = new ColorMaterial(scene, "parallax_material", glm::vec3(0.5, 0.5, 0.5), &error);
+	parallax->addTexture("parallax/diffuse.png", scene, SEED_TEXTURE_AMBIANT);
+	parallax->addTexture("parallax/normal.png", scene, SEED_TEXTURE_NORMAL);
+	parallax->addTexture("parallax/parallax.png", scene, SEED_TEXTURE_DEPTHMAP);
+	parallax->scaleModel(glm::vec3(10.0));
+	parallax->translateModel(glm::vec3(5.0, -1.0, 0.0));
+	//parallax->rotateModel(glm::vec3(0.0,0.0,0.5));
+	brique->setMaterialRecur(parallax);
+	scene->addNode(brique);
 
 	//ObjectNode *n = new ObjectNode(&scene);
 	//ImplicitMaterial *mat = new ImplicitMaterial(&scene, "explicit-material");
@@ -123,7 +137,7 @@ void addLara(std::shared_ptr<Scene> scene)
 	//import model
 	ObjectNode *lara = scene->importModelFromFile(pathToModels + "Lara_Croft.obj", "lara");
 
-	ObjectNode *l = lara->getNode("LaraClothes");
+	/*ObjectNode *l = lara->getNode("LaraClothes");
 	if (l)
 	{
 		DefaultMaterial *material = new DefaultMaterial(scene, "laraClothes_material", &error, 0.0, 0.0);
@@ -229,7 +243,7 @@ void addLara(std::shared_ptr<Scene> scene)
 		material->addTexture("Lara_croft/Lara_Hair_S.tga", scene, SEED_TEXTURE_SPECULAR);
 		material->addTexture("Lara_croft/Lara_Hair_N.tga", scene, SEED_TEXTURE_NORMAL);
 		l->setMaterialRecur(material);
-	}
+	}*/
 
 	/*l = lara->getNode("LaraEyebrowEyelash");
 	if (l)

@@ -10,7 +10,7 @@
 SPHMaterial::SPHMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToSPHMaterial + "Shaders", flag);
+	this->shader = std::make_shared<Shader>(pathToMaterials + "SPHMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
 		this->init();
 	else
@@ -62,7 +62,7 @@ void SPHMaterial::render(Model *model)
 		glUniform1fv(this->complight.ambiantID, 1, &(complight.ambiant));
 		glUniform1fv(this->complight.diffuseID, 1, &(complight.diffuse));
 		glUniform1fv(this->complight.specularID, 1, &(complight.specular));
-		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
+		glUniform1i(this->NMACTIVEID, Scene::normalMapActive);
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);

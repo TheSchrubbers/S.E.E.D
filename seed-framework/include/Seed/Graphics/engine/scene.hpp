@@ -185,8 +185,8 @@ class Scene
 		FBOBuffer* getFBOBuffer();
 		void afficher();
 
-		static bool wireframe, specularMapActive, specularMapView, normalMappingActive, shadowMapActive;
-		static float bias;
+		static bool wireframe, specularMapActive, specularMapView, normalMapActive, normalMapView, parallaxMapActive, parallaxMapView, shadowMapActive;
+		static float bias, biasParallax;
 		
 	private:
 
@@ -194,43 +194,15 @@ class Scene
 		Node *rootLightNode;
 		Camera *camera;
 		Collector *collector;
-		CubeMap * cubemap;
+		CubeMap *cubemap;
 		Model *RenderingQuad;
 		QuadMaterial *RenderingQuadMaterial;
-		//FBOBuffer* FBObuffer;
-		AssimpLoader * assimpLoader;
+		AssimpLoader *assimpLoader;
 
 		//SHADOW MAPPING
 		ShadowMappingMaterial *shadowMappingMaterial;
 		FBOBuffer* FBObuffer;
 		
-		/*!
-		* \brief get the number of meshes and materials, build an tree of nodes
-		* \param pScene: The assimp scene object
-		* \param path : The path to the model file
-		*/
-		//ObjectNode* loadObjectInScene(const aiScene *pScene, const std::string path, const std::string name);
-		/*!
-		* \brief Build tree of nodes of the model added
-		* \param nodeFather: an ainode object of the tree of nodes
-		* \param node: an objectNode object of the tree of objectnodes
-		*/
-		//void insertRecurNode(const aiScene *pScene, const aiNode *nodeFather, ObjectNode *father);
-		/*! 
-		* \brief Load meshes in an array and push its in the GPU memory
-		* \param pScene: Address of scene of Assimp structure
-		* \param path: path name of the mesh importing
-		*/
-		//void loadMeshes(const aiScene *pScene, std::string path);
-		/*!
-		* \brief Load materials in an array and push its in the GPU memory
-		* \param pScene: Address of scene of Assimp structure
-		* \param name: name of the material
-		*/
-		//void loadMaterials(const aiScene *pScene, std::string name);
-		/*!
-		* \brief Construct Quad for deferred shading
-		*/
 		void constructQuad();
 };
 

@@ -7,7 +7,7 @@
 DefaultMaterial::DefaultMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToDefaultMaterial + "Shaders", flag);
+	this->shader = std::make_shared<Shader>(pathToMaterials + "DefaultMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
 		this->init();
 	else
@@ -16,7 +16,7 @@ DefaultMaterial::DefaultMaterial(const aiMaterial *material, std::shared_ptr<Sce
 DefaultMaterial::DefaultMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToSPHMaterial + "Shaders", flag);
+	this->shader = std::make_shared<Shader>(pathToMaterials + "DefaultMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
 		this->init();
 	else
@@ -39,9 +39,13 @@ void DefaultMaterial::init()
 	this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
 	this->block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
 	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
-	this->NMACTIVEID = glGetUniformLocation(programID, "NormalMappingActive");
-	this->SMACTIVEID = glGetUniformLocation(programID, "SpecularMappingActive");
-	this->SMVIEWID = glGetUniformLocation(programID, "SpecularMappingView");
+	this->NMACTIVEID = glGetUniformLocation(programID, "NormalMapActive");
+	this->NMVIEWID = glGetUniformLocation(programID, "NormalMapView");
+	this->SMACTIVEID = glGetUniformLocation(programID, "SpecularMapActive");
+	this->SMVIEWID = glGetUniformLocation(programID, "SpecularMapView");
+	this->PMVIEWID = glGetUniformLocation(programID, "ParallaxMapView");
+	this->PMACTIVEID = glGetUniformLocation(programID, "ParallaxMapActive");
+	this->BIASPARALLAXMAPID = glGetUniformLocation(programID, "biasParallax");
 }
 
 DefaultMaterial::~DefaultMaterial()
@@ -57,9 +61,13 @@ void DefaultMaterial::render(Model *model)
 		//set the uniform variable MVP
 		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
+		glUniform1i(this->NMACTIVEID, Scene::normalMapActive);
+		glUniform1i(this->NMVIEWID, Scene::normalMapView);
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);
+		glUniform1i(this->PMVIEWID, Scene::parallaxMapView);
+		glUniform1i(this->PMACTIVEID, Scene::parallaxMapActive);
+		glUniform1f(this->BIASPARALLAXMAPID, Scene::biasParallax);
 		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera

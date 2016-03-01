@@ -168,9 +168,15 @@ void Engine::initAntWeakBar(std::string name, const Camera* camera)
 	TwAddVarRW(this->controller->getBar(), "Specular composant", TW_TYPE_FLOAT, &s, " min=0.0 max=1.0 step=0.01 group=Engine label='Specular composant' ");*/
 	// Add callback to toggle auto-rotate mode (callback functions are defined above).
 	TwAddVarRW(this->controller->getBar(), "WIREFRAME", TW_TYPE_BOOL8, &(Scene::wireframe), " label='WireFrame' help='Active/Desactive mode wireframe' group=Mods");
-	TwAddVarRW(this->controller->getBar(), "SPECULARMAPVIEW", TW_TYPE_BOOL8, &(Scene::specularMapView), "label='Specular Mapping View' help='View Specular Mapping' group=Mods");
-	TwAddVarRW(this->controller->getBar(), "SPECULARMAPACTIVE", TW_TYPE_BOOL8, &(Scene::specularMapActive), "label='Specular Mapping Active' help='Active/Desactive Specular Mapping' group=Mods");
-	TwAddVarRW(this->controller->getBar(), "NORMALMAPPING", TW_TYPE_BOOL8, &(Scene::normalMappingActive), "label='Normal mapping' help='Active/Desactive mode Normal mapping' group=Mods");
+	TwAddVarRW(this->controller->getBar(), "SPECULARMAPVIEW", TW_TYPE_BOOL8, &(Scene::specularMapView), "label='View specularmap' help='View Specular Map' group=SpecularMap");
+	TwAddVarRW(this->controller->getBar(), "SPECULARMAPACTIVE", TW_TYPE_BOOL8, &(Scene::specularMapActive), "label='Active specularmap' help='Active/Desactive Specular Map' group=SpecularMap");
+	TwAddVarRW(this->controller->getBar(), "NORMALMAPPVIEW", TW_TYPE_BOOL8, &(Scene::normalMapView), "label='View normalmap' help='View Normalmap' group=NormalMap");
+	TwAddVarRW(this->controller->getBar(), "NORMALMAPACTIVE", TW_TYPE_BOOL8, &(Scene::normalMapActive), "label='Active normalmap' help='Active/Desactive mode Normalmap' group=NormalMap");
+	TwAddVarRW(this->controller->getBar(), "HEIGHTMAPVIEW", TW_TYPE_BOOL8, &(Scene::parallaxMapView), "label='View heightmap' help='View heightmap' group=HeightMap");
+	TwAddVarRW(this->controller->getBar(), "HEIGHTMAPACTIVE", TW_TYPE_BOOL8, &(Scene::parallaxMapActive), "label='Active heightmap' help='Active/Desactive mode heightmap' group=HeightMap");
+	TwAddVarRW(this->controller->getBar(), "BIASPARALLAX", TW_TYPE_FLOAT, &(Scene::biasParallax), " label='Bias parallax mapping' help='Bias of parallaxMap' min=0.1 max=1.0 step=0.1 group=HeightMap ");
+
+	//SPH
 	TwAddVarRW(this->controller->getBar(), "DELTAT", TW_TYPE_FLOAT, &(SPH::deltat), " label='deltat' help='Delta t of the animation' min=0.00001 max=0.1 step=0.00001 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "K", TW_TYPE_FLOAT, &(SPH::K), " label='Stiffness K' help='Stiffness K' min=0.1 max=10.0 step=0.1 group=parameters ");
 	TwAddVarRW(this->controller->getBar(), "RADIUSPARTICLE", TW_TYPE_FLOAT, &(SPH::radiusParticle), " label='Radius Particle' min=0.01 max=1.0 step=0.05 group=parameters ");
@@ -201,6 +207,11 @@ void Engine::initAntWeakBar(std::string name, const Camera* camera)
 	TwDefine(" TOOLS/Split-Merge   group=SPH");
 	TwDefine(" TOOLS/read   group=SPH");
 	TwDefine(" TOOLS/control   group=SPH");
+	TwDefine(" TOOLS/SpecularMap	group=Mods");
+	TwDefine(" TOOLS/NormalMap	group=Mods");
+	TwDefine(" TOOLS/HeightMap 	group=Mods");
+	TwDefine(" TOOLS/ShadowMap 	group=Mods");
+
 	//TwAddVarCB(this->controller->getBar(), "MouseSpeed", TW_TYPE_FLOAT, Camera::SetSpeedMouseCallback, Camera::GetSpeedMouseCallback, &camera, "label='Speed camera' help='Set the speed of the orientation of the camera' min=10");
 
 }

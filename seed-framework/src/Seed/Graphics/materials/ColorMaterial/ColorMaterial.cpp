@@ -50,7 +50,7 @@ void ColorMaterial::render(Model *model)
 		//set the uniform variable MVP
 		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-		glUniform1i(this->NMACTIVEID, Scene::normalMappingActive);
+		glUniform1i(this->NMACTIVEID, Scene::normalMapActive);
 		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);
 		glUniform1i(this->SMVIEWID, Scene::specularMapView);

@@ -105,7 +105,7 @@ void FBOBuffer::bindRead(GLuint GtexID)
 {
 	for (int i = 0; i < this->GDepthTextures.size(); i++)
 	{
-		glActiveTexture(GtexID + i);
+		glActiveTexture(GL_TEXTURE0 + 70 + i);
 		glBindTexture(GL_TEXTURE_2D, GDepthTextures[i]);		
 	}
 }

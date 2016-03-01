@@ -244,7 +244,7 @@ bool CubeMap::createShader()
 {
 	unsigned int flag;
 	//load shaders
-	this->shader = new Shader(pathToCubeMapMaterial + "Shaders", &flag);
+	this->shader = new Shader(pathToMaterials + "CubeMapMaterial/Shaders", &flag);
 	//if shaders not loading return false
 	if (flag != SEED_SUCCESS)
 	{

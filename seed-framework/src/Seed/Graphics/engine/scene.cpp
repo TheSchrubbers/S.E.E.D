@@ -24,10 +24,14 @@
 
 //STATIC ATTRIBUTS
 bool Scene::wireframe = false;
-bool Scene::normalMappingActive = true;
+bool Scene::normalMapActive = true;
+bool Scene::normalMapView = false;
+bool Scene::parallaxMapActive = true;
+bool Scene::parallaxMapView = false;
 bool Scene::specularMapActive = true;
 bool Scene::specularMapView = false;
 bool Scene::shadowMapActive = true;
+float Scene::biasParallax = 0.5;
 float Scene::bias = 0.0005;
 
 Scene::Scene()
@@ -386,7 +390,7 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	//std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
 
 	//Shadow mapping rendering
-	this->ShadowMappingRender(nodes);
+	//this->ShadowMappingRender(nodes);
 
 	//Each node material rendering	
 	if (Scene::wireframe)
@@ -394,8 +398,8 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	this->FBObuffer->bindRead(GL_TEXTURE0);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//this->FBObuffer->bindRead(GL_TEXTURE0);
 	//each node rendering
 	/*for (int i = 0; i < renderedNodes->size(); i++)
 	{
@@ -406,7 +410,7 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 		nodes[i]->render();
 	}
 
-	this->FBObuffer->releaseTextures();
+	//this->FBObuffer->releaseTextures();
 
 	if (this->cubemap)
 		this->cubemap->draw();

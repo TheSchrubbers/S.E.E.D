@@ -126,6 +126,7 @@ class Material
 		std::vector<Texture*> textures_diffuse;
 		std::vector<Texture*> textures_specular;
 		Texture* texture_normal;
+		Texture* texture_depthMap;
 		std::shared_ptr<Scene> scene;
 		Camera *camera;
 		std::string name;
@@ -144,7 +145,7 @@ class Material
 
 		glm::mat4 Normal_Matrix;
 		glm::mat4 M;
-		uniform MID, NMID, matID, NMACTIVEID,SMACTIVEID, SMVIEWID;
+		uniform MID, NMID, matID, NMACTIVEID, NMVIEWID, SMACTIVEID, SMVIEWID, PMACTIVEID, PMVIEWID, BIASPARALLAXMAPID;
 		compLight complight;
 		Mat mat;
 };

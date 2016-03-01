@@ -1,5 +1,6 @@
 //SEED INCLUDES
 #include <Seed/Graphics/engine/texture.hpp>
+#include <Seed/Graphics/engine/tools.hpp>
 
 Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsigned int *flag)
 {
@@ -12,7 +13,7 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 	//load image
 	if (image.readImage(pathT))
 	{
-		std::cout << "Loading texture " << pathT.c_str() << std::endl;
+		writeLog("Loading texture " + pathT);
 		this->path = pathT;
 		this->type = typeTexture;
 		//format of image
@@ -34,8 +35,8 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		//texture functions
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
+		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);*/
 		glBindTexture(GL_TEXTURE_2D, 0);
 		if (flag)
 			*flag = SEED_SUCCESS;
@@ -44,7 +45,7 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 	{
 		if (flag)
 			*flag = SEED_ERROR_FILE_LOCATION;
-		std::cout << "Error opening file " << pathT << std::endl;
+		writeLog("ERROR -> opening file : " + pathT);
 	}
 }
 

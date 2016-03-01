@@ -1,42 +1,9 @@
 #version 440
 
-#define MAX_NUM_TOTAL_LIGHTS 20
 #define M_PI 3.1415926535897932384626433832795
 
-//Structs
-struct PointLight
-{
-	vec4 position;
-	vec4 color;
-	vec4 attenuation;
-	ivec4 size;
-	vec4 K;
-};
-struct SpotLight
-{
-	vec4 position;
-	vec4 direction;
-	vec4 color;
-	vec4 attenuation;
-	ivec4 size;
-	vec4 K;
-};
-struct DirectionnalLight
-{
-	vec4 direction;
-	vec4 color;
-	ivec4 size;
-	vec4 K;
-};
-struct FlashLight
-{
-	vec4 position;
-	vec4 direction;
-	vec4 color;
-	vec4 attenuation;
-	ivec4 size;
-	vec4 K;
-};
+#include "Lights.glsl"
+#include "Phong-BlinnPhong.glsl"
 
 struct Light
 {
@@ -45,32 +12,20 @@ struct Light
 	float specular;
 };
 
-//IN
-layout(std140, binding = 0) uniform PointLightsBuffer
+in VERTEX_OUT
 {
-	PointLight pointLights[MAX_NUM_TOTAL_LIGHTS];
-};
-layout(std140, binding = 1) uniform SpotLightsBuffer
-{
-	SpotLight spotLights[MAX_NUM_TOTAL_LIGHTS];
-};
-layout(std140, binding = 2) uniform DirectionnalLightsBuffer
-{
-	DirectionnalLight directionnalLights[MAX_NUM_TOTAL_LIGHTS];
-};
-layout(std140, binding = 3) uniform FlashLightsBuffer
-{
-	FlashLight flashLights[MAX_NUM_TOTAL_LIGHTS];
-};
+	vec3 PinWorldSpace;
+	vec3 NinWorldSpace;
+	vec3 VdirWorldSpace;
 
-in vec3 C;
-in vec3 P;
+	vec3 PinFragSpace;
+	vec3 VdirFragSpace;
 
-in vec3 N;
-in vec2 UV;
+	vec2 UV;
 
-in mat3 TBN;
-flat in uint sizeLights;
+	mat3 TBN;
+	mat3 transposeTBN;
+}V_IN;
 
 //OUT
 out vec4 Color;
@@ -80,110 +35,121 @@ uniform Light light;
 uniform sampler2D samplerAmbiantTexture0;
 uniform sampler2D samplerSpecularTexture0;
 uniform sampler2D samplerNormalTexture;
+uniform sampler2D samplerDepthMapTexture;
 uniform samplerCube skybox;
 uniform vec2 mat;
-uniform bool NormalMappingActive, SpecularMappingActive, SpecularMappingView;
+uniform bool NormalMapActive, NormalMapView, SpecularMapActive, SpecularMapView, ParallaxMapActive, ParallaxMapView;
+uniform float biasParallax;
 
 //FUNCTIONS
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec);
 vec3 computeContributingDirectionnalLights(DirectionnalLight pl, vec3 No, vec3 Ca, vec3 diff, vec3 spec);
 vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec);
-vec3 Phong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation);
-vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation);
+vec2 ParallaxMapping(sampler2D heightMap, vec2 UVcoords, vec3 Vdir, float bParallax);
 
 void main()
 {
-	vec3 Reflect;
-	vec4 skyboxColor;
-	if (mat.x > 0.0)
-	{
-		//reflection color
-		Reflect = reflect(C, N);
-		skyboxColor = texture(skybox, Reflect);
-	}
-	//refraction Color
-
-	//diffuse map
-	vec4 difColor = texture(samplerAmbiantTexture0, UV);
-
-	//specular map
-	vec3 specColor;
-	if (SpecularMappingActive)
-	{
-		//specular map
-		specColor = texture(samplerSpecularTexture0, UV).rgb;
-	}
-	else
-	{
-		specColor = vec3(1.0);
-	}
-	//normal map
-	vec3 texNormal = texture(samplerNormalTexture, UV).rgb;
-	//clamping normal from [0,1] to [-1,1]
-	texNormal = normalize(texNormal * 2.0 - 1.0);
-	//set the normal vector in world space
-	texNormal = normalize(TBN * texNormal);
+	vec3 Reflect = vec3(0.0);
+	vec4 skyboxColor = vec4(0.0);
+	vec3 Normal = vec3(0.0);
+	vec2 UVcoords = vec2(0.0);
+	vec3 difColor = vec3(0.0);
+	vec3 specColor = vec3(1.0);
 	vec3 PLContributing = vec3(0.0);
 
-	vec3 Normal;
-	if (NormalMappingActive)
-		Normal = texNormal;
-	else
-		Normal = N;
-
-	//process pointLights contributions
-	for (int i = 0; i < pointLights[0].size.x; i++)
-	{
-		PLContributing += computeContributingPointLights(pointLights[i], Normal, C, P, difColor.xyz, specColor);
-	}
-	//process directionnalLights contributions
-	for (int i = 0; i < directionnalLights[0].size.x; i++)
-	{
-		PLContributing += computeContributingDirectionnalLights(directionnalLights[i], Normal, C, difColor.xyz, specColor);
-	}
-	//process spotLights contributions
-	for (int i = 0; i < spotLights[0].size.x; i++)
-	{
-		PLContributing += computeContributingSpotLights(spotLights[i], Normal, C, P, difColor.xyz, specColor);
-	}
-	//if the object has a positive reflective coefficient, it contributes
-	if (mat.x > 0.0)
-	{
-		PLContributing = mat.x * skyboxColor.xyz + (1.0 - mat.x) * PLContributing;
-	}
-
-	//if specular map is viewing
-	if (SpecularMappingView)
-	{
-		Color = vec4(specColor, 1.0);
-	}
+	if(ParallaxMapView)
+		Color = vec4(vec3(texture(samplerDepthMapTexture, V_IN.UV).r), 1.0);
+	else if(SpecularMapView)
+		Color = vec4(texture(samplerSpecularTexture0, V_IN.UV).xyz, 1.0);
+	else if(NormalMapView)
+		Color = vec4(texture(samplerNormalTexture, V_IN.UV).xyz, 1.0);
 	else
 	{
-		//final color
+
+		/*if (mat.x > 0.0)
+		{
+			//reflection color
+			Reflect = reflect(C, N);
+			skyboxColor = texture(skybox, Reflect);
+		}*/
+
+		if (ParallaxMapActive)
+		{
+			//height map
+			UVcoords = ParallaxMapping(samplerDepthMapTexture, V_IN.UV, V_IN.VdirFragSpace, biasParallax);
+		}
+		else
+		{
+			UVcoords = V_IN.UV;
+		}
+
+		//diffuse map
+		difColor = texture(samplerAmbiantTexture0, UVcoords).rgb;
+
+		if (SpecularMapActive)
+		{
+			//specular map
+			specColor = texture(samplerSpecularTexture0, UVcoords).rgb;
+		}
+		else
+		{
+			specColor = vec3(1.0);
+		}
+		
+		if (NormalMapActive)
+		{
+			//normal map
+			//clamping normal from [0,1] to [-1,1]
+			Normal = normalize(texture(samplerNormalTexture, UVcoords).rgb * 2.0 - 1.0);
+		}
+		else
+		{
+			Normal = V_IN.NinWorldSpace;
+		}
+
+		//process pointLights contributions
+		for (int i = 0; i < pointLights[0].size.x; i++)
+		{
+			PLContributing += computeContributingPointLights(pointLights[i], Normal, V_IN.VdirFragSpace, V_IN.PinFragSpace, difColor.xyz, specColor);
+		}
+		//process directionnalLights contributions
+		/*for (int i = 0; i < directionnalLights[0].size.x; i++)
+		{
+			PLContributing += computeContributingDirectionnalLights(directionnalLights[i], Normal, C, difColor.xyz, specColor);
+		}
+		//process spotLights contributions
+		for (int i = 0; i < spotLights[0].size.x; i++)
+		{
+			PLContributing += computeContributingSpotLights(spotLights[i], Normal, C, P, difColor.xyz, specColor);
+		}*/
+		//if the object has a positive reflective coefficient, it contributes
+		if (mat.x > 0.0)
+		{
+			PLContributing = mat.x * skyboxColor.xyz + (1.0 - mat.x) * PLContributing;
+		}
+
 		Color = vec4(PLContributing, 1.0);
 	}
-	//Color = vec4(mat.x, mat.x, mat.x, 1.0);
 }
 
 vec3 computeContributingPointLights(PointLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec)
 {
-	// Compute attenuation
 	//compute the lenght of the vector
-	float distance = length(pl.position.xyz - Po);
+	float distance = length(V_IN.transposeTBN * pl.position.xyz - Po);
 	//compute the attenuation of the light
-	float attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	float attenuation = 1.0f / (1.0f + distance * distance * pl.attenuation.x);
 	//vector light
-	vec3 L = normalize(pl.position.xyz - Po);
+	vec3 L = normalize(V_IN.transposeTBN * pl.position.xyz - Po);
 
 	//return Phong(vec3(pl.color.xyz), light.ambiant, light.diffuse, light.specular, L, No, Ca, diff, spec, attenuation);
-	return BlinnPhong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, attenuation);
+	return Phong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, attenuation, 0.0);
 }
 
 vec3 computeContributingDirectionnalLights(DirectionnalLight pl, vec3 No, vec3 Ca, vec3 diff, vec3 spec)
 {
 	vec3 L = normalize(-pl.direction.xyz);
 	//return Phong(vec3(pl.color.xyz), light.ambiant, light.diffuse, light.specular, L, No, Ca, diff, spec, 1.0);
-	return BlinnPhong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, 1.0);
+	return BlinnPhong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, 1.0, 0.0);
 }
 
 vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3 diff, vec3 spec)
@@ -192,60 +158,66 @@ vec3 computeContributingSpotLights(SpotLight pl, vec3 No, vec3 Ca, vec3 Po, vec3
 	float attenuation = 0, distance = 0;
 	vec3 Ia;
 	distance = length(pl.position.xyz - Po);
-	attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	//attenuation = 1.0f / (pl.attenuation.x + pl.attenuation.y * distance + pl.attenuation.z * (distance * distance));
+	//attenuation = 1.0f / (1.0f + distance * distance* pl.attenuation.x);
 	if (a < pl.attenuation.w)
 	{
 		// Compute attenuation
 		//compute the lenght of the vector
 		vec3 L = normalize(pl.position.xyz - Po);
 		//return Phong(vec3(pl.color.xyz), light.ambiant, light.diffuse, light.specular, L, No, Ca, diff, spec, attenuation);
-		return BlinnPhong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, attenuation);
+		return BlinnPhong(vec3(pl.color.xyz), pl.K.xyz, L, No, Ca, diff, spec, attenuation, 0.0);
 	}
 	Ia = attenuation * light.ambiant * diff;
 	return vec3(Ia);
 }
 
-//Phong : 
-//vec3 color of the light -> LColor
-//float coefficient ambiant -> Ka,
-//float coefficient diffusion -> Kd,
-//float coefficient specular -> Ks, 
-//vec3 light -> L,
-//vec3 Normal -> No,
-//vec3 Camera -> Ca,
-//vec3 diffMap -> diffMap,
-//vec3 specMap -> specMap
-vec3 Phong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation)
+/*
+* Function to get the correct UVcoords from the parallax mapping according to the Viewing direction.
+* heigthMap : sampler2D texture heightmap
+* UVcoords : UV coordianates of the mesh
+* Vdir : Viewing direction in the fragment space
+* BParallax : Parameter to control the parallax mapping
+*/
+vec2 ParallaxMapping(sampler2D heightMap, vec2 UVcoords, vec3 Vdir, float bParallax)
 {
-	//compute ambiant contributing
-	vec3 Ia = attenuation * Lcoef.x * diffMap;
-	//compute diffuse contributing
-	vec3 Id = LColor.xyz * Lcoef.y * diffMap * max(dot(L, No), 0);
-	vec3 R = normalize(reflect(L, No));
-	//compute specular contributing
-	vec3 Is = LColor.xyz * Lcoef.z * specMap * pow(max(dot(R, Ca), 0), 10.0);
-	return Ia + Id + Is;
-}
+	const float minLayers = 8;
+	const float maxLayers = 32;
+	float nbLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), Vdir)));
+	//calculate the depth between each layer
+	float offset = 1.0 / nbLayers;
+	//begin by the first layer
+	float currentDepthLayer = 0.0;
 
-//Blinn	Phong : 
-//vec3 color of the light -> LColor
-//float coefficient ambiant -> Ka,
-//float coefficient diffusion -> Kd,
-//float coefficient specular -> Ks, 
-//vec3 light -> L,
-//vec3 Normal -> No,
-//vec3 Camera -> Ca,
-//vec3 diffMap -> diffMap,
-//vec3 specMap -> specMap
-vec3 BlinnPhong(vec3 LColor, vec3 Lcoef, vec3 L, vec3 No, vec3 Ca, vec3 diffMap, vec3 specMap, float attenuation)
-{
-	vec3 H = normalize(L + Ca);
-	//compute ambiant contributing
-	vec3 Ia = attenuation * Lcoef.x * diffMap;
-	//compute diffuse contributing
-	vec3 Id = LColor.xyz * Lcoef.y * diffMap * max(dot(L, No), 0);
-	vec3 R = normalize(reflect(L, No));
-	//compute specular contributing
-	vec3 Is = LColor.xyz * Lcoef.z * specMap * pow(max(dot(N, H), 0), 10.0);
-	return Ia + Id + Is;
+	//get the shift coordinates of the heightmap texture
+	vec2 p = Vdir.xy / (Vdir.z + 0.05) * bParallax;
+	vec2 deltaTexCoords = p / nbLayers;
+
+	// get initial values
+	vec2  currentTexCoords = UVcoords;
+	float currentDepthMapValue = texture(heightMap, currentTexCoords).r;
+	  
+	while(currentDepthLayer < currentDepthMapValue)
+	{
+	    // shift texture coordinates along direction of P
+	    currentTexCoords -= deltaTexCoords;
+	    // get depthmap value at current texture coordinates
+	    currentDepthMapValue = texture(heightMap, currentTexCoords).r;  
+	    // next layer
+	    currentDepthLayer += offset;  
+	}
+
+
+	// get texture coordinates before collision (reverse operations)
+	vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+	// get depth after and before collision for linear interpolation
+	float afterDepth  = currentDepthMapValue - currentDepthLayer;
+	float beforeDepth = texture(heightMap, prevTexCoords).r - currentDepthLayer + offset;
+ 
+	// interpolation of texture coordinates
+	float weight = afterDepth / (afterDepth - beforeDepth);
+	vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+	return currentTexCoords;
 }
