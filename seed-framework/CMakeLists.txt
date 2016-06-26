@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 2.8.11)
 SET(CMAKE_CONFIGURATION_TYPES Release CACHE STRING "" FORCE)
 
-#ENABLE_LANGUAGE(C)
+ENABLE_LANGUAGE(C)
 
 project(SEED CXX)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/graphics-engine/lib)
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Graphics/bin)
 
 # OpenGL and GLUT package
 find_package(OpenGL REQUIRED)
@@ -108,8 +108,8 @@ get_filename_component(ProjectId ${CMAKE_SOURCE_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId})
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/graphics-engine/examples/bin)
 
 file(GLOB_RECURSE SRC ${CMAKE_CURRENT_SOURCE_DIR}/../examples/GraphicsTest/src/*.?pp)
 
@@ -123,7 +123,7 @@ if(WIN32)
 	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)
 	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_system-vc120-mt-1_59.lib)
 	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
-	target_link_libraries(${ProjectId} ${PROJECT_BINARY_DIR}/Release/Seed-Graphics.lib)
+	target_link_libraries(${ProjectId} ${PROJECT_BINARY_DIR}/graphics-engine/Release/Seed-Graphics.lib)
 else(WIN32)
 	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/assimp/lib/libassimp.so.3.2.0)
 	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glfw/lib/libglfw.so.3.1)
@@ -131,7 +131,7 @@ else(WIN32)
 	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_filesystem.so.1.59.0)
 	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/AntTweakBar/lib/libAntTweakBar.so.1.0)
 	#target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glew/lib/libGLEW.so.1.13.0)
-	target_link_libraries(${ProjectId} ${PROJECT_BINARY_DIR}/lib/libSeed-Graphics.so)
+	target_link_libraries(${ProjectId} ${PROJECT_BINARY_DIR}/graphics-engine/lib/libSeed-Graphics.so)
 	target_link_libraries(${ProjectId} ${OPENGL_INCLUDE_DIRS})
 	if(GLEW_FOUND)
 		target_link_libraries(${ProjectId} ${GLEW_LIBRARIES})
@@ -143,50 +143,61 @@ if(WIN32)
 	file(GLOB DLL
 		${CMAKE_SOURCE_DIR}/lib-required/DLL/*.dll
 	)
-	file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
-	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
+	file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/graphics-engine/examples/bin/Release)
+	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/graphics-engine/examples/bin/Release)
 else(WIN32)
-	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/bin)
+	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/graphics-engine/examples/bin)
 endif(WIN32)
 
 
 
-#QtProject
-project(seed_Qt)
+#IHMProject
+project(seed_IHM)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
+SET(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+
 if(WIN32)
-	set(CMAKE_PREFIX_PATH F:\Programs\Qt\5.5\msvc2013_64\lib\cmake\Qt5Core)
+	set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}\lib-required\Qt\5.5\msvc2013_64)
 else(WIN32)
-	set(CMAKE_PREFIX_PATH /home/chtimy/Qt/5.5/gcc_64/lib/cmake/Qt5Core)
+	set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/lib-required/Qt/5.5/gcc_64)
 endif(WIN32)
 
 FIND_PACKAGE(Qt5Core REQUIRED)
-get_target_property(QtCore_location Qt5::Core LOCATION)
-
-if(WIN32)
-	set(CMAKE_PREFIX_PATH F:\Programs\Qt\5.5\msvc2013_64\lib\cmake\Qt5Widgets)
-else(WIN32)
-	set(CMAKE_PREFIX_PATH /home/chtimy/Qt/5.5/gcc_64/lib/cmake/Qt5Widgets)
-endif(WIN32)
+#get_target_property(QtCore_location Qt5::Core LOCATION)
 
 FIND_PACKAGE(Qt5Widgets REQUIRED)
-get_target_property(QtCore_location Qt5::Widgets LOCATION)
+#get_target_property(QtWidgets_location Qt5::Widgets LOCATION)
 
-foreach(plugin ${Qt5Core_PLUGINS})
-  get_target_property(_loc ${plugin} LOCATION)
-  message("Plugin ${plugin} is at location ${_loc}")
-endforeach()
-foreach(plugin ${Qt5Widgets_PLUGINS})
-  get_target_property(_loc ${plugin} LOCATION)
-  message("Plugin ${plugin} is at location ${_loc}")
-endforeach()
+FIND_PACKAGE(Qt5Gui REQUIRED)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+FIND_PACKAGE(Qt5OpenGL)
+
+#include_directories(${Qt5Widgets_INCLUDES})
+
+#add_definitions(${Qt5Widgets_DEFINITIONS})
+
+#set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} -std=c++11" )
+
+#foreach(plugin ${Qt5Core_PLUGINS})
+#  get_target_property(_loc ${plugin} LOCATION)
+#  message("Plugin ${plugin} is at location ${_loc}")
+#endforeach()
+#foreach(plugin ${Qt5Widgets_PLUGINS})
+#  get_target_property(_loc ${plugin} LOCATION)
+#  message("Plugin ${plugin} is at location ${_loc}")
+#endforeach()
+
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/Seed/IHM)
 
 # GLM include directories
 include_directories(${CMAKE_SOURCE_DIR}/lib-required/glm)
@@ -200,6 +211,8 @@ include_directories(${CMAKE_SOURCE_DIR}/lib-required/boost_win32)
 include_directories(${CMAKE_SOURCE_DIR}/lib-required/assimp_win32/include)
 # GLFW include directories
 include_directories(${CMAKE_SOURCE_DIR}/lib-required/glfw_win32/include)
+# QGLViewer
+include_directories(${CMAKE_SOURCE_DIR}/lib-required/QGLViewer/include)
 if(WIN32)
 	# Glew include directories for windows
 	include_directories(${CMAKE_SOURCE_DIR}/lib-required/glew_win32/include)
@@ -210,54 +223,58 @@ else(WIN32)
 	endif(GLEW_FOUND)
 endif(WIN32)
 
-SET(Qt_SOURCES ${CMAKE_SOURCE_DIR}/src/main.cpp ${CMAKE_SOURCE_DIR}/src/window.cpp ${CMAKE_SOURCE_DIR}/src/glwidget.cpp)
-SET(Qt_HEADERS ${CMAKE_SOURCE_DIR}/include/main.hpp)
-SET(Qt_HEADERS_MOC ${CMAKE_SOURCE_DIR}/include/window.hpp ${CMAKE_SOURCE_DIR}/include/glwidget.hpp)
+SET(Qt_SOURCES ${CMAKE_SOURCE_DIR}/src/Seed/IHM/main.cpp ${CMAKE_SOURCE_DIR}/src/Seed/IHM/window.cpp ${CMAKE_SOURCE_DIR}/src/Seed/IHM/glwidget.cpp)
+SET(Qt_HEADERS ${CMAKE_SOURCE_DIR}/include/Seed/IHM/main.hpp)
+SET(Qt_HEADERS_MOC ${CMAKE_SOURCE_DIR}/include/Seed/IHM/window.hpp ${CMAKE_SOURCE_DIR}/include/Seed/IHM/glwidget.hpp)
 
 #QT5_WRAP_CPP(Qt_HEADERS_MOC ${Qt_HEADERS})
 #INCLUDE(${QT_USE_FILE})
 #ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/IHM/bin)
 
 QT5_WRAP_CPP(manager_moc ${Qt_HEADERS_MOC})
 
-add_executable(${ProjectId} ${Qt_SOURCES} ${Qt_HEADERS_MOC})
+add_executable(Seed-IHM ${Qt_SOURCES} ${Qt_HEADERS_MOC})
 
-target_link_libraries(${ProjectId} Qt5::Core)
-target_link_libraries(${ProjectId} Qt5::Widgets)
+#target_link_libraries(Seed-IHM Qt5::Core)
+#target_link_libraries(Seed-IHM Qt5::Widgets)
+#target_link_libraries(Seed-IHM ${Qt5Widgets_LIBRARIES})
 
 if(WIN32)
-	target_link_libraries(${ProjectId} opengl32.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/glew_win32/lib/Release/Win32/glew32.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_system-vc120-mt-1_59.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
-	target_link_libraries(${ProjectId} ${CMAKE_SOURCE_DIR}/build/Release/Seed-Graphics.lib)
+	target_link_libraries(Seed-IHM opengl32.lib)
+	target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/glfw_win32/lib-vc2013/glfw3.lib)
+	target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/glew_win32/lib/Release/Win32/glew32.lib)
+	target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/antTweakBar/lib/AntTweakBar.lib)
+	target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/assimp_win32/lib/assimp_release-dll_win32/assimp.lib)
+	target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_system-vc120-mt-1_59.lib)
+	target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
+	#target_link_libraries(Seed-IHM ${CMAKE_SOURCE_DIR}/lib-required/boost_win32/lib/libboost_filesystem-vc120-mt-1_59.lib)
+	target_link_libraries(Seed-IHM ${PROJECT_BINARY_DIR}/graphics-engine/Release/Seed-Graphics.lib)
 else(WIN32)
-	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/assimp/lib/libassimp.so.3.2.0)
-	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glfw/lib/libglfw.so.3.1)
-	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_system.so.1.59.0)
-	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_filesystem.so.1.59.0)
-	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/AntTweakBar/lib/libAntTweakBar.so.1.0)
+	target_link_libraries(Seed-IHM ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/assimp/lib/libassimp.so.3.2.0)
+	target_link_libraries(Seed-IHM ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glfw/lib/libglfw.so.3.1)
+	target_link_libraries(Seed-IHM ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_system.so.1.59.0)
+	target_link_libraries(Seed-IHM ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/boost/lib/libboost_filesystem.so.1.59.0)
+	target_link_libraries(Seed-IHM ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/AntTweakBar/lib/libAntTweakBar.so.1.0)
 	#target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/lib-required/Linux/glew/lib/libGLEW.so.1.13.0)
-	target_link_libraries(${ProjectId} ${CMAKE_CURRENT_SOURCE_DIR}/build/lib/libSeed-Graphics.so)
-	target_link_libraries(${ProjectId} ${OPENGL_INCLUDE_DIRS})
+	target_link_libraries(Seed-IHM ${PROJECT_BINARY_DIR}/graphics-engine/lib/libSeed-Graphics.so)
+	target_link_libraries(Seed-IHM ${OPENGL_INCLUDE_DIRS})
 	if(GLEW_FOUND)
-		target_link_libraries(${ProjectId} ${GLEW_LIBRARIES})
+		target_link_libraries(Seed-IHM ${GLEW_LIBRARIES})
 	endif(GLEW_FOUND)
 endif(WIN32)
+
+qt5_use_modules(Seed-IHM Widgets Core OpenGL Gui)
 
 if(WIN32)
 	#COPY FILES INTO THE BINARY PROJECT FILES
 	file(GLOB DLL
 		${CMAKE_SOURCE_DIR}/lib-required/DLL/*.dll
 	)
-	file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
-	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/bin/Release)
+	file(COPY ${DLL} DESTINATION ${PROJECT_BINARY_DIR}/IHM/bin/Release)
+	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/IHM/bin/Release)
 else(WIN32)
-	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/bin)
+	file(COPY ${CMAKE_SOURCE_DIR}/ressources DESTINATION ${PROJECT_BINARY_DIR}/IHM/bin)
 endif(WIN32)

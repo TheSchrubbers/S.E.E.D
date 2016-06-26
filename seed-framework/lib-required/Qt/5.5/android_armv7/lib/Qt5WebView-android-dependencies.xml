@@ -1,0 +1,4 @@
+<rules><dependencies><lib name="Qt5WebView"><depends>
+<jar file="jar/QtAndroidWebView.jar"  />
+<jar bundling="1" file="jar/QtAndroidWebView-bundled.jar"  />
+</depends></lib></dependencies></rules>

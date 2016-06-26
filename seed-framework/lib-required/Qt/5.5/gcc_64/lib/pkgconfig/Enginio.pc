@@ -1,0 +1,14 @@
+prefix=/home/chtimy/Qt/5.5/gcc_64
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+
+Name: Enginio
+Description: Enginio module
+Version: 1.2.1
+Libs: -L${libdir} -lEnginio 
+Libs.private: -L/home/chtimy/Qt/5.5/gcc_64/lib -lQt5Network -lQt5Core -lpthread   
+Cflags: -I${includedir}/Enginio -I${includedir}
+Requires: Qt5Core Qt5Network
+

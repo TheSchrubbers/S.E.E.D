@@ -33,17 +33,11 @@ Material::~Material()
 	this->camera = nullptr;
 	unsigned int i = 0;
 	for (i = 0; i < textures_ambiant.size(); i++)
-	{
 		delete textures_ambiant[i];
-	}
 	for (i = 0; i < textures_diffuse.size(); i++)
-	{
 		delete textures_diffuse[i];
-	}
 	for (i = 0; i < textures_specular.size(); i++)
-	{
 		delete textures_specular[i];
-	}
 	delete this->texture_normal;
 	delete this->texture_depthMap;
 }
@@ -71,11 +65,7 @@ void Material::pushTexture(Texture *t)
 }
 void Material::addTexture(const std::string path, std::shared_ptr<Scene> scene, unsigned int type, unsigned int *flag)
 {
-
-	if (flag == nullptr)
-	{
-		flag = new unsigned int;
-	}
+	unsigned int flag2;
 	std::string p = pathToTextures + path;
 	//we verify if the texture is already present
 	Texture *t = this->scene->getCollector()->getTexture(p);
@@ -84,25 +74,24 @@ void Material::addTexture(const std::string path, std::shared_ptr<Scene> scene, 
 	if (t == nullptr)
 	{
 		//we get a new Texture
-		t = new Texture(p, type, flag);
+		t = new Texture(p, type, &flag2);
 		//verify if the texture is correct
-		if (*flag == SEED_SUCCESS)
+		if (flag2 == SEED_SUCCESS)
 		{
 			//texture is adding to the collector and the actual material
 			scene->getCollector()->collectTextures(t);
 			this->pushTexture(t);
 		}
 		else
-		{
 			delete t;
-		}
 	}
 	//if t exists
 	else
-	{
 		//we push t in the actual material
 		this->pushTexture(t);
-	}
+
+	if(flag)
+		*flag = flag2;
 }
 
 void Material::setLight(float a, float d, float s)

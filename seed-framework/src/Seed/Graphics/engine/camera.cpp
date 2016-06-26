@@ -28,6 +28,11 @@ Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, flo
 	this->camBuf->create(sizeof(struct Matrix));
 }
 
+Camera::~Camera()
+{
+	delete this->camBuf;
+}
+
 glm::mat4 Camera::getViewMatrix()
 {
 	return this->matrix.V;

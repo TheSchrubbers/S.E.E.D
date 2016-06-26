@@ -2,10 +2,12 @@
 #define WINDOW_HPP
 
 #include <QtCore>
-#include <QWidget>
+//#include <QWidget>
 #include <QMainWindow>
 #include <QString>
 #include <iostream>
+
+class GlWidget;
 
 class Window : public QMainWindow
 {
@@ -13,6 +15,8 @@ class Window : public QMainWindow
 public:
 	Window(QString name);
 	~Window();
+private:
+	GlWidget *glwidget;
 };
 
 #endif

@@ -48,11 +48,14 @@ Collector::Collector()
 	this->lightBuf[1]->update(s, sizeof(spotLightStruct));
 	this->lightBuf[2]->update(d, sizeof(directionnalLightStruct));
 	this->lightBuf[3]->update(f, sizeof(flashLightStruct));
+	delete p;
+	delete s;
+	delete d;
+	delete f;
 }
 
 Collector::~Collector()
 {
-
 }
 
 void Collector::collectRenderedObjectNodes(ObjectNode* node)
@@ -60,19 +63,12 @@ void Collector::collectRenderedObjectNodes(ObjectNode* node)
 	std::vector<ObjectNode*> *children = node->getChildren();
 	//if the node must be rendered and not is a lightnode
 	if (node->isRendered())
-	{
 		if (node->getName() != "RootLightNode")
-		{
 			//recursiv method to parse all the nodes
 			for (int i = 0; i < children->size(); i++)
-			{
 				this->collectRenderedObjectNodes(children->at(i));
-			}
 			if (!node->hasChildren())
-			{
 				this->nodesObjectRenderer.push_back(node);
-			}
-		}
 		/*else
 		{
 			//recursiv method to parse all the nodes
@@ -81,7 +77,7 @@ void Collector::collectRenderedObjectNodes(ObjectNode* node)
 				this->collectRenderedLightingNodes(children->at(i));
 			}
 		}*/
-	}
+	children = nullptr;
 }
 
 /*void Collector::collectRenderedLightingNodes(Node *node)
@@ -110,9 +106,7 @@ void Collector::collectMaterials(Material *material)
 void Collector::collectMaterials(std::vector<Material*> materials)
 {
 	for (int i = 0; i < materials.size(); i++)
-	{
 		this->m_materials.push_back(materials[i]);
-	}
 }
 
 void Collector::collectTextures(Texture *texture)
@@ -123,9 +117,7 @@ void Collector::collectTextures(Texture *texture)
 void Collector::collectTextures(std::vector<Texture*> textures)
 {
 	for (int i = 0; i < textures.size(); i++)
-	{
 		this->m_textures.push_back(textures[i]);
-	}
 }
 
 void Collector::collectModels(Model* model)
@@ -136,9 +128,7 @@ void Collector::collectModels(Model* model)
 void Collector::collectModels(std::vector<Model*> models)
 {
 	for (int i = 0; i < models.size(); i++)
-	{
 		this->m_models.push_back(models[i]);
-	}
 }
 
 /*void Collector::collectLights(Light* light)
@@ -170,13 +160,9 @@ Material* Collector::getMaterialIndexed(int index)
 Texture* Collector::getTexture(const std::string name)
 {
 	for (int i = 0; i < this->m_textures.size(); i++)
-	{
 		if (this->m_textures[i]->getPath() == name)
-		{
 			return this->m_textures[i];
-		}
-	}
-	return NULL;
+	return nullptr;
 }
 
 std::vector<ObjectNode*> * Collector::getRenderedCollectedNodes()
@@ -192,36 +178,26 @@ std::vector<Node*> * Collector::getLightingRenderedCollectedNodes()
 bool Collector::meshExists(std::string path)
 {
 	for (int i = 0; i < m_models.size(); i++)
-	{
 		if (path == m_models[i]->getPathName())
-		{
 			return true;
-		}
-	}
 	return false;
 }
 
 void Collector::pushPointLights()
 {
 	//array of structures of light
-	pointLightStruct *lights;
+	pointLightStruct *lights = nullptr;
+	PointLight* p = nullptr;
 	int j = 0, i = 0;
 	//count nb pointlights rendered
 	for (i = 0; i < this->m_pointLightNodes.size(); i++)
-	{
 		if (this->m_pointLightNodes[i]->isRendered())
-		{
 			j++;
-		}
-	}
 
 	if (j > 0)
 	{
-
 		//malloc space to the struct pointlight with size j;
 		lights = new pointLightStruct[j];
-
-		PointLight* p;
 		//push pointlights in the struct
 		for (i = 0; i < j; i++)
 		{
@@ -238,29 +214,26 @@ void Collector::pushPointLights()
 		//send data of lights
 		this->lightBuf[0]->update(lights, j * sizeof(pointLightStruct));
 	}
+	p = nullptr;
+	delete lights;
 }
 
 void Collector::pushSpotLights()
 {
 	//array of structures of light
-	spotLightStruct *lights;
+	spotLightStruct *lights = nullptr;
+	SpotLight* p = nullptr;
 	int j = 0, i = 0;
 	//count nb pointlights rendered
 	for (i = 0; i < this->m_spotLightNodes.size(); i++)
-	{
 		if (this->m_spotLightNodes[i]->isRendered())
-		{
 			j++;
-		}
-	}
 
 	if (j > 0)
 	{
-
 		//malloc space to the struct spotlight with size j;
 		lights = new spotLightStruct[j];
-
-		SpotLight* p;
+		
 		//push spotlights in the struct
 		for (i = 0; i < j; i++)
 		{
@@ -278,29 +251,27 @@ void Collector::pushSpotLights()
 		//send data of lights
 		this->lightBuf[1]->update(lights, j * sizeof(spotLightStruct));
 	}
+	p = nullptr;
+	lights = nullptr;
 }
 
 void Collector::pushDirectionnalLights()
 {
 	//array of structures of light
-	directionnalLightStruct *lights;
+	directionnalLightStruct *lights = nullptr;
+	DirectionnalLight* p = nullptr;
+
 	int j = 0, i = 0;
 	//count nb pointlights rendered
 	for (i = 0; i < this->m_directionnalLightNodes.size(); i++)
-	{
 		if (this->m_directionnalLightNodes[i]->isRendered())
-		{
 			j++;
-		}
-	}
 
 	if (j > 0)
 	{
-
 		//malloc space to the struct directionnallight with size j;
 		lights = new directionnalLightStruct[j];
 
-		DirectionnalLight* p;
 		//push directionnallights in the struct
 		for (i = 0; i < j; i++)
 		{
@@ -316,29 +287,26 @@ void Collector::pushDirectionnalLights()
 		//send data of lights
 		this->lightBuf[2]->update(lights, j * sizeof(directionnalLightStruct));
 	}
+	lights = nullptr;
+	p = nullptr;
 }
 
 void Collector::pushFlashLights()
 {
 	//array of structures of light
-	flashLightStruct *lights;
+	FlashLight* p = nullptr;
+	flashLightStruct *lights = nullptr;
 	int j = 0, i = 0;
 	//count nb flashlights rendered
 	for (i = 0; i < this->m_flashLightNodes.size(); i++)
-	{
 		if (this->m_flashLightNodes[i]->isRendered())
-		{
 			j++;
-		}
-	}
 
 	if (j > 0)
 	{
-
 		//malloc space to the struct flashlight with size j;
 		lights = new flashLightStruct[j];
 
-		FlashLight* p;
 		//push flashlights in the struct
 		for (i = 0; i < j; i++)
 		{
@@ -356,6 +324,8 @@ void Collector::pushFlashLights()
 		//send data of lights
 		this->lightBuf[3]->update(lights, j * sizeof(flashLightStruct));
 	}
+	p = nullptr;
+	lights = nullptr;
 }
 
 UBOBuffer* Collector::getLightUBO(int i)

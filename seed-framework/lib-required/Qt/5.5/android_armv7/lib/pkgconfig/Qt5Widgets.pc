@@ -1,0 +1,14 @@
+prefix=/home/chtimy/Qt/5.5/android_armv7
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+
+Name: Qt5 Widgets
+Description: Qt Widgets module
+Version: 5.5.1
+Libs: -L${libdir} -lQt5Widgets 
+Libs.private: -L/opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a -L/opt/android/ndk/platforms/android-9/arch-arm//usr/lib -L/home/chtimy/Qt/5.5/android_armv7/lib -lQt5Gui -lQt5Core -lgnustl_shared -llog -lz -lm -ldl -lc -lgcc -lGLESv2  
+Cflags: -I${includedir}/QtWidgets -I${includedir}
+Requires: Qt5Core Qt5Gui
+

@@ -1,0 +1,14 @@
+prefix=/home/chtimy/Qt/5.5/android_armv7
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+
+Name: Qt5 QmlDevTools
+Description: Qt QmlDevTools module
+Version: 5.5.1
+Libs: -L${libdir} -lQt5QmlDevTools 
+Libs.private: -L/home/chtimy/Qt/5.5/android_armv7/lib -lQt5Bootstrap -lpthread   
+Cflags: -I${includedir}/QtQmlDevTools -I${includedir}
+Requires: Qt5Bootstrap
+

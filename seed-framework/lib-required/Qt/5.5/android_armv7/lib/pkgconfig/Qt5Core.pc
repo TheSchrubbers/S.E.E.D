@@ -1,0 +1,15 @@
+prefix=/home/chtimy/Qt/5.5/android_armv7
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+host_bins=${prefix}/bin
+qt_config=minimal-config small-config medium-config large-config full-config no-pkg-config evdev c++11 accessibility egl eglfs opengl opengles2 shared qpa reduce_exports clock-gettime clock-monotonic mremap getaddrinfo ipv6ifname inotify eventfd png freetype harfbuzz system-zlib openssl rpath concurrent audio-backend release
+
+Name: Qt5 Core
+Description: Qt Core module
+Version: 5.5.1
+Libs: -L${libdir} -lQt5Core 
+Libs.private: -L/opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a -L/opt/android/ndk/platforms/android-9/arch-arm//usr/lib -L/home/chtimy/Qt/5.5/android_armv7/lib -lqtpcre -L/opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a -L/opt/android/ndk/platforms/android-9/arch-arm//usr/lib -lgnustl_shared -llog -lz -lc -lgcc -lm -ldl  
+Cflags: -I${includedir}/QtCore -I${includedir}
+

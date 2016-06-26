@@ -1,0 +1,14 @@
+prefix=/home/chtimy/Qt/5.5/gcc_64
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+
+Name: Qt5 Location
+Description: Qt Location module
+Version: 5.5.1
+Libs: -L${libdir} -lQt5Location 
+Libs.private: -L/usr/lib64 -L/home/chtimy/Qt/5.5/gcc_64/lib -lQt5Positioning -L/home/chtimy/Qt/5.5/gcc_64/lib -L/home/chtimy/Qt/5.5/gcc_64/lib -lQt5Quick -lQt5Gui -lQt5Qml -lQt5Network -lQt5Core -lpthread -lGL  
+Cflags: -I${includedir}/QtLocation -I${includedir}
+Requires: Qt5Core Qt5Positioning Qt5Gui Qt5Quick
+

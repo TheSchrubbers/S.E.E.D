@@ -67,7 +67,7 @@ public:
 	/*!
 	* \brief Destructor of class Texture
 	*/
-	~Camera(){};
+	~Camera();
 	/*!
 	* \brief get the view matrix
 	* \return glm::mat4 : View matrix
