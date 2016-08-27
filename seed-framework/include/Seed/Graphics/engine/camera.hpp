@@ -49,123 +49,158 @@ class Camera
 {
 public:
 	/*!
-	* \brief Constructor of class Camera
-	* \param pos : Position of the camera
-	* \param look : Position who looks the camera
-	* \param upVector : The vertical vector of camera
-	* \param FOV : The field of view of the camera
-	* \param width : The width resolution of the screen
-	* \param height : the height resolution of the screen
-	* \param near : the min distance of field of view
-	* \param far : the max distance of filed of view
-	* \param WAngle : the horizontal angle
-	* \param HAngle : the vertical angle
-	* \param speed : speed of the translation of the camera
-	* \param mouseSpeed : the speed of the mouse for the rotation
-	*/
+	 * @brief      Constructor of class Camera
+	 *
+	 * @param      pos         : Position of the camera
+	 * @param      look        : Position who looks the camera
+	 * @param      upVector    : The vertical vector of camera
+	 * @param      FOV         : The field of view of the camera
+	 * @param      width       : The width resolution of the screen
+	 * @param      height      : the height resolution of the screen
+	 * @param      near        : the min distance of field of view
+	 * @param      far         : the max distance of filed of view
+	 * @param      WAngle      : the horizontal angle
+	 * @param      HAngle      : the vertical angle
+	 * @param      speed       : speed of the translation of the camera
+	 * @param      mouseSpeed  : the speed of the mouse for the rotation
+	 */
 	Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector = glm::vec3(0.0,1.0,0.0), float FOV = 45, float width = WIDTH, float height = HEIGHT, float near = 0.1f, float far = 100.0f, float WAngle = 3.14f, float HAngle = 0.0f, float speed = (1.0f/30.0f), float mouseSpeed = (1.0f/200.0f));
 	/*!
-	* \brief Destructor of class Texture
-	*/
+	 * @brief      Destructor of class Texture
+	 */
 	~Camera();
 	/*!
-	* \brief get the view matrix
-	* \return glm::mat4 : View matrix
-	*/
+	 * @brief      get the view matrix
+	 *
+	 * @return     glm::mat4 : View matrix
+	 */
 	glm::mat4 getViewMatrix();
 	/*!
-	* \brief get the projection matrix
-	* \return glm::mat4 : Projection matrix
-	*/
+	 * @brief      get the projection matrix
+	 *
+	 * @return     glm::mat4 : Projection matrix
+	 */
 	glm::mat4 getProjectionMatrix();
 	/*!
-	* \brief get the position of the camera
-	* \return the position of the camera
-	*/
+	 * @brief      get the position of the camera
+	 *
+	 * @return     the position of the camera
+	 */
 	glm::vec3 getPosition();
 	/*!
-	* \brief get the direction vector of the camera
-	* \return the direction vector of the camera
-	*/
+	 * @brief      get the direction vector of the camera
+	 *
+	 * @return     the direction vector of the camera
+	 */
 	glm::vec3 getDirection();
 	/*!
-	* \brief get the up vector of the camera
-	* \return the vector up of the camera
-	*/
+	 * @brief      get the up vector of the camera
+	 *
+	 * @return     the vector up of the camera
+	 */
 	glm::vec3 getUp();
 	/*!
-	* \brief get the horizontal angle
-	* \return the horizontal angle
-	*/
+	 * @brief      get the horizontal angle
+	 *
+	 * @return     the horizontal angle
+	 */
 	float getWAngle();
 	/*!
-	* \brief get the vertical angle
-	* \return the vertical angle
-	*/
+	 * @brief      get the vertical angle
+	 *
+	 * @return     the vertical angle
+	 */
 	float getHAngle();
 	/*!
-	* \brief get the near of the view
-	* \return the near of the view
-	*/
+	 * @brief      get the near of the view
+	 *
+	 * @return     the near of the view
+	 */
 	float getNear();
 	/*!
-	* \brief get the far of the view
-	* \return the far of the view
-	*/
+	 * @brief      get the far of the view
+	 *
+	 * @return     the far of the view
+	 */
 	float getFar();
 	/*!
-	* \brief get the speed of the camera translation
-	* \return the speed of the camera translation
-	*/
+	 * @brief      get the speed of the camera translation
+	 *
+	 * @return     the speed of the camera translation
+	 */
 	float getSpeed();
 	/*!
-	* \brief get the mouse speed
-	* \return the mouse speed
-	*/
+	 * @brief      get the mouse speed
+	 *
+	 * @return     the mouse speed
+	 */
 	float getMouseSpeed();
 	/*!
-	* \brief get the field of view
-	* \return the field of view
-	*/
+	 * @brief      get the field of view
+	 *
+	 * @return     the field of view
+	 */
 	float getFoV();
 	/*!
-	* \brief get the initial field of view
-	* \return the initial field of view
-	*/
+	 * @brief      get the initial field of view
+	 *
+	 * @return     the initial field of view
+	 */
 	const float getInitFoV();
 	/*!
-	* \brief set the vertical angle
-	*/
+	 * @brief      set the vertical angle
+	 *
+	 * @param[in]  HAngle  The h angle
+	 */
 	void setHAngle(float HAngle);
 	/*!
-	* \brief set the horizonal angle
-	*/
+	 * @brief      set the horizonal angle
+	 *
+	 * @param[in]  WAngle  The w angle
+	 */
 	void setWAngle(float WAngle);
-
+	/**
+	 * @brief      Gets right vector of the camera.
+	 *
+	 * @return     The right vector of the camera.
+	 */
 	glm::vec3 getRight();
+	/**
+	 * @brief      Sets right vector of the camera.
+	 *
+	 * @param      right  The new right vector of the camera.
+	 */
 	void setRight(glm::vec3 &right);
-
-
 	/*!
-	* \brief set the view matrix
-	* \param pos : reference to the position of the camera
-	* \param dir : reference to the direction of the camera
-	* \param up : reference to the vertical vector of the camera
-	*/
+	 * @brief      Sets the view matrix
+	 *
+	 * @param      pos   : Position of the camera
+	 * @param      dir   : Direction vector of the camera
+	 * @param      up    : Up vector of the camera
+	 */
 	void setViewMatrix(glm::vec3 &pos, glm::vec3 &dir, glm::vec3 &up);
+	/**
+	 * @brief      Sets the view matrix.
+	 *
+	 * @param      dir   Direction vector of the camera
+	 * @param      up    Up vector of the camera
+	 */
+	void setViewMatrix(glm::vec3 &dir, glm::vec3 &up);
 	/*!
-	* \brief set the view matrix
-	* \param pos : reference to the position of the camera
-	*/
+	 * @brief      set the view matrix
+	 *
+	 * @param      pos   : reference to the position of the camera
+	 */
 	void setViewMatrix(glm::vec3 &pos);
 	/*!
-	* \brief set the projection matrix
-	* \param Fov : reference to the field of view
-	* \param width : reference to the width resolution
-	* \param height : reference to the height resolution
-	* \param near : reference to the min distance of field of view
-	* \param far : reference to the max distance of field of view
-	*/
+	 * @brief      set the projection matrix
+	 *
+	 * @param      Fov     : reference to the field of view
+	 * @param      width   : reference to the width resolution
+	 * @param      height  : reference to the height resolution
+	 * @param      near    : reference to the min distance of field of view
+	 * @param      far     : reference to the max distance of field of view
+	 */
 	void setProjectionMatrix(const float &Fov, const int width, const int height, const float &near, const float &far);
 	/**
 	 * @brief      Update camera's Uniform Buffer Object
@@ -178,9 +213,10 @@ public:
 	 */
 	unsigned int getUBOId();
 	/*!
-	* \brief set the mouse speed moving
-	* \param speed : speed of the mouse's move
-	*/
+	 * @brief      set the mouse speed moving
+	 *
+	 * @param      speed  : speed of the mouse's move
+	 */
 	void setMouseSpeed(const float speed);
 
 	static void TW_CALL SetSpeedMouseCallback(const void *value, void *clientData)
@@ -202,17 +238,17 @@ private:
 		glm::mat4 V_inverse;
 	};
 
-	struct Matrix matrix;
+	struct Matrix m_matrix;
 
-	glm::vec3 position, direction, up, right;
+	glm::vec3 m_position, m_direction, m_up, m_right;
 	//horizontal and vertical angle
-	float WAngle, HAngle, near, far, FoV;
-	float mouseSpeed, speed;
+	float m_WAngle, m_HAngle, m_near, m_far, m_FoV;
+	float m_mouseSpeed, m_speed;
 	//field of view
-	float initFoV = 45.0;
+	float m_initFoV = 45.0;
 
 	//UBO BUffer of the camera
-	UBOBuffer *camBuf;
+	UBOBuffer *m_camBuf;
 };
 
 

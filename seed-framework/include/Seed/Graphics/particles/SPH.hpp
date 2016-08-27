@@ -32,7 +32,6 @@
 #include <Seed/Graphics/particles/particlesSystem.hpp>
 #include <glm/glm.hpp>
 #include <vector>
-#include <GL/glew.h>
 #include <memory>
 #include <Seed/Graphics/data_structure/KDtree.hpp>
 #include <ctime>

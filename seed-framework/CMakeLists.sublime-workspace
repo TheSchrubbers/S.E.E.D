@@ -1,0 +1,535 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"vitesse",
+				"vitesseP1"
+			],
+			[
+				"m_tool",
+				"m_toolbarStarting"
+			],
+			[
+				"can",
+				"canDrawTargetP1"
+			],
+			[
+				"changeValue",
+				"changeValueAngleX	(toolbarstarting.cpp)"
+			],
+			[
+				"m_angle",
+				"m_angleX"
+			],
+			[
+				"setAn",
+				"setAngleX"
+			],
+			[
+				"Tool",
+				"ToolBarStarting	(glwidget.cpp)"
+			],
+			[
+				"target",
+				"targetType"
+			],
+			[
+				"targe",
+				"targetDeplacement"
+			],
+			[
+				"dot",
+				"dotVectors	(intersection.cpp)"
+			],
+			[
+				"nbIn",
+				"nbintersections"
+			],
+			[
+				"current",
+				"currentStepMap"
+			],
+			[
+				"intersection",
+				"intersectionDroitePlan"
+			],
+			[
+				"init",
+				"initializeGL	(glwidget.hpp)"
+			],
+			[
+				"Paralla",
+				"ParallaxMapActive"
+			],
+			[
+				"BIAS",
+				"BIASPARALLAXMAPID"
+			],
+			[
+				"sampler",
+				"samplerNormalTexture"
+			],
+			[
+				"Normal",
+				"NormalMapView"
+			],
+			[
+				"Spe",
+				"SpecularMapView"
+			],
+			[
+				"Pin",
+				"PinWorldSpace"
+			],
+			[
+				"V",
+				"VdirFragSpace"
+			],
+			[
+				"transpose",
+				"transposeTBN"
+			],
+			[
+				"Vdir",
+				"VdirFrag"
+			],
+			[
+				"texture",
+				"texture_depthMap"
+			],
+			[
+				"SEED_TEX",
+				"SEED_TEXTURE_DEPTHMAP	(Constant.hpp)"
+			],
+			[
+				"te",
+				"texture_depthMap"
+			],
+			[
+				"gShadowM",
+				"gShadowMap"
+			],
+			[
+				"shadow",
+				"shadowsActive"
+			],
+			[
+				"check",
+				"checkIncludes"
+			],
+			[
+				"chec",
+				"checkIncludes	(shader.hpp)"
+			],
+			[
+				"replace",
+				"replaceCodeByInclude"
+			],
+			[
+				"repl",
+				"replaceCodeByInclude	(shader.cpp)"
+			],
+			[
+				"getV",
+				"getViewMatrix	(camera.hpp)"
+			],
+			[
+				"print",
+				"printVec3	(tools.cpp)"
+			],
+			[
+				"pointLight",
+				"pointLightNodes"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 96.0,
+		"last_filter": "install",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: add",
+				"Package Control: Add Channel"
+			],
+			[
+				"Package Control: remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"",
+				"Build With: GLSL"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Add Channel"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Controlpack",
+				"Package Control: Install Package"
+			],
+			[
+				"vm",
+				"View: Toggle Menu"
+			]
+		],
+		"width": 629.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"./terminal",
+			"cd",
+			"ls",
+			"terminal",
+			"make",
+			"ls",
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"ls"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/build/seed_IHM.sublime-project",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/includes/sphere.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/includes/toolbarstarting.h",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/includes/glwidget.h",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/includes/model.h",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/intersection.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/MOKA_outils.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/src/toolbarstarting.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/src/model.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/src/glwidgetcontrol.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/src/process.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/src/glwidget.cpp",
+		"/home/chtimy/Téléchargements/libQGLViewer-2.6.3/QGLViewer/qglviewer.cpp",
+		"/home/chtimy/Téléchargements/libQGLViewer-2.6.3/QGLViewer/mouseGrabber.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/faille.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/operations.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/faille_outils.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/MOKA_outils.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/outils.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/fusion.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/includes/event.hpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/operations.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/faille_outils.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/event.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/faille.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/propagation.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/fusion.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/liste",
+		"/home/chtimy/Git_Projects/S.E.E.D/LICENSE",
+		"/home/chtimy/Git_Projects/Faille_project/Code/IHM/src/importmodel.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/outils.cpp",
+		"/home/chtimy/Git_Projects/Faille_project/Code/engine/src/operation.cpp",
+		"/home/chtimy/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/chtimy/Téléchargements/cmake-3.5.2/README.rst",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/IHM/glwidget.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/CMakeLists.txt",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/build/graphics-engine/examples/bin/log",
+		"/home/chtimy/Medieval.2.Total.War - RELOADED/ReadMe.txt",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/Constant.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/material.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/scene.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/examples/GraphicsTest/src/main.cpp",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/DefaultMaterial/Shaders/VertexShader.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/DefaultMaterial/Shaders/FragmentShader.glsl",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/engine.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/scene.cpp",
+		"/home/chtimy/Dropbox/Stage/moka-modeller-gforge/debug/CMakeFiles/CMakeOutput.log",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/DefaultMaterial/DefaultMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/loaders/assimpLoader/assimpLoader.cpp",
+		"/home/chtimy/Seed-Projects/bin/log.txt",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/SSAOMaterial/DeferredMaterial/DeferredMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/ParticlesSystemMaterial/SPHMaterial/SPHMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/ColorMaterial/ColorMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/shader.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/texture.cpp",
+		"/usr/include/c++/4.9/cstddef",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/Phong-BlinnPhong.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/ColorMaterial/Shaders/FragmentShader.glsl",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/material.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/buffers/FBOBuffer.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/shader.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/cubeMap.cpp",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/ColorMaterial/Shaders/VertexShader.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/Lights.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/Camera.glsl",
+		"/mnt/Donnees/Téléchargement/gDEBugger581-x86_64/gDEBugger",
+		"/mnt/Donnees/Téléchargement/gDEBugger581-x86_64/Readme.txt",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/ShadowMap.glsl",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/collector.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/camera.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/engine.hpp",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/lights.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/phong-blinnphong.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/camera.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/ColorMaterial/Shaders/ShadowMap.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/Common/Common.glsl",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/lights/spotLight.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/lights/flashLight.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/lights/pointLight.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/lights/directionnalLight.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/lights/pointLight.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/engine/control.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/lights/flashLight.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/lights/spotLight.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/lib-required/glm/glm/detail/type_vec4.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/node/pointLightNode.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/lights/light.cpp",
+		"/mnt/Donnees/Téléchargement/banshee-community-extensions-2.4.0/README",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/lib-required/glfw_win32/include/GLFW/glfw3.h",
+		"/home/chtimy/.config/sublime-text-3/Packages/Terminal/Terminal.sublime-settings",
+		"/home/chtimy/.config/sublime-text-3/Packages/User/Terminal.sublime-settings",
+		"/home/chtimy/.config/sublime-text-3/Packages/User/Terminal (Linux).sublime-settings",
+		"/home/chtimy/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/chtimy/.config/sublime-text-3/Packages/Function Name Display/Function Name Display.sublime-settings",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/ColorMaterial/ColorMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/control.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/engine/tools.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/lights/light.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/lights/directionnalLight.cpp",
+		"/home/chtimy/vpn-linux/FR-(France).ovpn",
+		"/home/chtimy/vpn-linux/ta.key",
+		"/home/chtimy/.config/sublime-text-3/Packages/GLSL Validator/NOTICE",
+		"/home/chtimy/.config/sublime-text-3/Packages/GLSL Validator/README.md",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/ShadowMapping/Shaders/secondPass/FragmentShader.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/ShadowMapping/Shaders/secondPass/VertexShader.glsl",
+		"/home/chtimy/Seed-Projects/bin/ressources/Materials/ShadowMapping/Shaders/firstPass/VertexShader.glsl",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/SSAOMaterial/QuadMaterial/QuadMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/DefaultMaterial/DefaultMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/materials/ParticlesSystemMaterial/ParticlesWaterSystemMaterial/ParticlesWaterSystemMaterial.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/CMakeLists2.txt",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/loaders/assimpLoader/assimpLoader.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/node/objectNode.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/node/pointLightNode.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/node/spotLightNode.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/node/node.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/node/flashLightNode.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/include/Seed/Graphics/node/directionalLightNode.hpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/node/objectNode.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/node/spotLightNode.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/node/flashLightNode.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/node/node.cpp",
+		"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics/node/directionnalLightNode.cpp"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/home/chtimy/Git_Projects/S.E.E.D/seed-framework/src/Seed/Graphics"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"NClickedFace",
+			"normed1",
+			";\n",
+			"normed3",
+			"();\n",
+			"sphere->",
+			"this->model",
+			"latNumber",
+			"cout",
+			";\n",
+			")))",
+			"getNewMark",
+			";\n",
+			"decode",
+			"mapping",
+			"PLContibutin",
+			");\n",
+			"UV",
+			"parallax",
+			"texture_depthMap",
+			"bias",
+			"					",
+			"0f",
+			"),",
+			"0f",
+			"std::cout",
+			"plan_material",
+			"		\n",
+			"sce",
+			"getUBOId",
+			"matrix",
+			"	\n",
+			">\n",
+			"#include <Seed/Graphics/scene.hpp>",
+			"#include <glm/gtc/random.hpp>\n#include <Seed/Graphics/buffers/SSBOBuffer.hpp>\n#include <Seed/Graphics/Constant.hpp>\n#include <Seed/Graphics/shader.hpp>\n#include <Seed/Graphics/scene.hpp>\n#include <Seed/Graphics/buffers/UBOBuffer.hpp>",
+			"UBOBuffer",
+			"Scene",
+			")\n",
+			"buffers",
+			");\n",
+			"v3"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"sphere.",
+			"m_model",
+			"nbLat",
+			"#include <Seed/Graphics/engine/scene.hpp>",
+			"SPH"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "seed_IHM - all",
+	"project": "CMakeLists.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 198.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

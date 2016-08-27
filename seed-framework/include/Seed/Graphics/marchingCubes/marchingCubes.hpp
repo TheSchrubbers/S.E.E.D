@@ -35,7 +35,6 @@
 //SEED INCLUDES
 #include <Seed/Graphics/engine/tools.hpp>
 //OTHER INCLUDES
-#include <glm/glm.hpp>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>

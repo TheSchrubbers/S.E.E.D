@@ -1,5 +1,5 @@
 /*
-* Copyright (c) <2015> <Antoine Richard and Jérémy Riffet, S.E.E.D>
+* Copyright (c) <2015> <Antoine Richard and JÃ©rÃ©my Riffet, S.E.E.D>
 *
 * This software is provided 'as-is', without any express or implied
 * warranty. In no event will the authors be held liable for any damages
@@ -22,10 +22,10 @@
 
 /*!
 * \file engine.hpp
-* \author Jérémy RIFFET
+* \author JÃ©rÃ©my RIFFET
 * \version 0.1
 * \copyright Copyright (c) 2015,
-* Antoine "Avzgui" Richard and Jérémy "Chtimy" Riffet, S.E.E.D
+* Antoine "Avzgui" Richard and JÃ©rÃ©my "Chtimy" Riffet, S.E.E.D
 * \license Zlib License.
 */
 
@@ -39,7 +39,6 @@
 //OTHER INCLUDES
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <iostream>
 //SEED INCLUDES
 #include <Seed/Graphics/engine/control.hpp>
@@ -63,6 +62,8 @@
 #include <Seed/Graphics/lights/flashLight.hpp>
 #include <Seed/Graphics/lights/pointLight.hpp>
 #include <Seed/Graphics/lights/spotLight.hpp>
+#include <Seed/Graphics/engine/camera.hpp>
+
 
 /*! \class Engine
 * \brief class Engine, init the system and the scene
@@ -79,23 +80,86 @@ class Engine
 		*/
 		~Engine();
 
-		void mainRender(std::shared_ptr<Scene> scene);
+		/**
+		 * @brief      Creates a scene.
+		 *
+		 * @return     The created scene
+		 */
+		std::shared_ptr<Scene> createScene();
 
-		bool initSystem();
+		/**
+		 * @brief      Render the scene
+		 *
+		 * @param[in]  scene  The scene
+		 * @param[in]  nodes  The nodes
+		 */
+		void mainRender(std::shared_ptr<Scene> scene, std::vector<ObjectNode*> nodes);
+		
+		/**
+		 * @brief      Init GLEW system
+		 *
+		 * @return     True if the GLEW system was initialized and false if a problem was appeared
+		 */
+		bool initGlewSystem();
 
+		/**
+		 * @brief      Init GLFW system
+		 *
+		 * @param[in]  w     Width of the rendering window
+		 * @param[in]  h     Height of the rendering window
+		 *
+		 * @return     True if the GLFW system was initialized and false if a
+		 *             problem was appeared
+		 */
+		bool initGLFWSystem(const int w, const int h);
+
+		/**
+		 * @brief      Initialize Controller
+		 *
+		 * @return     True if Controller was initalized and false if a problem was appeared
+		 */
 		bool initController();
 
-		/*!
-		* \brief init bar antWeakbar
-		* \param name: nale of the interface antWeakBar
-		*/
+		/**
+		 * @brief      Calls updateDragMouseControl function of class Controller to update viewing camera
+		 *
+		 * @param[in]  dragPosX  The drag position x
+		 * @param[in]  dragPosY  The drag position y
+		 */
+		void updateDragMouseControl(float dragPosX, float dragPosY);
+
+		/**
+		 * @brief      Loads the scene to rendering.
+		 *
+		 * @param[in]  scene  The scene
+		 *
+		 * @return     Returns a vector of ObjectNode* to rendering
+		 */
+		std::vector<ObjectNode*> loadSystemToRendering(std::shared_ptr<Scene> scene);
+
+		/**
+		 * @brief      Init AntTweakBar
+		 *
+		 * @param[in]  name    The name of the interface AntTweakBar
+		 * @param[in]  camera  The camera
+		 */
 		void initAntWeakBar(std::string name, const Camera *camera);
-		
-		GLFWwindow* window;
-		Controller *controller;
+
+		/**
+		 * @brief      Gets the scene.
+		 *
+		 * @return     The scene.
+		 */
+		std::shared_ptr<Scene> getScene();
+
+		Controller* getController();
+
 
 	private:
-
+		GLFWwindow *m_window;
+		Controller *m_controller;
+		int width, height;
+		std::shared_ptr<Scene> m_scene;
 };
 
 void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);

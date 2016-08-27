@@ -34,10 +34,6 @@
 #ifndef INSTANCEDMODEL_HPP
 #define INSTANCEDMODEL_HPP
 
-#include <assimp/ai_assert.h>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <GL/glew.h>
 #include <Seed/Graphics/model/model.hpp>
 
 class Geometry;

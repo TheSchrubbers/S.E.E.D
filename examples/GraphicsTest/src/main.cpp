@@ -10,7 +10,12 @@ int main()
 	//INIT ENGINE 
 	Engine engine;
 
-	if (!engine.initSystem())
+	if (!engine.initGlewSystem())
+	{
+		return -1;
+	}
+
+	if (!engine.initGLFWSystem(1024, 768))
 	{
 		return -1;
 	}
@@ -127,7 +132,7 @@ int main()
 	//collect all the rendered nodes
 	scene->collectRenderedNodes();
 	//active loop main render
-	engine.mainRender(scene);
+	//engine.mainRender(scene);
 	return 0;
 }
 

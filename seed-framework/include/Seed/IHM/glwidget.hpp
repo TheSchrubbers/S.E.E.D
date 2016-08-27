@@ -1,37 +1,37 @@
 #ifndef GLWIDGET_HPP
 #define GLWIDGET_HPP
 
-//#include <QtOpenGL/QtOpenGL>
-#include <QtOpenGL/QGLWidget>
+#include <QGLWidget>
 #include <QWidget>
-#include <iostream>
-#include <memory>
+#include <QWindow>
+#include <QTimer>
+#include <QMessageBox>
+#include <QObject>
+#include <QKeyEvent>
 
-class Engine;
-class Scene;
-class Camera;
-
-class GlWidget : public QGLWidget
+class GLWidget : public QGLWidget
 {
 	Q_OBJECT
 public:
-	explicit GlWidget(int framePerSecond = 0, QWidget *parent = 0);
-	~GlWidget();
+	explicit GLWidget(int framesPerSecond = 0, QWidget *parent = 0);
+	~GLWidget();
 
-	void initializeGL() = 0;
-	void paintGL() = 0;
-	void resizeGL(int width, int height) = 0;
-	void keyPressEvent( QKeyEvent *keyEvent );
+	virtual void initializeGL() = 0;
+	virtual void resizeGL(int w, int h) = 0;
+	virtual void paintGL() = 0;
 
-	public slots:
-	void timeOutSlot();
+	//CONTROLS
+	virtual void keyPressEvent( QKeyEvent *keyEvent ) = 0;
+	virtual void mousePressEvent(QMouseEvent *event) = 0;
+    virtual void mouseMoveEvent(QMouseEvent *event) = 0;
+    virtual void mouseReleaseEvent(QMouseEvent *event) = 0;
+        
+public slots:
+    virtual void timeOutSlot();
 
+//METHODS
 private:
-	QTimer *t_timer;
-	Engine *engine;
-	std::shared_ptr<Scene> scene;
-	Camera *camera;
-
+    QTimer *t_Timer;
 };
 
 #endif

@@ -35,7 +35,6 @@
 
 //OTHER INCLUDES
 #include <glm/glm.hpp>
-#include <GL/glew.h>
  #include <iostream>
  //SEED INCLUDES
 #include <Seed/Graphics/loaders/parserImage.hpp>

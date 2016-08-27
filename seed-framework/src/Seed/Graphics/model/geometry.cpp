@@ -1,4 +1,5 @@
 #include <Seed/Graphics/model/geometry.hpp>
+#include <stdexcept>
 
 Geometry::Geometry(const aiMesh *mesh)
 {
@@ -48,7 +49,7 @@ Geometry::Geometry(const aiMesh *mesh)
 			}
 		}
 	}
-	catch (std::out_of_range &)
+	catch (const std::out_of_range &)
 	{
 		std::cout << "ERROR: Out of range of array in file model.cpp" << std::endl;
 		return;

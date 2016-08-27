@@ -13,12 +13,12 @@
 #include <Seed/Graphics/model/model.hpp>
 #include <Seed/Graphics/engine/texture.hpp>
 
+using namespace std;
+
 Collector::Collector()
 {
 	for (int i = 0; i < 4; i++)
-	{
 		this->lightBuf[i] = new UBOBuffer();
-	}
 	this->lightBuf[0]->create(sizeof(pointLightStruct));
 	this->lightBuf[1]->create(sizeof(spotLightStruct));
 	this->lightBuf[2]->create(sizeof(directionnalLightStruct));

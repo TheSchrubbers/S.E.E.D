@@ -181,4 +181,9 @@ float norm(const glm::vec4 &A);
 void writeLog(std::string msg);
 void initLog();
 
+template<typename T> const T & radToDegree(const T & A)
+{
+	return A * 360.0 / (2 * M_PI);
+}
+
 #endif

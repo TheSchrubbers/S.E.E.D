@@ -5,6 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 
 void printMat4(glm::mat4 & mat)
 {
@@ -177,5 +178,3 @@ void initLog()
 {
 	std::ofstream log("log.txt", std::ios::trunc);
 }
-
-

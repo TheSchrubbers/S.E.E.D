@@ -37,9 +37,6 @@
 //SEED INCLUDES
 #include <Seed/Graphics/engine/tools.hpp>
 
-//OTHER INCLUDES
-#include <GL/glew.h>
-
 
 /*! \class UBOBuffer
 * \brief Create, update, delete UBOBuffers

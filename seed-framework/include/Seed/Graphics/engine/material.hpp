@@ -40,7 +40,6 @@
 #include <Seed/Graphics/engine/camera.hpp>
 #include <Seed/Graphics/engine/Constant.hpp>
 //OTHER INCLUDES
-#include <GL/glew.h>
 #include <vector>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

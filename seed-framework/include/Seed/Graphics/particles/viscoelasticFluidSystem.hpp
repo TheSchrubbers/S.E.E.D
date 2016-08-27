@@ -34,7 +34,6 @@
 
 #include <Seed/Graphics/particles/particlesSystem.hpp>
 #include <glm/glm.hpp>
-#include <GL/glew.h>
 #include <vector>
 
 class Scene;

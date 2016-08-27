@@ -4,6 +4,8 @@
 #include <Seed/Graphics/engine/scene.hpp>
 #include <Seed/Graphics/engine/camera.hpp>
 
+using namespace glm;
+using namespace std;
 
 int Controller::context = 0;
 
@@ -24,7 +26,7 @@ Controller::~Controller()
 void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 {
 	//position of the camera
-	glm::vec3 position = cam->getPosition();
+	vec3 position = cam->getPosition();
 	//horizontal and vertical angle
 	float WAngle = cam->getWAngle();
 	float HAngle = cam->getHAngle();
@@ -32,9 +34,9 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 	float speed = cam->getSpeed();
 	//speed view direction (mouse)
 	float mouseSpeed = cam->getMouseSpeed();
-	glm::vec3 direction = cam->getDirection();
-	glm::vec3 up = cam->getUp();
-	glm::vec3 right = cam->getRight();
+	vec3 direction = cam->getDirection();
+	vec3 up = cam->getUp();
+	vec3 right = cam->getRight();
 
 	bool dragMouse = false, keyInput = false;
 
@@ -56,12 +58,12 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 			HAngle += mouseSpeed * ((HEIGHT / 2.0f) - ypos);
 
 			//get direction of the camera
-			direction = glm::vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
+			direction = vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
 
 			//get right direction of the camera
-			right = glm::vec3(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
+			right = vec3(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
 			//get the up direction of the camera
-			up = glm::normalize(glm::cross(right, direction));
+			up = normalize(cross(right, direction));
 		}
 
 		//get inputs key
@@ -164,6 +166,66 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 			TwEventKeyGLFW(GLFW_KEY_DELETE, GLFW_PRESS);
 		}
 	}
+}
+
+void Controller::updateControlMoveMouse(Camera *cam, float WAngle, float HAngle, double deltaX, double deltaY)
+{
+	//position of the camera
+	vec3 position = cam->getPosition();
+	//speed view direction (mouse)
+	float mouseSpeed = cam->getMouseSpeed();
+
+	//compute angles
+	WAngle += mouseSpeed * (deltaX);
+	HAngle += mouseSpeed * (deltaY);
+
+	//get direction of the camera
+	vec3 direction = vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
+
+	//get right direction of the camera
+	vec3 right = vec3(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
+	//get the up direction of the camera
+	vec3 up = normalize(cross(right, direction));
+
+	//set the angle of the direction vector of the camera
+	cam->setHAngle(HAngle);
+	cam->setWAngle(WAngle);
+	cam->setRight(right);
+	//update ViewMatrix
+	cam->setViewMatrix(position, direction, up);
+}
+
+void Controller::updateDragMouseControl(Camera *cam, float deltaPosX, float deltaPosY)
+{
+	if(deltaPosX > 40)
+		deltaPosX = 40.0f;
+	if(deltaPosY > 40)
+		deltaPosY = 40.0f;
+	//position of the camera
+	vec3 position = cam->getPosition();
+	//horizontal and vertical angle
+	float WAngle = cam->getWAngle();
+	float HAngle = cam->getHAngle();
+	//speed view direction (mouse)
+	float mouseSpeed = cam->getMouseSpeed();
+
+	//compute angles
+	WAngle += mouseSpeed * (-deltaPosX);
+	HAngle += mouseSpeed * (-deltaPosY);
+
+	//get direction of the camera
+	vec3 direction = glm::vec3(cos(HAngle) * sin(WAngle), sin(HAngle), cos(HAngle) * cos(WAngle));
+	//get right direction of the camera
+	vec3 right = glm::vec3(sin(WAngle - 3.14f / 2.0f), 0, cos(WAngle - 3.14f / 2.0f));
+	//get the up direction of the camera
+	vec3 up = glm::normalize(glm::cross(right, direction));
+
+	//set the angle of the direction vector of the camera
+	cam->setHAngle(HAngle);
+	cam->setWAngle(WAngle);
+	cam->setRight(right);
+	//update ViewMatrix
+	cam->setViewMatrix(position, direction, up);
 }
 
 void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods)

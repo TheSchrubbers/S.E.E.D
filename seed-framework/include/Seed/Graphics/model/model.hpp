@@ -37,8 +37,6 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <glm/glm.hpp>
-#include <GL/glew.h>
 #include <assimp/ai_assert.h>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>

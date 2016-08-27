@@ -34,8 +34,6 @@
 #ifndef FBOBUFFER_HPP
 #define FBOBUFFER_HPP
 
-//OTHER INCLUDES
-#include <GL/glew.h>
 //SEED INCLUDES
 #include <Seed/Graphics/engine/tools.hpp>
 
