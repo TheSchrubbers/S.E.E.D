@@ -2,7 +2,7 @@
 
 PointLightNode::PointLightNode(std::shared_ptr<Scene> sce, const std::string n) : Node(sce, n)
 {
-	this->pointLight = NULL;
+	m_pointLight = NULL;
 }
 
 PointLightNode::~PointLightNode()
@@ -11,38 +11,38 @@ PointLightNode::~PointLightNode()
 
 bool PointLightNode::hasLight()
 {
-	if (this->pointLight)
+	if (m_pointLight)
 		return true;
 	return false;
 }
 
 void PointLightNode::setLight(PointLight *light)
 {
-	this->pointLight = light;
+	m_pointLight = light;
 }
 
 PointLight* PointLightNode::getLight()
 {
-	return this->pointLight;
+	return m_pointLight;
 }
 
 std::vector<PointLightNode*> * PointLightNode::getChildren()
 {
-	return &(this->m_children);
+	return &(m_children);
 }
 
 void PointLightNode::addChild(PointLightNode *child)
 {
-	this->m_children.push_back(child);
+	m_children.push_back(child);
 }
 
 void PointLightNode::setFather(Node* f)
 {
-	this->father = f;
+	m_father = f;
 }
 bool PointLightNode::hasChildren()
 {
-	if (this->m_children.size())
+	if (m_children.size())
 	{
 		return true;
 	}

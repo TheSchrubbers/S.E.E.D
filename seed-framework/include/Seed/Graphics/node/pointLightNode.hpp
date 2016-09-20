@@ -101,7 +101,7 @@ class PointLightNode : public Node
 
 	private:
 		std::vector<PointLightNode*> m_children;
-		PointLight* pointLight;
+		PointLight* m_pointLight;
 };
 
 #endif

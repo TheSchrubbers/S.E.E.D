@@ -138,6 +138,11 @@ void Camera::setViewMatrix(glm::vec3 &pos)
 	m_matrix.V = glm::lookAt(pos, pos + m_direction, m_up);
 }
 
+void Camera::setViewMatrix(glm::mat4 &V)
+{
+	m_matrix.V = V;
+}
+
 void Camera::setMouseSpeed(const float speed)
 {
 	m_mouseSpeed = speed;
@@ -163,4 +168,9 @@ void Camera::updateUBO()
 GLuint Camera::getUBOId()
 {
 	return m_camBuf->getID();
+}
+
+void Camera::setUp(glm::vec3 &u)
+{
+	m_up = u;
 }

@@ -27,7 +27,12 @@ void MainWindow::init()
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 
-    m_myGLWidget = new MyGLWidget(this);
+    QStatusBar *qStatusBar = new QStatusBar();
+    qStatusBar->showMessage("FPS : ");
+
+    setStatusBar(qStatusBar);
+
+    m_myGLWidget = new MyGLWidget(qStatusBar, this);
     setCentralWidget(m_myGLWidget);
 
     QMenu *fileMenu = new QMenu("&Fichier");
@@ -51,6 +56,7 @@ void MainWindow::init()
     uptoolbar->addAction(saveAction);
 
     addToolBar(Qt::TopToolBarArea, uptoolbar);
+
 
     setWindowTitle(tr("Seed-Graphics"));
 }

@@ -69,9 +69,9 @@ class ShadowMappingMaterial : public Material
 		*/
 		bool addShaders(const std::string pathDir);
 
-		std::shared_ptr<Shader> shader;
-		glm::mat4 VPLight, WVPLight;
-		GLuint WVPlightID;
+		std::shared_ptr<Shader> m_shader;
+		glm::mat4 m_VPLight, m_WVPLight;
+		GLuint m_WVPLightID;
 };
 
 #endif

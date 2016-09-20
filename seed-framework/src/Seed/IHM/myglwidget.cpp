@@ -4,16 +4,23 @@
 #include <QTimer>
 #include <QObject>
 #include <GL/glew.h>
+#include <QStatusBar>
+#include <QTimer>
 
 using namespace std;
 
 void addLara(std::shared_ptr<Scene> scene);
 
-MyGLWidget::MyGLWidget(QWidget *parent) 
+MyGLWidget::MyGLWidget(QStatusBar *qSB, QWidget *parent) 
     : GLWidget(60, parent)
 {
 	m_engine = new Engine();
     setFocusPolicy(Qt::StrongFocus);
+    timerFPS = new QTimer(this);
+    connect(timerFPS, SIGNAL(timeout()), this, SLOT(updateFPSPrint()));
+    timerFPS->start(1000);
+    qStatusBar = qSB;
+    FPS = 0;
 }
 
 MyGLWidget::~MyGLWidget() 
@@ -33,21 +40,23 @@ void MyGLWidget::initializeGL()
 
 	scene->addPointLight(glm::vec3(0.0,3.0,8.0), glm::vec3(1.0), glm::vec3(0.1f, 0.8f, 0.8f), 1.0f, 30.0f, 0.0f, "light_1");
 
-	//unsigned int error;
-	//ObjectNode *brique = scene->importModelFromFile(pathToBasicModels + "plan2.obj", "briques");
-	//brique->setShadowMapped(false);
-	//DefaultMaterial *parallax = new DefaultMaterial(scene, "parallax_material", &error, 0.02, 0.0);
-	//ColorMaterial *parallax = new ColorMaterial(scene, "parallax_material", glm::vec3(0.5, 0.5, 0.5), &error);
-	//parallax->addTexture("parallax/diffuse.png", scene, SEED_TEXTURE_AMBIANT);
-	//parallax->addTexture("parallax/normal.png", scene, SEED_TEXTURE_NORMAL);
-	//parallax->addTexture("parallax/parallax.png", scene, SEED_TEXTURE_DEPTHMAP);
-	//parallax->scaleModel(glm::vec3(10.0));
-	//parallax->translateModel(glm::vec3(5.0, -1.0, 0.0));
-	//parallax->rotateModel(glm::vec3(0.0,0.0,0.5));
-	//brique->setMaterialRecur(parallax);
-	//scene->addNode(brique);
+    scene->setCubeMap(pathToTextures + "CubeMap/Skybox");
+
+	/*unsigned int error;
+	ObjectNode *brique = scene->importModelFromFile(pathToBasicModels + "plan2.obj", "briques");
+	brique->setShadowMapped(false);
+	DefaultMaterial *parallax = new DefaultMaterial(scene, "parallax_material", &error, 0.02, 0.0);
+	//ColorMaterial *parallax = new ColorMaterial(scene, "parallax_material", glm::vec3(0.5, 0.5, 0.5), &error);*/
+	/*parallax->addTexture("parallax/diffuse.png", scene, SEED_TEXTURE_AMBIANT);
+	parallax->addTexture("parallax/normal.png", scene, SEED_TEXTURE_NORMAL);
+	parallax->addTexture("parallax/parallax.png", scene, SEED_TEXTURE_DEPTHMAP);
+	parallax->scaleModel(glm::vec3(10.0));
+	parallax->translateModel(glm::vec3(5.0, -1.0, 0.0));
+	parallax->rotateModel(glm::vec3(0.0,0.0,0.5));
+	brique->setMaterialRecur(parallax);
+	scene->addNode(brique);*/
    
-   addLara(scene);
+    //addLara(scene);
 
 	//collect all the rendered nodes
 	scene->collectRenderedNodes();
@@ -60,13 +69,35 @@ void MyGLWidget::initializeGL()
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 }
 
+void MyGLWidget::resizeGL(int width, int height)
+{
+    if(height == 0)
+        height = 1;
+    glViewport(0, 0, width, height);
+}
+
+void MyGLWidget::paintGL()
+{
+    vector<ObjectNode*> nodes = m_engine->loadSystemToRendering(m_engine->getScene());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_engine->mainRender(m_engine->getScene(), nodes);
+    FPS++;
+}
+
+void MyGLWidget::updateFPSPrint()
+{
+    qStatusBar->showMessage("FPS: " + QString::number(FPS));
+    FPS = 0;
+    timerFPS->start(1000);
+}
+
 void addLara(std::shared_ptr<Scene> scene)
 {
     unsigned int error;
     //import model
     ObjectNode *lara = scene->importModelFromFile(pathToModels + "Lara_Croft.obj", "lara");
 
-    ObjectNode *l = lara->getNode("LaraClothes");
+    /*ObjectNode *l = lara->getNode("LaraClothes");
     if (l)
     {
         DefaultMaterial *material = new DefaultMaterial(scene, "laraClothes_material", &error, 0.0, 0.0);
@@ -172,7 +203,7 @@ void addLara(std::shared_ptr<Scene> scene)
         material->addTexture("Lara_croft/Lara_Hair_S.tga", scene, SEED_TEXTURE_SPECULAR);
         material->addTexture("Lara_croft/Lara_Hair_N.tga", scene, SEED_TEXTURE_NORMAL);
         l->setMaterialRecur(material);
-    }
+    }*/
 
     /*l = lara->getNode("LaraEyebrowEyelash");
     if (l)
@@ -185,20 +216,6 @@ void addLara(std::shared_ptr<Scene> scene)
     }*/
 
     scene->addNode(lara);
-}
-
-void MyGLWidget::resizeGL(int width, int height)
-{
-    if(height == 0)
-        height = 1;
-    glViewport(0, 0, width, height);
-}
-
-void MyGLWidget::paintGL()
-{
-    vector<ObjectNode*> nodes = m_engine->loadSystemToRendering(m_engine->getScene());
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	m_engine->mainRender(m_engine->getScene(), nodes);
 }
 
 

@@ -50,7 +50,7 @@ public:
 	void release();
 
 private:
-	GLuint programID;
+	GLuint m_programID;
 
 	GLuint loadShaders(const std::string directory_file_path);
 	GLuint loadCompileShader(std::string s, GLuint type, GLint &Result, int &InfoLogLength, std::vector<char> *ShaderErrorMessage);

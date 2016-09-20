@@ -14,14 +14,11 @@
 
 Shader::Shader(const std::string shader_dir_path, unsigned int *flag)
 {
-	this->programID = loadShaders(shader_dir_path);
-	if (flag)
-	{
-		if (!this->programID)
-			*flag = SEED_ERROR_LOAD_SHADER;
-		else
-			*flag = SEED_SUCCESS;
-	}
+	m_programID = loadShaders(shader_dir_path);
+	if (flag && !m_programID)
+		*flag = SEED_ERROR_LOAD_SHADER;
+	else
+		*flag = SEED_SUCCESS;
 }
 
 Shader::Shader()
@@ -30,7 +27,7 @@ Shader::Shader()
 
 Shader::~Shader()
 {
-	glDeleteProgram(this->programID);
+	glDeleteProgram(m_programID);
 }
 
 
@@ -150,14 +147,14 @@ GLuint Shader::loadCompileShader(std::string s, GLuint type, GLint &Result, int 
 
 GLuint Shader::getID()
 {
-	return this->programID;
+	return m_programID;
 }
 
 bool Shader::useProgram()
 {
-	if (this->programID)
+	if (m_programID)
 	{
-		glUseProgram(this->programID);
+		glUseProgram(m_programID);
 		return true;
 	}
 	return false;
@@ -257,7 +254,7 @@ bool Shader::loadVertexFragmentShaders(const std::string vertex_file_path, const
 	glDeleteShader(VertexShaderID);
 	glDeleteShader(FragmentShaderID);
 
-	this->programID = ProgramID;
+	m_programID = ProgramID;
 
 	return true;
 }
@@ -317,7 +314,7 @@ bool Shader::loadUniqueShader(const std::string vertex_file_path)
 
 	glDeleteShader(VertexShaderID);
 
-	this->programID = ProgramID;
+	m_programID = ProgramID;
 
 	return true;
 }

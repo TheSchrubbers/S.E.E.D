@@ -93,7 +93,7 @@ public:
 	void printTextures();
 
 private:
-	GLuint ID;
+	GLuint m_ID;
 	std::vector<GLuint> GDepthTextures;
 };
 

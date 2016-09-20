@@ -7,9 +7,9 @@
 
 ShadowMappingMaterial::ShadowMappingMaterial(std::shared_ptr<Scene> sce, unsigned int *flag) : Material(sce, "ShadowMapping", flag, 0.0, 0.0)
 {
-	this->shader = std::make_shared<Shader>(pathToMaterials + "ShadowMapping/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "ShadowMapping/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
-		this->init();
+		init();
 	else
 		writeLog("ERROR -> Material : ShadowMappingMaterial loading fails");
 }
@@ -24,8 +24,8 @@ void ShadowMappingMaterial::init()
 		30.0f// la ou finit le frustrum
 		);
 	//this->PLight = glm::ortho(-10.0, 10.0, -10.0, 10.0, 1.0, 30.0);
-	this->VPLight = P * V;
-	this->WVPlightID = glGetUniformLocation(this->shader->getID(), "WVP");
+	m_VPLight = P * V;
+	m_WVPLightID = glGetUniformLocation(m_shader->getID(), "WVP");
 }
 
 ShadowMappingMaterial::~ShadowMappingMaterial()
@@ -35,12 +35,12 @@ ShadowMappingMaterial::~ShadowMappingMaterial()
 void ShadowMappingMaterial::firstPass(Model *model, glm::mat4 &ModelMatrix, glm::mat4 &VP)
 {
 	
-	if (this->shader->useProgram())
+	if (m_shader->useProgram())
 	{
-		this->WVPLight = VP * ModelMatrix;
+		m_WVPLight = VP * ModelMatrix;
 		//UNIFORMS
 		//set the uniform variable MVP
-		glUniformMatrix4fv(this->WVPlightID, 1, GL_FALSE, &(this->WVPLight[0][0]));
+		glUniformMatrix4fv(m_WVPLightID, 1, GL_FALSE, &(m_WVPLight[0][0]));
 
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera

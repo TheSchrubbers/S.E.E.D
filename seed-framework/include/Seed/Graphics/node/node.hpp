@@ -114,10 +114,10 @@ class Node
 
 	protected:
 
-		std::string name;
-		Node* father;
-		std::shared_ptr<Scene> scene;
-		bool rendered, isShadowMapped;
+		std::string m_name;
+		Node* m_father;
+		std::shared_ptr<Scene> m_scene;
+		bool m_rendered, m_isShadowMapped;
 };
 
 #endif

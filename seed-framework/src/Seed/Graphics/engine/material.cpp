@@ -29,7 +29,6 @@ Material::Material(std::shared_ptr<Scene> sce, const std::string n, unsigned int
 
 Material::~Material()
 {
-	this->scene = nullptr;
 	this->camera = nullptr;
 	unsigned int i = 0;
 	for (i = 0; i < textures_ambiant.size(); i++)

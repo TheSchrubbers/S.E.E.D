@@ -166,6 +166,12 @@ public:
 	 */
 	glm::vec3 getRight();
 	/**
+	 * @brief      Sets up vector of the camera.
+	 *
+	 * @param      right  The new up vector of the camera.
+	 */
+	void setUp(glm::vec3 &up);
+	/**
 	 * @brief      Sets right vector of the camera.
 	 *
 	 * @param      right  The new right vector of the camera.
@@ -187,11 +193,17 @@ public:
 	 */
 	void setViewMatrix(glm::vec3 &dir, glm::vec3 &up);
 	/*!
-	 * @brief      set the view matrix
+	 * @brief      Sets the view matrix
 	 *
 	 * @param      pos   : reference to the position of the camera
 	 */
 	void setViewMatrix(glm::vec3 &pos);
+	/**
+	 * @brief      Sets the view matrix.
+	 *
+	 * @param      V     View matrix
+	 */
+	void setViewMatrix(glm::mat4 &V);
 	/*!
 	 * @brief      set the projection matrix
 	 *

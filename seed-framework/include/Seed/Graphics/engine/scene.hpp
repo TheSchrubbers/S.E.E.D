@@ -190,18 +190,18 @@ class Scene
 		
 	private:
 
-		ObjectNode *rootObjectNode;
-		Node *rootLightNode;
-		Camera *camera;
-		Collector *collector;
-		CubeMap *cubemap;
-		Model *RenderingQuad;
-		QuadMaterial *RenderingQuadMaterial;
-		AssimpLoader *assimpLoader;
+		ObjectNode *m_rootObjectNode;
+		Node *m_rootLightNode;
+		Camera *m_camera;
+		Collector *m_collector;
+		CubeMap *m_cubemap;
+		Model *m_RenderingQuad;
+		QuadMaterial *m_RenderingQuadMaterial;
+		AssimpLoader *m_assimpLoader;
 
 		//SHADOW MAPPING
-		ShadowMappingMaterial *shadowMappingMaterial;
-		FBOBuffer* FBObuffer;
+		ShadowMappingMaterial *m_shadowMappingMaterial;
+		FBOBuffer* m_FBObuffer;
 		
 		void constructQuad();
 };
