@@ -1,7 +1,7 @@
 #ifndef GLWIDGET_HPP
 #define GLWIDGET_HPP
 
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QWidget>
 #include <QWindow>
 #include <QTimer>
@@ -9,7 +9,9 @@
 #include <QObject>
 #include <QKeyEvent>
 
-class GLWidget : public QGLWidget
+#include "Seed/Graphics/definitions.hpp"
+
+class GLWidget : public QOpenGLWidget, public openGLFunctions
 {
 	Q_OBJECT
 public:

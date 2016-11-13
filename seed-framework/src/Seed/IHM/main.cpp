@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include <mainwindow.hpp>
+#include "Seed/IHM/mainwindow.hpp"
 #include <QApplication>
 
 int main(int argc, char **argv)

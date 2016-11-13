@@ -34,8 +34,8 @@
 #define IMPLICITMATERIAL_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/material.hpp>
-#include <Seed/Graphics/marchingCubes/marchingCubes.hpp>
+#include "Seed/Graphics/engine/material.hpp"
+#include "Seed/Graphics/marchingCubes/marchingCubes.hpp"
 
 /*! \class ImplicitMaterial
 * \brief Material for the explicit surface
@@ -76,14 +76,14 @@ class ImplicitMaterial : public Material
 		////////////////////////////////
 		//Attributes
 		////////////////////////////////
-		GLuint block_index_lights[4];
-		GLuint block_index_camera;
-		GLuint VBOVertices, VBONormals, VAO;
-		GLuint edgeTableTex, edgeTable, triTableTex, triTable, dataFieldTex;
-		float *dataField;
-		std::vector<std::shared_ptr<Point>> pts;
+		GLuint m_block_index_lights[4];
+		GLuint m_block_index_camera;
+		GLuint m_VBOVertices, m_VBONormals, m_VAO;
+		GLuint m_edgeTableTex, m_edgeTable, m_triTableTex, m_triTable, m_dataFieldTex;
+		float *m_dataField;
+		std::vector<std::shared_ptr<Point>> m_pts;
 
-		std::shared_ptr<Shader> shader;
+		std::shared_ptr<Shader> m_shader;
 };
 
 #endif

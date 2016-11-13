@@ -9,7 +9,6 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <string>
-#include <GL/glew.h>
 
 //DEFINES
 #define PAUSE system("pause");
@@ -20,6 +19,12 @@ struct Point{
 	glm::vec3 n;
 	float d;
 };
+
+template<typename T>
+void printValue(const std::string &name, const T &value)
+{
+	std::cout << name << " : " << value << std::endl;
+}
 
 /**
  * @brief      Print matrix 4*4.

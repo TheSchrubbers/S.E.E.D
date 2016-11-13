@@ -5,61 +5,72 @@
 Model::~Model()
 {
 	//free VBO and VAO
-	if (VBO_vertices)
-		glDeleteBuffers(1, &VBO_vertices);
-	if (VBO_normals)
-		glDeleteBuffers(1, &VBO_normals);
-	if(VBO_tangents)
-		glDeleteBuffers(1, &VBO_tangents);
-	if (VBO_coordText)
-		glDeleteBuffers(1, &VBO_coordText);
-	if (VBO_faces)
-		glDeleteBuffers(1, &VBO_faces);
-	if (VAO)
-		glDeleteVertexArrays(1, &VAO);
+	if (m_VBO_vertices)
+		glDeleteBuffers(1, &m_VBO_vertices);
+	if (m_VBO_normals)
+		glDeleteBuffers(1, &m_VBO_normals);
+	if(m_VBO_tangents)
+		glDeleteBuffers(1, &m_VBO_tangents);
+	if (m_VBO_coordText)
+		glDeleteBuffers(1, &m_VBO_coordText);
+	if (m_VBO_faces)
+		glDeleteBuffers(1, &m_VBO_faces);
+	if (m_VAO)
+		glDeleteVertexArrays(1, &m_VAO);
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 
-	delete this->geometry;
+	delete m_geometry;
 }
 Model::Model(const aiMesh *mesh, GLuint frequency, std::string p)
 {
-	this->geometry = new Geometry(mesh);
-	this->name = mesh->mName.C_Str();
-	this->pathMesh = p;
-	this->loadInGPU(frequency);
+    initializeOpenGLFunctions();
+
+	m_geometry = new Geometry(mesh);
+	m_name = mesh->mName.C_Str();
+	m_pathMesh = p;
+	loadInGPU(frequency);
 }
 
 Model::Model(Geometry *g, GLuint frequency)
 {
-	this->geometry = g;
-	this->name = "default";
-	this->loadInGPU(frequency);
+    initializeOpenGLFunctions();
+	
+	m_geometry = g;
+	m_name = "default";
+	loadInGPU(frequency);
 }
 
 void Model::render()
 {
+	//std::cout << "render model" << std::endl;
 	//bind VAO
-	glBindVertexArray(this->VAO);
-	if (this->geometry->hasFaces())
+	glBindVertexArray(m_VAO);
+	if (m_geometry->hasFaces())
 	{
-		unsigned int sizeFaces = this->geometry->getNumFaces() * this->geometry->getNumIndicesPerFace();
-		if (this->geometry->getNumIndicesPerFace() == 3)
+		unsigned int sizeFaces = m_geometry->getNumFaces() * m_geometry->getNumIndicesPerFace();
+		if (m_geometry->getNumIndicesPerFace() == 3)
 		{
+			//std::cout << "glDrawRangeElements model" << std::endl;
+			//printValue("nb faces", sizeFaces);
+			//printValue("size VBO", )
 			glDrawRangeElements(GL_TRIANGLES, 0, sizeFaces, sizeFaces, GL_UNSIGNED_INT, 0);
+			//std::cout << "Fin glDrawRangeElements model" << std::endl;
 		}
 		else
 			glDrawRangeElements(GL_QUADS, 0, sizeFaces, sizeFaces, GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
-		if (this->geometry->getNumIndicesPerFace() == 3)
-			glDrawArrays(GL_TRIANGLES, 0, this->geometry->getNumVertices());
+		if (m_geometry->getNumIndicesPerFace() == 3)
+			glDrawArrays(GL_TRIANGLES, 0, m_geometry->getNumVertices());
 		else
-			glDrawArrays(GL_QUADS, 0, this->geometry->getNumVertices());
+			glDrawArrays(GL_QUADS, 0, m_geometry->getNumVertices());
 	}
+	//std::cout << "Fin render model" << std::endl;
+
 
 	//free VAO
 	glBindVertexArray(0);
@@ -68,14 +79,14 @@ void Model::render()
 void Model::render(int nb)
 {
 	//bind VAO
-	glBindVertexArray(this->VAO);
+	glBindVertexArray(m_VAO);
 	//if the model has faces
-	if (this->geometry->hasFaces())
+	if (m_geometry->hasFaces())
 	{
 		//process the size of a face
-		unsigned int sizeFaces = this->geometry->getNumFaces() * this->geometry->getNumIndicesPerFace();
+		unsigned int sizeFaces = m_geometry->getNumFaces() * m_geometry->getNumIndicesPerFace();
 		//if the face has 3 vertices
-		if (this->geometry->getNumIndicesPerFace() == 3)
+		if (m_geometry->getNumIndicesPerFace() == 3)
 			glDrawElementsInstanced(GL_TRIANGLES, sizeFaces, GL_UNSIGNED_INT, 0, nb);
 		//if the face has 4 vertices
 		else
@@ -85,11 +96,11 @@ void Model::render(int nb)
 	else
 	{
 		//if the face has 3 vertices
-		if (this->geometry->getNumIndicesPerFace() == 3)
-			glDrawArraysInstanced(GL_TRIANGLES, 0, this->geometry->getNumVertices(), nb);
+		if (m_geometry->getNumIndicesPerFace() == 3)
+			glDrawArraysInstanced(GL_TRIANGLES, 0, m_geometry->getNumVertices(), nb);
 		//if the face has 4 vertices
 		else
-			glDrawArraysInstanced(GL_QUADS, 0, this->geometry->getNumVertices(), nb);
+			glDrawArraysInstanced(GL_QUADS, 0, m_geometry->getNumVertices(), nb);
 	}
 	//free VAO
 	glBindVertexArray(0);
@@ -99,115 +110,111 @@ void Model::render(int nb)
 
 std::string Model::getPathName()
 {
-	return this->pathMesh;
+	return m_pathMesh;
 }
 
 void Model::afficher()
 {
-	std::cout << "Model : \n pathname : " << this->pathMesh << " \n nb de vertices : " << this->geometry->getNumVertices() << "\n nb faces " << this->geometry->getNumFaces() << std::endl;
+	std::cout << "Model : \n pathname : " << m_pathMesh << " \n nb de vertices : " << m_geometry->getNumVertices() << "\n nb faces " << m_geometry->getNumFaces() << std::endl;
 }
 
 void Model::loadInGPU(GLuint frequency)
 {
-	int numVerticesPerFace = this->geometry->getNumIndicesPerFace();
-	int nbVertices = this->geometry->getNumVertices();
-	int nbFaces = this->geometry->getNumFaces();
+	int numVerticesPerFace = m_geometry->getNumIndicesPerFace();
+	int nbVertices = m_geometry->getNumVertices();
+	int nbFaces = m_geometry->getNumFaces();
 	unsigned int sizeFaces = nbFaces * numVerticesPerFace * sizeof(GLuint);
 	int strideVert;
 	if (numVerticesPerFace == 3)
-	{
 		strideVert = sizeof(glm::vec3);
-	}
 	else
-	{
 		strideVert = sizeof(glm::vec4);
-	}
 
 	//generate a VAO buffer
-	glGenVertexArrays(1, &VAO);
+	glGenVertexArrays(1, &m_VAO);
 	//bind VAO
-	glBindVertexArray(VAO);
+	glBindVertexArray(m_VAO);
 
-	if (geometry->hasFaces())
+	if (m_geometry->hasFaces())
 	{
-		glGenBuffers(1, &VBO_faces);
+		glGenBuffers(1, &m_VBO_faces);
 		//bind buffer for faces
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_faces);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO_faces);
 		//allocate memory for the faces
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeFaces, 0, frequency);
 		//put the faces in the buffer
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeFaces, &(this->geometry->getFaces()->at(0)));
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeFaces, m_geometry->getFaces());
 	}
 
 	//taille vertices in bytes
 	int verticesBytes = nbVertices * sizeof(glm::vec3);
 
-	if (this->geometry->hasVertices())
+	if (m_geometry->hasVertices())
 	{
 		//Put the datas' mesh in a VBOBuffer
-		glGenBuffers(1, &VBO_vertices);
+		glGenBuffers(1, &m_VBO_vertices);
 		//bind buffer VBO for datas
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_vertices);
 		glBufferData(GL_ARRAY_BUFFER, verticesBytes, 0, frequency);
 		//copy data in GPU memory
-		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesBytes, &(this->geometry->getVertices()->at(0)));
+		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesBytes, m_geometry->getVertices());
 	}
-	if (this->geometry->hasNormals())
+	if (m_geometry->hasNormals())
 	{
 		//Put the datas' mesh in a VBOBuffer
-		glGenBuffers(1, &VBO_normals);
+		glGenBuffers(1, &m_VBO_normals);
 		//bind buffer VBO for datas
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_normals);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_normals);
 		glBufferData(GL_ARRAY_BUFFER, verticesBytes, 0, frequency);
 		//copy data in GPU memory
-		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesBytes, &(this->geometry->getNormals()->at(0)));
+		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesBytes, m_geometry->getNormals());
 	}
-	if (this->geometry->hasTangents())
+	if (m_geometry->hasTangents())
 	{
 		//Put the datas' mesh in a VBOBuffer
-		glGenBuffers(1, &VBO_tangents);
+		glGenBuffers(1, &m_VBO_tangents);
 		//bind buffer VBO for datas
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_tangents);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_tangents);
 		glBufferData(GL_ARRAY_BUFFER, verticesBytes, 0, frequency);
 		//copy data in GPU memory
-		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesBytes, &(this->geometry->getTangents()->at(0)));
+		glBufferSubData(GL_ARRAY_BUFFER, 0, verticesBytes, m_geometry->getTangents());
 	}
-	if (this->geometry->hasTexCoords())
+	if (m_geometry->hasTexCoords())
 	{
 		//Put the datas' mesh in a VBOBuffer
-		glGenBuffers(1, &VBO_coordText);
+		glGenBuffers(1, &m_VBO_coordText);
 		//bind buffer VBO for datas
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_coordText);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_coordText);
 		glBufferData(GL_ARRAY_BUFFER, nbVertices * sizeof(glm::vec2), 0, frequency);
 		//copy data in GPU memory
-		glBufferSubData(GL_ARRAY_BUFFER, 0, nbVertices * sizeof(glm::vec2), &(this->geometry->getTexCoords()->at(0)));
+		glBufferSubData(GL_ARRAY_BUFFER, 0, nbVertices * sizeof(glm::vec2), m_geometry->getTexCoords());
 	}
 
 
 	//specify to opengl where is the data
 	//the position
-	if (this->geometry->hasVertices())
+	if (m_geometry->hasVertices())
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_vertices);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, strideVert, 0);
 		glEnableVertexAttribArray(0);
 	}
-	if (this->geometry->hasNormals())
+	if (m_geometry->hasNormals())
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_normals);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_normals);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, strideVert, 0);
 		glEnableVertexAttribArray(1);
 	}
-	if (this->geometry->hasTangents())
+	if (m_geometry->hasTangents())
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_tangents);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_tangents);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, strideVert, 0);
 		glEnableVertexAttribArray(2);
 	}
 	
-	if (this->geometry->hasTexCoords())
+	if (m_geometry->hasTexCoords())
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_coordText);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO_coordText);
 		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), 0);
 		glEnableVertexAttribArray(3);
 	}

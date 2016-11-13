@@ -42,14 +42,15 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 //SEED INCLUDES
-#include <Seed/Graphics/engine/tools.hpp>
+#include "Seed/Graphics/engine/tools.hpp"
+#include "Seed/Graphics/definitions.hpp"
 
 class Geometry;
 
 /*! \class Model
 * \brief Loads and generate an Model in GPU
 */
-class Model
+class Model : public openGLFunctions
 {
 public:
 	/*!
@@ -93,13 +94,13 @@ public:
 
 protected:
 
-	Geometry *geometry;
+	Geometry *m_geometry;
 
-	GLuint VBO_vertices, VBO_normals, VBO_tangents, VBO_coordText, VBO_faces;
-	GLuint VAO;
+	GLuint m_VBO_vertices, m_VBO_normals, m_VBO_tangents, m_VBO_coordText, m_VBO_faces;
+	GLuint m_VAO;
 
-	std::string name;
-	std::string pathMesh;
+	std::string m_name;
+	std::string m_pathMesh;
 };
 
 #endif

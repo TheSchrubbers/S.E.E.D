@@ -14,6 +14,8 @@
 
 Shader::Shader(const std::string shader_dir_path, unsigned int *flag)
 {
+    initializeOpenGLFunctions();
+
 	m_programID = loadShaders(shader_dir_path);
 	if (flag && !m_programID)
 		*flag = SEED_ERROR_LOAD_SHADER;
@@ -23,6 +25,8 @@ Shader::Shader(const std::string shader_dir_path, unsigned int *flag)
 
 Shader::Shader()
 {
+    initializeOpenGLFunctions();
+
 }
 
 Shader::~Shader()
@@ -96,7 +100,7 @@ GLuint Shader::loadShaders(const std::string directory_file_path)
 			return ProgramID;
 		}
 	}
-	writeLog("			Error -> Path of shaders : directory unfound, " + directory_file_path);
+	//writeLog("			Error -> Path of shaders : directory unfound, " + directory_file_path);
 	return 0;
 }
 

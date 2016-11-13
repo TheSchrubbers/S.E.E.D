@@ -36,6 +36,8 @@ float Scene::bias = 0.0005;
 
 Scene::Scene()
 {
+    initializeOpenGLFunctions();
+	
 	m_rootObjectNode = new ObjectNode(std::shared_ptr<Scene>(this), "RootObjectNode");
 	m_rootLightNode = new Node(std::shared_ptr<Scene>(this), "RootLightNode");
 	m_collector = new Collector();
@@ -374,7 +376,7 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	m_camera->updateUBO();
 
 	//update each light
-	lightsRender();
+	//lightsRender();
 
 	//Get all the rendered nodes(models, materials...)
 	//std::vector<ObjectNode*> *renderedNodes = this->getCollector()->getRenderedCollectedNodes();
@@ -383,10 +385,8 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 	//this->ShadowMappingRender(nodes);
 
 	//Each node material rendering	
-	if (Scene::wireframe)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
+	//if (Scene::wireframe)
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//m_FBObuffer->bindRead(GL_TEXTURE0);
@@ -396,12 +396,10 @@ void Scene::render(std::vector<ObjectNode*> nodes)
 		renderedNodes->at(i)->render();
 	}*/
 	for (int i = 0; i < nodes.size(); i++)
-	{
 		nodes[i]->render();
-	}
 
 	//m_FBObuffer->releaseTextures();
-
+	//std::cout << m_cubemap << std::endl;
 	if (m_cubemap)
 		m_cubemap->draw();
 

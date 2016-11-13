@@ -32,7 +32,7 @@
 #ifndef VISCOELASTICFLUIDSYSTEM_HPP
 #define VISCOELASTICFLUIDSYSTEM_HPP
 
-#include <Seed/Graphics/particles/particlesSystem.hpp>
+#include "Seed/Graphics/particles/particlesSystem.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 

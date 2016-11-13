@@ -10,35 +10,35 @@
 SPHMaterial::SPHMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToMaterials + "SPHMaterial/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "SPHMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
-		this->init();
+		init();
 	else
 		writeLog("Material : " + n + " loading fails");
 }
 
 void SPHMaterial::init()
 {
-	if (this->shader)
+	if (m_shader)
 	{
-		GLuint programID = this->shader->getID();
-		this->complight.ambiant = 0.1;
-		this->complight.diffuse = 0.8;
-		this->complight.specular = 0.1;
+		GLuint programID = m_shader->getID();
+		m_complight.ambiant = 0.1;
+		m_complight.diffuse = 0.8;
+		m_complight.specular = 0.1;
 		// Get a handle for our "MVP" uniform.
 		// Only at initialisation time.
-		this->matID = glGetUniformLocation(programID, "mat");
-		this->complight.ambiantID = glGetUniformLocation(programID, "light.ambiant");
-		this->complight.diffuseID = glGetUniformLocation(programID, "light.diffuse");
-		this->complight.specularID = glGetUniformLocation(programID, "light.specular");
-		this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
-		this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
-		this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
-		this->block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
-		this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
-		this->uniformSSBOID = glGetProgramResourceIndex(this->shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
-		glShaderStorageBlockBinding(this->shader->getID(), this->uniformSSBOID, 0);
-		sph = new SPH(SPH::nbParticles, SPH::radiusParticle, SPH::radiusNeighbouring, this->scene);
+		m_matID = glGetUniformLocation(programID, "mat");
+		m_complight.ambiantID = glGetUniformLocation(programID, "light.ambiant");
+		m_complight.diffuseID = glGetUniformLocation(programID, "light.diffuse");
+		m_complight.specularID = glGetUniformLocation(programID, "light.specular");
+		m_block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
+		m_block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
+		m_block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
+		m_block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
+		m_block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
+		m_uniformSSBOID = glGetProgramResourceIndex(m_shader->getID(), GL_SHADER_STORAGE_BLOCK, "ParticlesBuffer");
+		glShaderStorageBlockBinding(m_shader->getID(), m_uniformSSBOID, 0);
+		m_sph = new SPH(SPH::nbParticles, SPH::radiusParticle, SPH::radiusNeighbouring, m_scene);
 	}
 }
 
@@ -50,22 +50,22 @@ void SPHMaterial::render(Model *model)
 {
 	if (SPH::reset == true)
 	{
-		delete this->sph;
-		this->sph = new SPH(SPH::nbParticles, SPH::radiusParticle, SPH::radiusNeighbouring, this->scene);
+		delete m_sph;
+		m_sph = new SPH(SPH::nbParticles, SPH::radiusParticle, SPH::radiusNeighbouring, m_scene);
 		SPH::reset = false;
 	}
-	this->sph->algorithm();
-	if (this->shader->useProgram())
+	m_sph->algorithm();
+	if (m_shader->useProgram())
 	{
 		//UNIFORMS
 		//set the uniform variable MVP
-		glUniform1fv(this->complight.ambiantID, 1, &(complight.ambiant));
-		glUniform1fv(this->complight.diffuseID, 1, &(complight.diffuse));
-		glUniform1fv(this->complight.specularID, 1, &(complight.specular));
-		glUniform1i(this->NMACTIVEID, Scene::normalMapActive);
-		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
-		glUniform1i(this->SMVIEWID, Scene::specularMapView);
-		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
+		glUniform1fv(m_complight.ambiantID, 1, &(m_complight.ambiant));
+		glUniform1fv(m_complight.diffuseID, 1, &(m_complight.diffuse));
+		glUniform1fv(m_complight.specularID, 1, &(m_complight.specular));
+		glUniform1i(m_NMACTIVEID, Scene::normalMapActive);
+		glUniform1i(m_SMACTIVEID, Scene::specularMapActive);
+		glUniform1i(m_SMVIEWID, Scene::specularMapView);
+		glUniform2f(m_matID, m_mat.Ks, m_mat.Kr);
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera
 		glEnable(GL_CULL_FACE);
@@ -78,19 +78,19 @@ void SPHMaterial::render(Model *model)
 		for (int i = 0; i < 4; i++)
 		{
 			//bind UBO buffer light
-			glBindBufferBase(GL_UNIFORM_BUFFER, i, this->scene->getCollector()->getLightUBO(i)->getID());
+			glBindBufferBase(GL_UNIFORM_BUFFER, i, m_scene->getCollector()->getLightUBO(i)->getID());
 			//bind UBO lighting with program shader
-			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
+			glUniformBlockBinding(m_shader->getID(), m_block_index_lights[i], i);
 		}
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 4, m_scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
-		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
+		glUniformBlockBinding(m_shader->getID(), m_block_index_camera, 4);
 		//bind ssbo particles
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this->sph->getSSBOID());
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_sph->getSSBOID());
 
 		//RENDER
 		//render model
-		model->render(this->sph->getNbParticles());
+		model->render(m_sph->getNbParticles());
 	}
 }

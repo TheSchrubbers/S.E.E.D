@@ -1,14 +1,22 @@
 //SEED INCLUDES
-#include <Seed/Graphics/engine/texture.hpp>
-#include <Seed/Graphics/engine/tools.hpp>
+#include "Seed/Graphics/engine/texture.hpp"
+#include "Seed/Graphics/engine/tools.hpp"
+
+using std::endl;
+using std::cout;
 
 Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsigned int *flag)
 {
+	cout << "constructor new texture" << endl;
+    initializeOpenGLFunctions();
+	
 	parserImage image;
 
 	//init class
 	this->width = 0;
 	this->height = 0;
+
+	cout << "read image" << endl;
 
 	//load image
 	if (image.readImage(pathT))
@@ -25,6 +33,9 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		//height
 		int height =  image.getHeight();
 
+		cout << "gen texture" << endl;
+
+
 		//create a new openGL texture
 		glGenTextures(1, &textureID);
 		//bind texture to modify this -> typetexture2D
@@ -38,6 +49,8 @@ Texture::Texture(const std::string pathT, const unsigned int typeTexture, unsign
 		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);*/
 		glBindTexture(GL_TEXTURE_2D, 0);
+		cout << "fin gen texture" << endl;
+
 		if (flag)
 			*flag = SEED_SUCCESS;
 	}

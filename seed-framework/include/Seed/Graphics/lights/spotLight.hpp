@@ -38,7 +38,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 //SEED INCLUDES
-#include <Seed/Graphics/lights/light.hpp>
+#include "Seed/Graphics/lights/light.hpp"
 
 /*! \class SpotLight
 * \brief SpotLight of the scene

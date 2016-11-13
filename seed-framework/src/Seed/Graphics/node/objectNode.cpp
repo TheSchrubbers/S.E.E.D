@@ -12,8 +12,8 @@
 
 ObjectNode::ObjectNode(std::shared_ptr<Scene> sce, const std::string n) : Node(sce, n)
 {
-	this->model = nullptr;
-	this->material = nullptr;
+	m_model = nullptr;
+	m_material = nullptr;
 }
 
 ObjectNode::~ObjectNode()
@@ -25,12 +25,12 @@ ObjectNode::~ObjectNode()
 
 void ObjectNode::setModel(Model *m)
 {
-	this->model = m;
+	m_model = m;
 }
 
 void ObjectNode::setMaterial(Material* mat)
 {
-	this->material = mat;
+	m_material = mat;
 }
 
 void ObjectNode::setMaterialRecur(Material* mat)
@@ -51,13 +51,14 @@ void ObjectNode::render()
 {
 	if (m_rendered)
 	{
-		for (int i = 0; i < this->m_children.size(); i++)
-			this->m_children[i]->render();
-		if (this->material)
-			if (this->model)
-				this->material->render(this->model);
+		int size = m_children.size();
+		for (int i = 0; i < size; i++)
+			m_children[i]->render();
+		if (m_material)
+			if (m_model)
+				m_material->render(m_model);
 			else
-				material->render();
+				m_material->render();
 	}
 }
 
@@ -67,36 +68,36 @@ void ObjectNode::afficher()
 
 Model* ObjectNode::getModel()
 {
-	return this->model;
+	return m_model;
 }
 
 Material* ObjectNode::getMaterial()
 {
-	return this->material;
+	return m_material;
 }
 
 bool ObjectNode::hasMaterial()
 {
-	if (this->material)
+	if (m_material)
 		return true;
 	return false;
 }
 
 bool ObjectNode::hasModel()
 {
-	if (this->model)
+	if (m_model)
 		return true;
 	return false;
 }
 
 std::vector<ObjectNode*>* ObjectNode::getChildren()
 {
-	return &(this->m_children);
+	return &(m_children);
 }
 
 void ObjectNode::addChild(ObjectNode* n)
 {
-	this->m_children.push_back(n);
+	m_children.push_back(n);
 }
 
 void ObjectNode::setFather(Node *f)
@@ -123,7 +124,7 @@ ObjectNode* ObjectNode::getNode(const std::string name)
 
 bool ObjectNode::hasChildren()
 {
-	if (this->m_children.size())
+	if (m_children.size())
 		return true;
 	return false;
 }

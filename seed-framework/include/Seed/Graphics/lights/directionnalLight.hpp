@@ -38,7 +38,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 //SEED INCLUDES
-#include <Seed/Graphics/lights/light.hpp>
+#include "Seed/Graphics/lights/light.hpp"
 
 /*! \class DirectionnalLight
 * \brief DirectionnalLight of the scene

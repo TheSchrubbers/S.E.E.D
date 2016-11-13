@@ -35,13 +35,14 @@
 #define UBOBUFFER_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/tools.hpp>
+#include "Seed/Graphics/engine/tools.hpp"
+#include "Seed/Graphics/buffers/buffer.hpp"
 
 
 /*! \class UBOBuffer
 * \brief Create, update, delete UBOBuffers
 */
-class UBOBuffer
+class UBOBuffer : public Buffer
 {
 public:
 	/*!
@@ -75,8 +76,7 @@ public:
 	GLuint getID();
 
 private:
-	GLuint UBOID;
-	int size;
+	unsigned int m_size;
 };
 
 #endif

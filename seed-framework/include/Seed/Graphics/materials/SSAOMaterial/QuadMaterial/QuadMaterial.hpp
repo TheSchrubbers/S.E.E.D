@@ -81,15 +81,15 @@ class QuadMaterial : public Material
 			glm::vec3 value;
 		};
 		void init();
-		Kernel kernel[NBKERNEL];
-		UBOBuffer *uboKernels, *uboNoise;
-		GLuint kernelsID, noiseID;
-		GLuint block_index_lights[4];
-		GLuint block_index_camera;
-		Noise noise[16];
-		Texture *t;
+		Kernel m_kernel[NBKERNEL];
+		UBOBuffer *m_uboKernels, *m_uboNoise;
+		GLuint m_kernelsID, m_noiseID;
+		GLuint m_block_index_lights[4];
+		GLuint m_block_index_camera;
+		Noise m_noise[16];
+		Texture *m_t;
 
-		std::shared_ptr<Shader> shader;
+		std::shared_ptr<Shader> m_shader;
 };
 
 #endif

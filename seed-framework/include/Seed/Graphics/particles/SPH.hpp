@@ -29,11 +29,11 @@
 * \license Zlib License.
 */
 
-#include <Seed/Graphics/particles/particlesSystem.hpp>
+#include "Seed/Graphics/particles/particlesSystem.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
-#include <Seed/Graphics/data_structure/KDtree.hpp>
+#include "Seed/Graphics/data_structure/KDtree.hpp"
 #include <ctime>
 
 

@@ -34,12 +34,12 @@
 #ifndef SSBOBUFFER_HPP
 #define SSBOBUFFER_HPP
 
-#include <GL/glew.h>
+#include "Seed/Graphics/buffers/buffer.hpp"
 
 /*! \class SSBOBuffer
 * \brief Create, update, delete SSBOBuffers
 */
-class SSBOBuffer
+class SSBOBuffer : public Buffer
 {
 public:
 	/*!
@@ -84,7 +84,6 @@ public:
 	void release();
 
 private:
-	GLuint SSBOID;
 	int size;
 };
 

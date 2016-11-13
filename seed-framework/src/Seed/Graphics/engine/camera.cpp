@@ -1,6 +1,6 @@
 //SEED INCLUDES
-#include <Seed/Graphics/engine/camera.hpp>
-#include <Seed/Graphics/buffers/UBOBuffer.hpp>
+#include "Seed/Graphics/engine/camera.hpp"
+#include "Seed/Graphics/buffers/UBOBuffer.hpp"
 
 Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, float width, float height, float n, float f , float WA, float HA, float s, float ms)
 {
@@ -22,9 +22,10 @@ Camera::Camera(glm::vec3 pos, glm::vec3 look, glm::vec3 upVector, float FOV, flo
 		m_near,        // la ou commence le frustrum
 		m_far       // la ou finit le frustrum
 	);
-
+	std::cout << "uboBuffer" << std::endl;
 	//create a UBObuffer
 	m_camBuf = new UBOBuffer();
+	std::cout << "uboBuffer" << std::endl;
 	m_camBuf->create(sizeof(struct Matrix));
 }
 

@@ -1,18 +1,28 @@
 //SEED INCLUDES
-#include <Seed/Graphics/engine/cubeMap.hpp>
-#include <Seed/Graphics/engine/texture.hpp>
-#include <Seed/Graphics/model/geometry.hpp>
-#include <Seed/Graphics/engine/shader.hpp>
-#include <Seed/Graphics/loaders/parserImage.hpp>
-#include <Seed/Graphics/engine/scene.hpp>
-#include <Seed/Graphics/buffers/UBOBuffer.hpp>
-#include <Seed/Graphics/engine/camera.hpp>
+#include "Seed/Graphics/engine/cubeMap.hpp"
+#include "Seed/Graphics/engine/texture.hpp"
+#include "Seed/Graphics/model/geometry.hpp"
+#include "Seed/Graphics/engine/shader.hpp"
+#include "Seed/Graphics/loaders/parserImage.hpp"
+#include "Seed/Graphics/engine/scene.hpp"
+#include "Seed/Graphics/buffers/UBOBuffer.hpp"
+#include "Seed/Graphics/engine/camera.hpp"
 //OTHER INCLUDES
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
 
+using boost::filesystem::directory_iterator;
+using boost::filesystem::path;
+using boost::filesystem::exists;
+using boost::filesystem::is_directory;
+using boost::filesystem::directory_iterator ;
+using std::vector;
 
 CubeMap::CubeMap(const std::string path, std::shared_ptr<Scene> sce, unsigned int *flag)
 {
+	std::cout << "initialize GMap" << std::endl;
+    initializeOpenGLFunctions();
+
 	//init variable
 	this->VAO = 0;
 	this->block_index_camera = 0;
@@ -26,14 +36,19 @@ CubeMap::CubeMap(const std::string path, std::shared_ptr<Scene> sce, unsigned in
 	{
 		flag = new unsigned int;
 	}
+	std::cout << this->loadTextures(path) << std::endl;
 	if (!this->loadTextures(path))
 	{
+		std::cout << "flag" << std::endl;
 		*flag = SEED_ERROR_FILE_LOCATION;
 	}
+	std::cout << "flag" << std::endl;
 	if (!this->createShader())
 	{
 		*flag = SEED_ERROR_DEFAULT_SHADER_NOT_FOUND;
 	}
+	std::cout << "fin initialisation GMap" << std::endl;
+
 }
 
 CubeMap::~CubeMap()
@@ -43,76 +58,86 @@ CubeMap::~CubeMap()
 
 bool CubeMap::loadTextures(const std::string pathDirectory)
 {
+	std::cout << "loadTextures" << std::endl;
 	int width, height, t;
 	parserImage *img = new parserImage();
 	//we want all the filenames in the directory
-	boost::filesystem::path p(pathDirectory);
+	path p(pathDirectory);
 	bool done[6] = { false };
+
 	std::string s, n;
 	//create a new openGL texture
 	glGenTextures(1, &textureID);
-
 	//bind texture to modify this -> typetexture2D
-	glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);	
+	std::cout << p << std::endl;
+	std::cout << exists(p) << std::endl;
+	std::cout << is_directory(p) << std::endl;
+	std::cout << is_regular_file(p) << std::endl;
 
-	if (boost::filesystem::exists(p))
+	if (exists(p) && is_directory(p))
 	{
-		if (boost::filesystem::is_directory(p))
+		vector<path> paths;
+		std::cout << "test" << std::endl;
+		printValue("path", p.relative_path().string());
+		std::copy(directory_iterator(p), directory_iterator(), std::back_inserter(paths));
+		sort(paths.begin(), paths.end());
+		//check all the filenames
+		for (vector<path>::const_iterator it(paths.begin()); it != paths.end(); it++)
 		{
-			std::vector<boost::filesystem::path> paths;
-			std::copy(boost::filesystem::directory_iterator(p), boost::filesystem::directory_iterator(), std::back_inserter(paths));
-			sort(paths.begin(), paths.end());
-			//check all the filenames
-			for (std::vector<boost::filesystem::path>::const_iterator it(paths.begin()); it != paths.end(); it++)
+			s = it->relative_path().string();
+			n = it->filename().stem().string();
+			if (n == "back" && !done[1])
 			{
-				s = it->relative_path().string();
-				n = it->filename().stem().string();
-				if (n == "back" && !done[1])
-				{
-					this->loadFace(1, &s, img);
-					done[1] = true;
-				}
-				else if (n == "bottom" && !done[4])
-				{
-					this->loadFace(4, &s, img);
-					done[4] = true;
-				}
-				else if (n == "front" && !done[0])
-				{
-					this->loadFace(0, &s, img);
-					done[0] = true;
-				}
-				else if (n == "left" && !done[3])
-				{
-					this->loadFace(3, &s, img);
-					done[3] = true;
-				}
-				else if (n == "right" && !done[2])
-				{
-					this->loadFace(2, &s, img);
-					done[2] = true;
-				}
-				else if (n == "top" && !done[5])
-				{
-					this->loadFace(5, &s, img);
-					done[5] = true;
-				}
+				this->loadFace(1, &s, img);
+				done[1] = true;
 			}
-
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-			glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-			return true;
+			else if (n == "bottom" && !done[4])
+			{
+				this->loadFace(4, &s, img);
+				done[4] = true;
+			}
+			else if (n == "front" && !done[0])
+			{
+				this->loadFace(0, &s, img);
+				done[0] = true;
+			}
+			else if (n == "left" && !done[3])
+			{
+				this->loadFace(3, &s, img);
+				done[3] = true;
+			}
+			else if (n == "right" && !done[2])
+			{
+				this->loadFace(2, &s, img);
+				done[2] = true;
+			}
+			else if (n == "top" && !done[5])
+			{
+				this->loadFace(5, &s, img);
+				done[5] = true;
+			}
 		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+		std::cout << "fin loadTextures" << std::endl;
+
+
+		return true;
 	}
 	else
 	{
+		std::cout << "writelog" << std::endl;
 		writeLog("ERROR -> CubeMap : File " + pathDirectory + " not found.");
+		std::cout << "fin writelog" << std::endl;
+
 	}
 	return false;
 

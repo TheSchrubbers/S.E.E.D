@@ -33,42 +33,40 @@
 #define ENGINE_HPP
 
 //DEFINES
-//#define GLFW_INCLUDE_GLCOREARB
-//#define GLFW_INCLUDE_GLU
 //
 //OTHER INCLUDES
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 //SEED INCLUDES
-#include <Seed/Graphics/engine/control.hpp>
-#include <Seed/Graphics/engine/scene.hpp>
-#include <Seed/Graphics/materials/DefaultMaterial/DefaultMaterial.hpp>
-#include <Seed/Graphics/materials/SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp>
-#include <Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.hpp>
-#include <Seed/Graphics/node/objectNode.hpp>
-#include <Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.hpp>
-#include <Seed/Graphics/materials/ColorMaterial/ColorMaterial.hpp>
-#include <Seed/Graphics/particles/SPH.hpp>
-#include <Seed/Graphics/materials/ParticlesSystemMaterial/SPHMaterial/SPHMaterial.hpp>
-#include <Seed/Graphics/engine/tools.hpp>
-#include <Seed/Graphics/buffers/FBOBuffer.hpp>
-#include <Seed/Graphics/engine/collector.hpp>
-#include <Seed/Graphics/node/pointLightNode.hpp>
-#include <Seed/Graphics/node/directionalLightNode.hpp>
-#include <Seed/Graphics/node/spotLightNode.hpp>
-#include <Seed/Graphics/node/flashLightNode.hpp>
-#include <Seed/Graphics/lights/directionnalLight.hpp>
-#include <Seed/Graphics/lights/flashLight.hpp>
-#include <Seed/Graphics/lights/pointLight.hpp>
-#include <Seed/Graphics/lights/spotLight.hpp>
-#include <Seed/Graphics/engine/camera.hpp>
+#include "Seed/Graphics/engine/control.hpp"
+#include "Seed/Graphics/engine/scene.hpp"
+#include "Seed/Graphics/materials/DefaultMaterial/DefaultMaterial.hpp"
+#include "Seed/Graphics/materials/SSAOMaterial/DeferredMaterial/DeferredMaterial.hpp"
+#include "Seed/Graphics/materials/ShadowMappingMaterial/ShadowMappingMaterial.hpp"
+#include "Seed/Graphics/node/objectNode.hpp"
+#include "Seed/Graphics/materials/ImplicitMaterial/ImplicitMaterial.hpp"
+#include "Seed/Graphics/materials/ColorMaterial/ColorMaterial.hpp"
+#include "Seed/Graphics/particles/SPH.hpp"
+#include "Seed/Graphics/materials/ParticlesSystemMaterial/SPHMaterial/SPHMaterial.hpp"
+#include "Seed/Graphics/materials/simpleMaterial/simpleMaterial.hpp"
+#include "Seed/Graphics/engine/tools.hpp"
+#include "Seed/Graphics/buffers/FBOBuffer.hpp"
+#include "Seed/Graphics/engine/collector.hpp"
+#include "Seed/Graphics/node/pointLightNode.hpp"
+#include "Seed/Graphics/node/directionalLightNode.hpp"
+#include "Seed/Graphics/node/spotLightNode.hpp"
+#include "Seed/Graphics/node/flashLightNode.hpp"
+#include "Seed/Graphics/lights/directionnalLight.hpp"
+#include "Seed/Graphics/lights/flashLight.hpp"
+#include "Seed/Graphics/lights/pointLight.hpp"
+#include "Seed/Graphics/lights/spotLight.hpp"
+#include "Seed/Graphics/engine/camera.hpp"
+#include "Seed/Graphics/definitions.hpp"
 
 
 /*! \class Engine
 * \brief class Engine, init the system and the scene
 */
-class Engine
+class Engine : public openGLFunctions
 {
 	public:
 		/*!
@@ -93,25 +91,8 @@ class Engine
 		 * @param[in]  scene  The scene
 		 * @param[in]  nodes  The nodes
 		 */
-		void mainRender(std::shared_ptr<Scene> scene, std::vector<ObjectNode*> nodes);
+		void mainRender();
 		
-		/**
-		 * @brief      Init GLEW system
-		 *
-		 * @return     True if the GLEW system was initialized and false if a problem was appeared
-		 */
-		bool initGlewSystem();
-
-		/**
-		 * @brief      Init GLFW system
-		 *
-		 * @param[in]  w     Width of the rendering window
-		 * @param[in]  h     Height of the rendering window
-		 *
-		 * @return     True if the GLFW system was initialized and false if a
-		 *             problem was appeared
-		 */
-		bool initGLFWSystem(const int w, const int h);
 
 		/**
 		 * @brief      Initialize Controller
@@ -135,15 +116,7 @@ class Engine
 		 *
 		 * @return     Returns a vector of ObjectNode* to rendering
 		 */
-		std::vector<ObjectNode*> loadSystemToRendering(std::shared_ptr<Scene> scene);
-
-		/**
-		 * @brief      Init AntTweakBar
-		 *
-		 * @param[in]  name    The name of the interface AntTweakBar
-		 * @param[in]  camera  The camera
-		 */
-		void initAntWeakBar(std::string name, const Camera *camera);
+		std::vector<ObjectNode*> loadSystemToRendering();
 
 		/**
 		 * @brief      Gets the scene.
@@ -156,15 +129,10 @@ class Engine
 
 
 	private:
-		GLFWwindow *m_window;
 		Controller *m_controller;
 		int width, height;
 		std::shared_ptr<Scene> m_scene;
+		std::vector<ObjectNode*> m_nodes;
 };
 
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
-void TW_CALL CallbackButtonReset(void *clientData);
-void TW_CALL CallbackButtonNextFrame(void *clientData);
-void TW_CALL CallbackButtonPlay(void *clientData);
-void TW_CALL CallbackButtonPause(void *clientData);
 #endif

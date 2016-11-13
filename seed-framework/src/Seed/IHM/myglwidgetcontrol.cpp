@@ -1,8 +1,7 @@
-#include <Seed/Graphics/engine/engine.hpp>
-#include <myglwidget.hpp>
+#include "Seed/Graphics/engine/engine.hpp"
+#include "Seed/IHM/myglwidget.hpp"
 #include <QObject>
 #include <QKeyEvent>
-#include <GL/glew.h>
 #include <glm/gtc/quaternion.hpp>
 
 

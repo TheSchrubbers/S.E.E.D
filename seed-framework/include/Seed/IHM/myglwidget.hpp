@@ -1,7 +1,7 @@
 #ifndef MYGLWIDGET_HPP
 #define MYGLWIDGET_HPP
 
-#include <glwidget.hpp>
+#include "Seed/IHM/glwidget.hpp"
 #include <iostream>
 #include <memory>
 #include <glm/glm.hpp>

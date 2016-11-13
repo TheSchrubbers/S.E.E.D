@@ -34,10 +34,11 @@
 #define SHADER_HPP
 
 #include <string>
-#include <GL/glew.h>
 #include <vector>
 
-class Shader
+#include "Seed/Graphics/definitions.hpp"
+
+class Shader : openGLFunctions
 {
 public:
 	Shader(const std::string shader_dir_path, unsigned int *flag = nullptr);

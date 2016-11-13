@@ -33,7 +33,7 @@
 #define FLASHLIGHTNODE_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/node/node.hpp>
+#include "Seed/Graphics/node/node.hpp"
 
 //OTHER INCLUDES
 #include <vector>

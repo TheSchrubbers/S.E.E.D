@@ -1,5 +1,6 @@
 //SEED INCLUDES
 #include <Seed/Graphics/engine/tools.hpp>
+#include "Seed/Graphics/definitions.hpp"
 //OTHER INCLUDES
 #include <glm/gtx/intersect.hpp>
 #include <glm/gtx/transform.hpp>
@@ -27,7 +28,7 @@ void printVec3(glm::vec3 & vec)
 
 void printErrorOpenGL()
 {
-	GLenum err;
+	/*GLenum err;
 	std::string error;
 	while ((err = glGetError()) != GL_NO_ERROR) {
 		switch (err) {
@@ -38,7 +39,7 @@ void printErrorOpenGL()
 		case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
 		}
 		std::cerr << "OpenGL error: " << error << std::endl;
-	}
+	}*/
 }
 
 void scanSeedError(unsigned int flag)

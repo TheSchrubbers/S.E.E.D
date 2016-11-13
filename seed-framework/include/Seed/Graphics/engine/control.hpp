@@ -2,12 +2,10 @@
 #define CONTROL_HPP
 
 //OTHER INCLUDES
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <AntTweakBar.h>
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/Constant.hpp>
+#include "Seed/Graphics/engine/Constant.hpp"
 
 class Camera;
 
@@ -23,7 +21,7 @@ public:
 	 *
 	 * @param      window  The window
 	 */
-	Controller(GLFWwindow *window);
+	Controller();
 
 	/**
 	 * @brief      Destructor of class Controller
@@ -38,7 +36,7 @@ public:
 	 * @param      camera     The camera
 	 * @param[in]  deltaTime  The delta time
 	 */
-	void updateControl(GLFWwindow* window, Camera* camera, float deltaTime);
+	void updateControl(Camera* camera, float deltaTime);
 
 	void updateControlMoveMouse(Camera *cam, float WAngle, float HAngle, double deltaX, double deltaY);
 
@@ -58,21 +56,8 @@ public:
 	 */
 	void initAntWeakBar(std::string name);
 
-	/**
-	 * @brief      Gets the AntTweakBar bar.
-	 *
-	 * @return     The AntTweakBar bar
-	 */
-	TwBar* getBar();
-
-	//STATIC ATTRIBUTES
-	static int context;
 private:
-	TwBar *bar;
 	Camera *cam;
 };
-
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods);
-
 
 #endif

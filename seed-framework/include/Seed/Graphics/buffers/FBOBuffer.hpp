@@ -35,12 +35,13 @@
 #define FBOBUFFER_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/tools.hpp>
+#include "Seed/Graphics/engine/tools.hpp"
+#include "Seed/Graphics/buffers/buffer.hpp"
 
 /*! \class FBOBuffer
 * \brief Create, update, delete FBOBuffers
 */
-class FBOBuffer
+class FBOBuffer : public Buffer
 {
 public:
 	/*!
@@ -93,7 +94,6 @@ public:
 	void printTextures();
 
 private:
-	GLuint m_ID;
 	std::vector<GLuint> GDepthTextures;
 };
 

@@ -8,8 +8,9 @@ parserImage::parserImage()
 
 bool parserImage::readImage(const std::string path)
 {
+	std::cout << "readImage" << std::endl;
 	int format = this->getFormat(path);
-	//std::cout << path << std::endl;
+	std::cout << "format : " << format << std::endl;
 	switch (format)
 	{
 	case SEED_JPEG_FORMAT:
@@ -202,15 +203,19 @@ bool parserImage::PNG_parser(const std::string path)
 bool parserImage::TGA_parser(const std::string path)
 {
 	TGA img;
+	std::cout << "TGA loading" << std::endl;
 	if (img.Load(path.c_str()))
 	{
 		struct tga_header t = img.tgaheader;
 		int size = t.width * t.height * (t.bpp / 8);
+		std::cout << "free pixels if necessery" << std::endl;
 
 		if(this->pixels)
 			free(this->pixels);
+		std::cout << "malloc memory" << std::endl;
 		//sizing pixels to contain data
 		this->pixels = (void*)malloc(sizeof(char) * size);
+		std::cout << "copy buffer" << std::endl;
 		//copy data from img to pixels
 		memcpy(this->pixels, &img.imageData[0], size);
 		this->height = t.height;
@@ -225,6 +230,9 @@ bool parserImage::TGA_parser(const std::string path)
 			this->depth = GL_RGBA;
 			break;
 		}
+		std::cout << "end true" << std::endl;
 		return true;
 	}
+		std::cout << "end false" << std::endl;
+	return false;
 }

@@ -39,6 +39,8 @@
 #include <stack>
 #include <queue>
 
+#include "Seed/Graphics/definitions.hpp"
+
 class Texture;
 class Model;
 class Material;
@@ -57,7 +59,7 @@ class ShadowMappingMaterial;
 /*! \class Scene
 * \brief class Scene who contains meshes, materials...
 */
-class Scene
+class Scene : public openGLFunctions
 {
 	public:
 		/*!

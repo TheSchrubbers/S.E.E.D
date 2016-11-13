@@ -37,13 +37,14 @@
 #include <glm/glm.hpp>
  #include <iostream>
  //SEED INCLUDES
-#include <Seed/Graphics/loaders/parserImage.hpp>
-#include <Seed/Graphics/engine/Constant.hpp>
+#include "Seed/Graphics/loaders/parserImage.hpp"
+#include "Seed/Graphics/engine/Constant.hpp"
+#include "Seed/Graphics/definitions.hpp"
 
 /*! \class Texture
  * \brief Loads and generate an IDTexture in GPU
  */
-class Texture
+class Texture : public openGLFunctions
 {
 public:
 	/*!

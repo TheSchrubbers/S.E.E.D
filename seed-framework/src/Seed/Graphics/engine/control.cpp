@@ -1,21 +1,14 @@
 //SEED INCLUDES
-#include <Seed/Graphics/engine/tools.hpp>
-#include <Seed/Graphics/engine/control.hpp>
-#include <Seed/Graphics/engine/scene.hpp>
-#include <Seed/Graphics/engine/camera.hpp>
+#include "Seed/Graphics/engine/tools.hpp"
+#include "Seed/Graphics/engine/control.hpp"
+#include "Seed/Graphics/engine/scene.hpp"
+#include "Seed/Graphics/engine/camera.hpp"
 
 using namespace glm;
 using namespace std;
 
-int Controller::context = 0;
-
-Controller::Controller(GLFWwindow *window)
+Controller::Controller()
 {
-	//captur keys
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	glfwSetMouseButtonCallback(window, mouse_buttonID_callback);
-	this->context = 0;
-	glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
 }
 
 Controller::~Controller()
@@ -23,10 +16,10 @@ Controller::~Controller()
 }
 
 
-void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
+void Controller::updateControl(Camera *cam, float deltaTime)
 {
 	//position of the camera
-	vec3 position = cam->getPosition();
+	/*vec3 position = cam->getPosition();
 	//horizontal and vertical angle
 	float WAngle = cam->getWAngle();
 	float HAngle = cam->getHAngle();
@@ -165,7 +158,7 @@ void Controller::updateControl(GLFWwindow* window, Camera *cam, float deltaTime)
 		{
 			TwEventKeyGLFW(GLFW_KEY_DELETE, GLFW_PRESS);
 		}
-	}
+	}*/
 }
 
 void Controller::updateControlMoveMouse(Camera *cam, float WAngle, float HAngle, double deltaX, double deltaY)
@@ -226,57 +219,4 @@ void Controller::updateDragMouseControl(Camera *cam, float deltaPosX, float delt
 	cam->setRight(right);
 	//update ViewMatrix
 	cam->setViewMatrix(position, direction, up);
-}
-
-void mouse_buttonID_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	//if action is press button
-	if (action == GLFW_PRESS)
-	{
-		//we get the right and left button of the souris to send these to anttweakbar
-		switch (button)
-		{
-			case GLFW_MOUSE_BUTTON_LEFT:
-				TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_LEFT);
-				break;
-			case GLFW_MOUSE_BUTTON_RIGHT:
-				Controller::context += 1;
-				Controller::context %= 2;
-				//Controller::context = 0;
-				TwMouseButton(TW_MOUSE_PRESSED, TW_MOUSE_RIGHT);
-				break;
-		}
-	}
-	//if user release button we do the same thing that above
-	else if (action == GLFW_RELEASE)
-	{
-		switch (button)
-		{
-			case GLFW_MOUSE_BUTTON_LEFT:
-				TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_LEFT);
-				break;
-			case GLFW_MOUSE_BUTTON_RIGHT:
-				//Controller::context = 1;
-				TwMouseButton(TW_MOUSE_RELEASED, TW_MOUSE_RIGHT);
-				break;
-		}
-	}
-
-}
-
-void Controller::initAntWeakBar(std::string name)
-{
-	//initialisation AntWeakBar
-	TwInit(TW_OPENGL_CORE, NULL);
-
-	//windows size for anttweakbar
-	TwWindowSize(WIDTH, HEIGHT);
-
-	//initialize bar
-	this->bar = TwNewBar(name.c_str());
-}
-
-TwBar* Controller::getBar()
-{
-	return this->bar;
 }

@@ -33,7 +33,7 @@
 #define MARCHINGCUBES_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/tools.hpp>
+#include "Seed/Graphics/engine/tools.hpp"
 //OTHER INCLUDES
 #include <vector>
 #include <boost/shared_ptr.hpp>

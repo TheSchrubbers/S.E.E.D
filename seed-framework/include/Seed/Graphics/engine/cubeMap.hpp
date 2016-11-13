@@ -34,11 +34,11 @@
 
 //OTHER INCLUDES
 #include <glm/glm.hpp>
-#include <GL/glew.h>
 #include <iostream>
 #include <memory>
 //SEED INCLUDES
-#include <Seed/Graphics/engine/Constant.hpp>
+#include "Seed/Graphics/engine/Constant.hpp"
+#include "Seed/Graphics/definitions.hpp"
 
 class Texture;
 class Model;
@@ -49,7 +49,7 @@ class Shader;
 /*! \class CubeMap
  * \brief Generate a cubemap
  */
-class CubeMap
+class CubeMap : public openGLFunctions
 {
 public:
 	/*!

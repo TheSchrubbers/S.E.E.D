@@ -34,7 +34,7 @@
 #ifndef INSTANCEDMODEL_HPP
 #define INSTANCEDMODEL_HPP
 
-#include <Seed/Graphics/model/model.hpp>
+#include "Seed/Graphics/model/model.hpp"
 
 class Geometry;
 

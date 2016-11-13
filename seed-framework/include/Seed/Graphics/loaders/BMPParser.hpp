@@ -33,7 +33,7 @@
 #ifndef BMPPARSER_HPP
 #define BMPPARSER_HPP
 
-#include <Seed/Graphics/loaders/parserImage.hpp>
+#include "Seed/Graphics/loaders/parserImage.hpp"
 
 class parserImage;
 

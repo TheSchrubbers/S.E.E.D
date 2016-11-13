@@ -9,13 +9,13 @@
 
 ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(std::shared_ptr<Scene> sce, const int &nb, const std::string n, unsigned int *flag) : Material(sce, n, flag, 0.0, 0.0)
 {
-	this->nbParticles = nb;
+	m_nbParticles = nb;
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToMaterials + "ParticlesSystemMaterial/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "ParticlesSystemMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
 	{
-		this->init();
-		ParticlesWaterSystem *system = new ParticlesWaterSystem(sce, this->nbParticles, SEED_POINT, glm::vec3(0.0));
+		init();
+		ParticlesWaterSystem *system = new ParticlesWaterSystem(sce, m_nbParticles, SEED_POINT, glm::vec3(0.0));
 	}
 	else
 		writeLog("Material : " + n + " loading fails");
@@ -23,11 +23,11 @@ ParticlesWaterSystemMaterial::ParticlesWaterSystemMaterial(std::shared_ptr<Scene
 
 void ParticlesWaterSystemMaterial::init()
 {
-	this->M = glm::mat4(1.0);
+	m_M = glm::mat4(1.0);
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
-	this->MID = glGetUniformLocation(this->shader->getID(), "M");
-	this->block_index_camera = glGetUniformBlockIndex(this->shader->getID(), "CameraBuffer");
+	m_MID = glGetUniformLocation(m_shader->getID(), "M");
+	m_block_index_camera = glGetUniformBlockIndex(m_shader->getID(), "CameraBuffer");
 }
 
 ParticlesWaterSystemMaterial::~ParticlesWaterSystemMaterial()
@@ -37,11 +37,11 @@ ParticlesWaterSystemMaterial::~ParticlesWaterSystemMaterial()
 void ParticlesWaterSystemMaterial::render(Model *model)
 {
 	InstancedModel *m = dynamic_cast<InstancedModel*>(model);
-	if (this->shader->useProgram())
+	if (m_shader->useProgram())
 	{
 		//UNIFORMS
 		//set the uniform variable MVP
-		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
+		glUniformMatrix4fv(m_MID, 1, GL_FALSE, &m_M[0][0]);
 		//OPTIONS
 		// Enable depth test
 		glEnable(GL_DEPTH_TEST);
@@ -50,19 +50,19 @@ void ParticlesWaterSystemMaterial::render(Model *model)
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		//TEXTURES
-		//this->activeTextures();
+		//m_activeTextures();
 
 		//BUFFERS
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->scene->getCamera()->getUBOId());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
-		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 0);
+		glUniformBlockBinding(m_shader->getID(), m_block_index_camera, 0);
 
 		//RENDER
 		//render model
-		m->render(this->nbParticles);
+		m->render(m_nbParticles);
 
 		//RELEASE
-		//this->releaseTextures();
+		//m_releaseTextures();
 	}
 }

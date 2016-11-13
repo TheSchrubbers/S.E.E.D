@@ -33,12 +33,11 @@
 #define CAMERA_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/Constant.hpp>
+#include "Seed/Graphics/engine/Constant.hpp"
 
 //OTHER INCLUDES
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-#include <AntTweakBar.h>
 
 class UBOBuffer;
 
@@ -230,15 +229,6 @@ public:
 	 * @param      speed  : speed of the mouse's move
 	 */
 	void setMouseSpeed(const float speed);
-
-	static void TW_CALL SetSpeedMouseCallback(const void *value, void *clientData)
-	{
-		static_cast<Camera *>(clientData)->setMouseSpeed(1.0/(*static_cast<const float *>(value)));
-	}
-	static void TW_CALL GetSpeedMouseCallback(void *value, void *clientData)
-	{
-		*static_cast<float *>(value) = static_cast<Camera *>(clientData)->getMouseSpeed();
-	}
 
 private:
 

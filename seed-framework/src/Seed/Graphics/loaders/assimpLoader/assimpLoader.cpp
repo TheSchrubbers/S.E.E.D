@@ -6,7 +6,6 @@
 #include <Seed/Graphics/engine/tools.hpp>
 
 //OTHER INCLUDES
-#include <GL/glew.h>
 
 AssimpLoader::AssimpLoader()
 {

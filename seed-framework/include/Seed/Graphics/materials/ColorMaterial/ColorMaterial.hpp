@@ -34,7 +34,7 @@
 #define COLORMATERIAL_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/material.hpp>
+#include "Seed/Graphics/engine/material.hpp"
 
 /*! \class ColorMaterial
 * \brief Material
@@ -71,12 +71,12 @@ class ColorMaterial : public Material
 	private:
 
 		void init();
-		GLuint block_index_lights[4];
-		GLuint block_index_camera;
-		GLuint colorID, VLightID, biasID, shadowsActiveID;
-		glm::vec3 color;
+		GLuint m_block_index_lights[4];
+		GLuint m_block_index_camera;
+		GLuint m_colorID, m_VLightID, m_biasID, m_shadowsActiveID;
+		glm::vec3 m_color;
 
-		std::shared_ptr<Shader> shader;
+		std::shared_ptr<Shader> m_shader;
 };
 
 #endif

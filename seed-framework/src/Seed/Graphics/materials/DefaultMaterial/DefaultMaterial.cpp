@@ -7,45 +7,45 @@
 DefaultMaterial::DefaultMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToMaterials + "DefaultMaterial/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "DefaultMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
-		this->init();
+		init();
 	else
 		writeLog("Material : " + n + " loading fails");
 }
 DefaultMaterial::DefaultMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToMaterials + "DefaultMaterial/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "DefaultMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
-		this->init();
+		init();
 	else
 		writeLog("Material : " + n + " loading fails");
 }
 
 void DefaultMaterial::init()
 {
-	GLuint programID = this->shader->getID();
+	GLuint programID = m_shader->getID();
 
-	this->M = glm::mat4(1.0);
+	m_M = glm::mat4(1.0);
 
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
-	this->MID = glGetUniformLocation(programID, "M");
-	this->NMID = glGetUniformLocation(programID, "Normal_Matrix");
-	this->matID = glGetUniformLocation(programID, "mat");
-	this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
-	this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
-	this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
-	this->block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
-	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
-	this->NMACTIVEID = glGetUniformLocation(programID, "NormalMapActive");
-	this->NMVIEWID = glGetUniformLocation(programID, "NormalMapView");
-	this->SMACTIVEID = glGetUniformLocation(programID, "SpecularMapActive");
-	this->SMVIEWID = glGetUniformLocation(programID, "SpecularMapView");
-	this->PMVIEWID = glGetUniformLocation(programID, "ParallaxMapView");
-	this->PMACTIVEID = glGetUniformLocation(programID, "ParallaxMapActive");
-	this->BIASPARALLAXMAPID = glGetUniformLocation(programID, "biasParallax");
+	m_MID = glGetUniformLocation(programID, "M");
+	m_NMID = glGetUniformLocation(programID, "Normal_Matrix");
+	m_matID = glGetUniformLocation(programID, "mat");
+	m_block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
+	m_block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
+	m_block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
+	m_block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
+	m_block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
+	m_NMACTIVEID = glGetUniformLocation(programID, "NormalMapActive");
+	m_NMVIEWID = glGetUniformLocation(programID, "NormalMapView");
+	m_SMACTIVEID = glGetUniformLocation(programID, "SpecularMapActive");
+	m_SMVIEWID = glGetUniformLocation(programID, "SpecularMapView");
+	m_PMVIEWID = glGetUniformLocation(programID, "ParallaxMapView");
+	m_PMACTIVEID = glGetUniformLocation(programID, "ParallaxMapActive");
+	m_BIASPARALLAXMAPID = glGetUniformLocation(programID, "biasParallax");
 }
 
 DefaultMaterial::~DefaultMaterial()
@@ -54,21 +54,22 @@ DefaultMaterial::~DefaultMaterial()
 
 void DefaultMaterial::render(Model *model)
 {
-	if (this->shader->useProgram())
+	std::cout << "render DefaultMaterial" << std::endl;
+	if (m_shader->useProgram())
 	{
 		//UNIFORMS
-		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
+		m_Normal_Matrix = glm::transpose(glm::inverse(m_M));
 		//set the uniform variable MVP
-		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
-		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-		glUniform1i(this->NMACTIVEID, Scene::normalMapActive);
-		glUniform1i(this->NMVIEWID, Scene::normalMapView);
-		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
-		glUniform1i(this->SMVIEWID, Scene::specularMapView);
-		glUniform1i(this->PMVIEWID, Scene::parallaxMapView);
-		glUniform1i(this->PMACTIVEID, Scene::parallaxMapActive);
-		glUniform1f(this->BIASPARALLAXMAPID, Scene::biasParallax);
-		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
+		glUniformMatrix4fv(m_MID, 1, GL_FALSE, &m_M[0][0]);
+		glUniformMatrix4fv(m_NMID, 1, GL_FALSE, &m_Normal_Matrix[0][0]);
+		glUniform1i(m_NMACTIVEID, Scene::normalMapActive);
+		glUniform1i(m_NMVIEWID, Scene::normalMapView);
+		glUniform1i(m_SMACTIVEID, Scene::specularMapActive);
+		glUniform1i(m_SMVIEWID, Scene::specularMapView);
+		glUniform1i(m_PMVIEWID, Scene::parallaxMapView);
+		glUniform1i(m_PMACTIVEID, Scene::parallaxMapActive);
+		glUniform1f(m_BIASPARALLAXMAPID, Scene::biasParallax);
+		glUniform2f(m_matID, m_mat.Ks, m_mat.Kr);
 		//OPTIONS
 		//Enable culling triangles which normal is not towards the camera
 		glEnable(GL_CULL_FACE);
@@ -77,41 +78,52 @@ void DefaultMaterial::render(Model *model)
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		std::cout << "Active textures" << std::endl;
 		//TEXTURES
-		this->activeTextures(this->shader->getID());
+		activeTextures(m_shader->getID());
+		std::cout << "Fin Active textures" << std::endl;
+		std::cout << "Buffer camera" << std::endl;
+
 		//BUFFERS
 		for (int i = 0; i < 4; i++)
 		{
 			//bind UBO buffer light
-			glBindBufferBase(GL_UNIFORM_BUFFER, i, this->scene->getCollector()->getLightUBO(i)->getID());
+			glBindBufferBase(GL_UNIFORM_BUFFER, i, m_scene->getCollector()->getLightUBO(i)->getID());
 			//bind UBO lighting with program shader
-			glUniformBlockBinding(this->shader->getID(), this->block_index_lights[i], i);
+			glUniformBlockBinding(m_shader->getID(), m_block_index_lights[i], i);
 		}
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 4, m_scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
-		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
+		glUniformBlockBinding(m_shader->getID(), m_block_index_camera, 4);
+		std::cout << "Fin Buffer camera" << std::endl;
+		std::cout << "Render Model" << std::endl;
 		//RENDER
 		//render model
 		model->render();
 
+		std::cout << "Fin Render Model" << std::endl;
+		std::cout << "Release Texture" << std::endl;
 		//RELEASE
-		this->releaseTextures();
+		releaseTextures();
+		std::cout << "Fin Release Texture" << std::endl;
 		//glBindBufferBase(GL_UNIFORM_BUFFER, 0, 0);
 	}
+	std::cout << "Fin render DefaultMaterial" << std::endl;
+
 }
 
 void DefaultMaterial::translateModel(glm::vec3 T)
 {
-	this->M = translate(this->M, T);
+	m_M = translate(m_M, T);
 }
 
 void DefaultMaterial::scaleModel(glm::vec3 T)
 {
-	this->M = scale(this->M, T);
+	m_M = scale(m_M, T);
 }
 
 void DefaultMaterial::rotateModel(glm::vec3 T)
 {
-	this->M = rotate(this->M, T);
+	m_M = rotate(m_M, T);
 }

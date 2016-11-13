@@ -1,7 +1,13 @@
-#include <glwidget.hpp>
+#include "Seed/IHM/glwidget.hpp"
 
-GLWidget::GLWidget(int framesPerSecond, QWidget *parent):QGLWidget(parent)
+GLWidget::GLWidget(int framesPerSecond, QWidget *parent):QOpenGLWidget(parent)
 {
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(4, 4);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    setFormat(format);
 	if(framesPerSecond == 0)
         t_Timer = NULL;
     else
@@ -20,5 +26,5 @@ GLWidget::~GLWidget()
 
 void GLWidget::timeOutSlot()
 {
-    updateGL();
+    update();
 }

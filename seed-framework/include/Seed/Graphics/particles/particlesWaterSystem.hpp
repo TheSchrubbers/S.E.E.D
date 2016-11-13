@@ -32,7 +32,7 @@
 #ifndef PARTICLESWATERSYSTEM_HPP
 #define PARTICLESWATERSYSTEM_HPP
 
-#include <Seed/Graphics/particles/particlesSystem.hpp>
+#include "Seed/Graphics/particles/particlesSystem.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>

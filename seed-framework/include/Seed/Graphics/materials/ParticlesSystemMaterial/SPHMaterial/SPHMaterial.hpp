@@ -63,10 +63,10 @@ class SPHMaterial : public Material
 	private:
 
 		void init();
-		uniform block_index_lights[4], block_index_camera, NMID, uniformSSBOID;
-		SPH *sph;
+		uniform m_block_index_lights[4], m_block_index_camera, m_NMID, m_uniformSSBOID;
+		SPH *m_sph;
 
-		std::shared_ptr<Shader> shader;
+		std::shared_ptr<Shader> m_shader;
 };
 
 #endif

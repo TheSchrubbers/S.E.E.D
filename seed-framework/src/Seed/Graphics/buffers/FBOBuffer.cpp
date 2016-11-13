@@ -1,8 +1,8 @@
-#include <Seed/Graphics/buffers/FBOBuffer.hpp>
+#include "Seed/Graphics/buffers/FBOBuffer.hpp"
 
 FBOBuffer::FBOBuffer()
 {
-	glGenFramebuffers(1, &(m_ID));
+	glGenFramebuffers(1, &(m_id));
 	/*glGenFramebuffers(1, &(this->FBOID));
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->FBOID);
 	//Gposition buffer
@@ -50,12 +50,12 @@ FBOBuffer::FBOBuffer()
 
 FBOBuffer::~FBOBuffer()
 {
-	glDeleteFramebuffers(1, &(m_ID));
+	glDeleteFramebuffers(1, &(m_id));
 }
 
 void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned int attachment)
 {
-	if(m_ID)
+	if(m_id)
 	{
 		GLuint GTexture;
 		glGenTextures(1, &GTexture);
@@ -70,7 +70,7 @@ void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned i
 		float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, GTexture, 0);
 
 		glDrawBuffer(GL_NONE);
@@ -93,17 +93,17 @@ void FBOBuffer::createTexture(unsigned int format, unsigned int type, unsigned i
 
 void FBOBuffer::deleteBuffer()
 {
-	glDeleteFramebuffers(1, &(m_ID));
+	glDeleteFramebuffers(1, &(m_id));
 }
 
 GLuint FBOBuffer::getID()
 {
-	return m_ID;
+	return m_id;
 }
 
 void FBOBuffer::bindWrite()
 {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_ID);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_id);
 }
 
 void FBOBuffer::bindRead(GLuint GtexID)
@@ -123,7 +123,7 @@ void FBOBuffer::release()
 void FBOBuffer::switchDepthTexture(int i)
 {
 	//bind FBO buffer
-	glBindFramebuffer(GL_FRAMEBUFFER, m_ID);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 	//switching texture
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, GDepthTextures[i], 0);
 	//tell to opengl, there is no color texture to render

@@ -34,11 +34,12 @@
 #define MATERIAL_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/texture.hpp>
-#include <Seed/Graphics/model/model.hpp>
-#include <Seed/Graphics/engine/scene.hpp>
-#include <Seed/Graphics/engine/camera.hpp>
-#include <Seed/Graphics/engine/Constant.hpp>
+#include "Seed/Graphics/engine/texture.hpp"
+#include "Seed/Graphics/model/model.hpp"
+#include "Seed/Graphics/engine/scene.hpp"
+#include "Seed/Graphics/engine/camera.hpp"
+#include "Seed/Graphics/engine/Constant.hpp"
+#include "Seed/Graphics/definitions.hpp"
 //OTHER INCLUDES
 #include <vector>
 #include <assimp/Importer.hpp>
@@ -50,7 +51,7 @@ class Shader;
 /*! \class Material
 * \brief Material of a node
 */
-class Material
+class Material : public openGLFunctions
 {
 	public:
 
@@ -121,14 +122,14 @@ class Material
 
 	protected:
 
-		std::vector<Texture*> textures_ambiant;
-		std::vector<Texture*> textures_diffuse;
-		std::vector<Texture*> textures_specular;
-		Texture* texture_normal;
-		Texture* texture_depthMap;
-		std::shared_ptr<Scene> scene;
-		Camera *camera;
-		std::string name;
+		std::vector<Texture*> m_textures_ambiant;
+		std::vector<Texture*> m_textures_diffuse;
+		std::vector<Texture*> m_textures_specular;
+		Texture* m_texture_normal;
+		Texture* m_texture_depthMap;
+		std::shared_ptr<Scene> m_scene;
+		Camera *m_camera;
+		std::string m_name;
 
 		struct compLight
 		{
@@ -142,11 +143,11 @@ class Material
 			float Kr;
 		};
 
-		glm::mat4 Normal_Matrix;
-		glm::mat4 M;
-		uniform MID, NMID, matID, NMACTIVEID, NMVIEWID, SMACTIVEID, SMVIEWID, PMACTIVEID, PMVIEWID, BIASPARALLAXMAPID;
-		compLight complight;
-		Mat mat;
+		glm::mat4 m_Normal_Matrix;
+		glm::mat4 m_M;
+		uniform m_MID, m_NMID, m_matID, m_NMACTIVEID, m_NMVIEWID, m_SMACTIVEID, m_SMVIEWID, m_MACTIVEID, m_PMVIEWID, m_BIASPARALLAXMAPID, m_PMACTIVEID;
+		compLight m_complight;
+		Mat m_mat;
 };
 
 #endif

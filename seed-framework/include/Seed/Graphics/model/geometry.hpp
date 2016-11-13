@@ -39,13 +39,13 @@
 #include <vector>
 #include <fstream>
 #include <assimp/scene.h>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 
+#include "Seed/Graphics/definitions.hpp"
 /*! \class Geometry
 * \brief Structure of geometry of the mesh
 */
-class Geometry
+class Geometry : openGLFunctions
 {
 public:
 	/*!

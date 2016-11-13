@@ -34,7 +34,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Seed/Graphics/marchingCubes/marchingCubes.hpp>
+#include "Seed/Graphics/marchingCubes/marchingCubes.hpp"
 
 /*! \class ImplicitSphere
 * \brief ImplicitSphere class 

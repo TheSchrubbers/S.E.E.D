@@ -33,7 +33,7 @@
 #define OBJECTNODE_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/node/node.hpp>
+#include "Seed/Graphics/node/node.hpp"
 
 class Scene;
 class Model;
@@ -129,8 +129,8 @@ class ObjectNode : public Node
 	
 	private:
 		std::vector<ObjectNode*> m_children;
-		Model *model;
-		Material *material;
+		Model *m_model;
+		Material *m_material;
 };
 
 #endif

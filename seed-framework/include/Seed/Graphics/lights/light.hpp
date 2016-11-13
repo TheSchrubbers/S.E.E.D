@@ -36,7 +36,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-#include <GL/glew.h>
 #include <iostream>
 #include <map>
 

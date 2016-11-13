@@ -34,7 +34,7 @@
 #define DEFAULTMATERIAL_HPP
 
 //SEED INCLUDES
-#include <Seed/Graphics/engine/material.hpp>
+#include "Seed/Graphics/engine/material.hpp"
 
 /*! \class DefaultMaterial
 * \brief Material
@@ -80,10 +80,10 @@ class DefaultMaterial : public Material
 	private:
 
 		void init();
-		GLuint block_index_lights[4];
-		GLuint block_index_camera;
+		GLuint m_block_index_lights[4];
+		GLuint m_block_index_camera;
 
-		std::shared_ptr<Shader> shader;
+		std::shared_ptr<Shader> m_shader;
 };
 
 #endif

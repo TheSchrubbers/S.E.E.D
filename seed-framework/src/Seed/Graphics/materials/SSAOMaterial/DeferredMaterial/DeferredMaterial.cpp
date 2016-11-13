@@ -7,41 +7,41 @@
 DeferredMaterial::DeferredMaterial(const aiMaterial *material, std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(material, sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToMaterials + "DeferredMaterial/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "DeferredMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
-		this->init();
+		init();
 	else
 		writeLog("Material : " + n + " loading fails");
 }
 DeferredMaterial::DeferredMaterial(std::shared_ptr<Scene> sce, const std::string n, unsigned int *flag, const float reflec, const float refrac) : Material(sce, n, flag, reflec, refrac)
 {
 	//load shaders
-	this->shader = std::make_shared<Shader>(pathToMaterials + "DeferredMaterial/Shaders", flag);
+	m_shader = std::make_shared<Shader>(pathToMaterials + "DeferredMaterial/Shaders", flag);
 	if (*flag == SEED_SUCCESS)
-		this->init();
+		init();
 	else
 		writeLog("Material : " + n + " loading fails");
 }
 
 void DeferredMaterial::init()
 {
-	GLuint programID = this->shader->getID();
+	GLuint programID = m_shader->getID();
 
-	this->M = glm::mat4(1.0);
+	m_M = glm::mat4(1.0);
 
 	// Get a handle for our "MVP" uniform.
 	// Only at initialisation time.
-	this->MID = glGetUniformLocation(programID, "M");
-	this->NMID = glGetUniformLocation(programID, "Normal_Matrix");
-	this->matID = glGetUniformLocation(programID, "mat");
-	this->block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
-	this->block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
-	this->block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
-	this->block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
-	this->block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
-	this->NMACTIVEID = glGetUniformLocation(programID, "NormalMappingActive");
-	this->SMACTIVEID = glGetUniformLocation(programID, "SpecularMappingActive");
-	this->SMVIEWID = glGetUniformLocation(programID, "SpecularMappingView");
+	m_MID = glGetUniformLocation(programID, "M");
+	m_NMID = glGetUniformLocation(programID, "Normal_Matrix");
+	m_matID = glGetUniformLocation(programID, "mat");
+	m_block_index_lights[0] = glGetUniformBlockIndex(programID, "PointLightsBuffer");
+	m_block_index_lights[1] = glGetUniformBlockIndex(programID, "SpotLightsBuffer");
+	m_block_index_lights[2] = glGetUniformBlockIndex(programID, "DirectionnalLightsBuffer");
+	m_block_index_lights[3] = glGetUniformBlockIndex(programID, "FlashLightsBuffer");
+	m_block_index_camera = glGetUniformBlockIndex(programID, "CameraBuffer");
+	m_NMACTIVEID = glGetUniformLocation(programID, "NormalMappingActive");
+	m_SMACTIVEID = glGetUniformLocation(programID, "SpecularMappingActive");
+	m_SMVIEWID = glGetUniformLocation(programID, "SpecularMappingView");
 }
 
 DeferredMaterial::~DeferredMaterial()
@@ -51,7 +51,7 @@ DeferredMaterial::~DeferredMaterial()
 void DeferredMaterial::render(Model *model)
 {
 	//TEXTURES
-	if (this->shader->useProgram())
+	if (m_shader->useProgram())
 	{
 
 		//OPTIONS
@@ -66,44 +66,44 @@ void DeferredMaterial::render(Model *model)
 		glDisable(GL_BLEND);
 		
 		
-		//this->activeTextures(this->shader->getID());
+		//m_activeTextures(m_shader->getID());
 		//UNIFORMS
-		this->Normal_Matrix = glm::transpose(glm::inverse(this->M));
+		m_Normal_Matrix = glm::transpose(glm::inverse(m_M));
 		//set the uniform variable MVP
-		glUniformMatrix4fv(this->MID, 1, GL_FALSE, &M[0][0]);
-		glUniformMatrix4fv(this->NMID, 1, GL_FALSE, &Normal_Matrix[0][0]);
-		glUniform1i(this->NMACTIVEID, Scene::normalMapActive);
-		glUniform1i(this->SMACTIVEID, Scene::specularMapActive);
-		glUniform1i(this->SMVIEWID, Scene::specularMapView);
-		glUniform2f(this->matID, this->mat.Ks, this->mat.Kr);
+		glUniformMatrix4fv(m_MID, 1, GL_FALSE, &m_M[0][0]);
+		glUniformMatrix4fv(m_NMID, 1, GL_FALSE, &m_Normal_Matrix[0][0]);
+		glUniform1i(m_NMACTIVEID, Scene::normalMapActive);
+		glUniform1i(m_SMACTIVEID, Scene::specularMapActive);
+		glUniform1i(m_SMVIEWID, Scene::specularMapView);
+		glUniform2f(m_matID, m_mat.Ks, m_mat.Kr);
 		
 		//bind UBO buffer camera
-		glBindBufferBase(GL_UNIFORM_BUFFER, 4, this->scene->getCamera()->getUBOId());
+		glBindBufferBase(GL_UNIFORM_BUFFER, 4, m_scene->getCamera()->getUBOId());
 		//bind UBO camera with program shader
-		glUniformBlockBinding(this->shader->getID(), this->block_index_camera, 4);
+		glUniformBlockBinding(m_shader->getID(), m_block_index_camera, 4);
 		//RENDER
 		//render model
 		model->render();
 		//RELEASE
-		//this->releaseTextures();
+		//m_releaseTextures();
 		glDepthMask(GL_FALSE);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
-		this->shader->release();
+		m_shader->release();
 	}
 }
 
 void DeferredMaterial::translateModel(glm::vec3 T)
 {
-	this->M = translate(this->M, T);
+	m_M = translate(m_M, T);
 }
 
 void DeferredMaterial::scaleModel(glm::vec3 T)
 {
-	this->M = scale(this->M, T);
+	m_M = scale(m_M, T);
 }
 
 void DeferredMaterial::rotateModel(glm::vec3 T)
 {
-	this->M = rotate(this->M, T);
+	m_M = rotate(m_M, T);
 }

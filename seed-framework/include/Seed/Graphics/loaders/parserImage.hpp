@@ -34,24 +34,24 @@
 #define PARSERIMAGE_HPP
 
 //OTHER INCLUDES
-#include <GL/glew.h>
 #include <fstream>
 #include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <stdexcept>
  //SEED INCLUDES
-#include <Seed/Graphics/loaders/BMPParser.hpp>
-#include <Seed/Graphics/engine/Constant.hpp>
-#include <Seed/Graphics/loaders/imageLoading/png.hpp>
-#include <Seed/Graphics/loaders/imageLoading/tga.hpp>
+#include "Seed/Graphics/loaders/BMPParser.hpp"
+#include "Seed/Graphics/engine/Constant.hpp"
+#include "Seed/Graphics/loaders/imageLoading/png.hpp"
+#include "Seed/Graphics/loaders/imageLoading/tga.hpp"
+#include "Seed/Graphics/definitions.hpp"
  
 //! CLASSNAME parserImage
  /*!
   * \brief
   * parsing multiplies types of images.
   */
-class parserImage
+class parserImage : public openGLFunctions
 {
 	private:
 		//attributes

@@ -1,7 +1,7 @@
-#include <mainwindow.hpp>
-#include <myglwidget.hpp>
+#include "Seed/IHM/mainwindow.hpp"
+#include "Seed/IHM/myglwidget.hpp"
 #include <QGraphicsScene>
-#include <toolbars/uptoolbar.hpp>
+#include "Seed/IHM/toolbars/uptoolbar.hpp"
 #include <QMenuBar>
 #include <QMenu>
 
@@ -20,12 +20,7 @@ MainWindow::MainWindow(QRect r)
 
 void MainWindow::init()
 {
-	QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setVersion(3, 2);
-    format.setProfile(QSurfaceFormat::CoreProfile);
-    QSurfaceFormat::setDefaultFormat(format);
+    //QSurfaceFormat::setDefaultFormat(format);
 
     QStatusBar *qStatusBar = new QStatusBar();
     qStatusBar->showMessage("FPS : ");

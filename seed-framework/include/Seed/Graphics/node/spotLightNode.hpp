@@ -37,7 +37,7 @@
 #include <iostream>
 #include <exception>
 //SEED INCLUDES
-#include <Seed/Graphics/node/node.hpp>
+#include "Seed/Graphics/node/node.hpp"
 
 class SpotLight;
 class Scene;

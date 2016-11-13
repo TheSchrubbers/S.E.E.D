@@ -32,13 +32,13 @@
 #ifndef PARTICLESSYSTEM_HPP
 #define PARTICLESSYSTEM_HPP
 
-#include <GL/glew.h>
+#include "Seed/Graphics/definitions.hpp"
 
 class SSBOBuffer;
 
 /*! \class ParticlesSystem
 */
-class ParticlesSystem
+class ParticlesSystem : public openGLFunctions
 {
 public:
 	virtual void print() = 0;
@@ -52,7 +52,6 @@ protected:
 
 	int nbParticles, type;
 	SSBOBuffer *SSBOParticles;
-	GLuint SSBOID;
 
 	float deltaT;
 };
